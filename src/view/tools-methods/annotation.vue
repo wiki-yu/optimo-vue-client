@@ -25,7 +25,7 @@
             <Icon type="android-wifi"></Icon>
              Video
           </p>
-          <div style="height: 600px">
+          <div v-if="selectedFile !== ''" style="height: 600px">
             <video-player  class="video-player-box"
               ref="videoPlayer"
               :options="playerOptions"
@@ -47,6 +47,11 @@
         </Card>
       </Col>
     </Row>
+    <Row>
+      <!-- <Slider v-model="value" range /> -->
+      <button @click="previous">Previous</button>
+      <button @click="next">Next</button>
+    </Row>
   </div>
 </template>
 
@@ -60,44 +65,83 @@ export default {
     videoPlayer,
   },
   data () {
+    let self = this;
     return {
        selectedFile: "",
        progress: 0,
-       playerOptions: {
+       value: 0,
+      //  playerOptions: {
+      //     // videojs options
+      //     muted: true,
+      //     language: 'en',
+      //     playbackRates: [0.7, 1.0, 1.5, 2.0],
+      //     sources: [{
+      //       type: "video/mp4",
+      //       // src: "https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm"
+      //       // src: "https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-webm-file.webm"
+      //       // src: "../../../assets/images/sample-webm-file.webm"
+      //       src: this.
+      //     }],
+      //     poster: "/static/images/author.jpg",
+      //   }
+    }
+  },
+  mounted () {
+    console.log('this is current player instance object')
+  },
+  computed: {
+    player() {
+      return this.$refs.videoPlayer.player
+    },
+    playerOptions() {
+      return {
           // videojs options
           muted: true,
           language: 'en',
           playbackRates: [0.7, 1.0, 1.5, 2.0],
           sources: [{
             type: "video/mp4",
-            src: "https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm"
+            // src: "https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm"
             // src: "https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-webm-file.webm"
             // src: "../../../assets/images/sample-webm-file.webm"
+            src: this.selectedFile
           }],
           poster: "/static/images/author.jpg",
         }
     }
   },
-  mounted () {
-    console.log('this is current player instance object', this.player)
-  },
-  computed: {
-  player() {
-    return this.$refs.videoPlayer.player
-  },
   methods: {
+    // onPlayerEnded(player) {
+    //   console.log('player end!', player)
+    // },
+    // onPlayerWaiting(player) {
+    //   console.log('player wait!', player)
+    // },
+    // onPlayerPlaying(player) {
+    //   console.log('player playing!', player)
+    // },
+    // onPlayerCanplay(player) {
+    //   console.log('player canplay!', player)
+    // },
+    // onPlayerCanplaythrough(player) {
+    //   console.log('player can play through!', player)
+    // },
+    // onPlayerLoadeddata(player) {
+    //   console.log('player loadeddata!', player)
+    // },
+
     // listen event
     onPlayerPlay(player) {
-      // console.log('player play!', player)
+      console.log('player play!', player)
     },
     onPlayerPause(player) {
-      // console.log('player pause!', player)
+      console.log('player pause!', player)
     },
     // ...player event
 
     // or listen state event
     playerStateChanged(playerCurrentState) {
-      // console.log('player current update state', playerCurrentState)
+      console.log('player current update state', playerCurrentState)
     },
 
     // player is ready
@@ -106,12 +150,30 @@ export default {
       // you can use it to do something...
       // player.[methods]
     },
+    previous() {
+      const currentTime = this.player.currentTime();
+      this.player.currentTime(currentTime - 1);
+    },
+    next() {
+      const currentTime = this.player.currentTime();
+      this.player.currentTime(currentTime + 1);
+    },
 
     //yuxuyong add fileupload methods
     onFileChange(e) {
       const selectedFile = e.target.files[0]; // accessing file
       this.selectedFile = selectedFile;
+      console.log(selectedFile)
       this.progress = 0;
+      const source = URL.createObjectURL(selectedFile);
+      console.log(source);
+      this.selectedFile = source;
+      // this.playerOptions.sources[0].src = source;
+    },
+    onPlayerTimeupdate(e) {
+      const currentTime = this.player.currentTime();
+      console.log(currentTime);
+      // this.value = parseInt(currentTime, 10);
     },
     onUploadFile() {
       const formData = new FormData();
@@ -134,8 +196,8 @@ export default {
           console.log(err);
         });
     }
-  }
-  }
+  },
+  
 }
 </script>
 

@@ -32,7 +32,7 @@
       </Col>
     </Row>
 
-    <Row style="padding-top: 10px">
+    <!-- <Row style="padding-top: 10px">
       <Col span="24" style="padding-right: 5px" >
         <Card>
           <p slot="title" class="card-title" >
@@ -54,7 +54,7 @@
           </div>
         </Card>
       </Col>
-    </Row>
+    </Row> -->
 
 
   </div>
@@ -110,8 +110,9 @@ export default {
     console.log('this is current player instance object', this.player)
   },
   computed: {
-  player() {
-    return this.$refs.videoPlayer.player
+    player() {
+      return this.$refs.videoPlayer.player
+    },
   },
   methods: {
     // listen event
@@ -134,7 +135,6 @@ export default {
       // you can use it to do something...
       // player.[methods]
     }
-  }
   }
 }
 </script>
