@@ -28,20 +28,14 @@ export default {
 
       // sending file to backend
       axios
-        .post("http://localhost:4500/upload", formData, {
-          onUploadProgress: ProgressEvent => {
-            let progress =
-              Math.round((ProgressEvent.loaded / ProgressEvent.total) * 100) +
-              "%";
-            this.progress = progress;
-          }
-        })
+        .post("http://localhost:4500/upload", formData)
         .then(res => {
           console.log(res);
         })
         .catch(err => {
           console.log(err);
         });
+        alert()
     }
   }
 };
@@ -96,3 +90,5 @@ button {
   cursor: no-drop;
 }
 </style>
+
+
