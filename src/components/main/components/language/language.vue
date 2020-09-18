@@ -26,8 +26,8 @@ export default {
         'en-US': 'Lang'
       },
       localList: {
-        'zh-CN': '中文简体',
-        'zh-TW': '中文繁体',
+        'zh-CN': 'Simplified Chinese',
+        'zh-TW': 'Traditional Chinese',
         'en-US': 'English'
       }
     }

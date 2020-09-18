@@ -17,10 +17,18 @@ import VOrgTree from 'v-org-tree'
 import 'v-org-tree/dist/v-org-tree.css'
 import VueVideoPlayer from 'vue-video-player'
 // import WebCam from "../../src"
-import WebCam from "vue-cam-vision";
+import WebCam from 'vue-cam-vision'
+import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 
 // require videojs style
 import 'video.js/dist/video-js.css'
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+
+// Install BootstrapVue
+Vue.use(BootstrapVue)
+// Optionally install the BootstrapVue icon components plugin
+Vue.use(IconsPlugin)
 // import 'vue-video-player/src/custom-theme.css'
 
 Vue.use(VueVideoPlayer)
@@ -29,7 +37,6 @@ Vue.use(WebCam)
 //   options: global default options,
 //   events: global videojs events
 // } */)
-
 
 if (process.env.NODE_ENV !== 'production') require('@/mock')
 

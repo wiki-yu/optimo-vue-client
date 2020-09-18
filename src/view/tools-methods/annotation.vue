@@ -58,18 +58,18 @@
 <script>
 import 'video.js/dist/video-js.css'
 import { videoPlayer } from 'vue-video-player'
-import axios from "axios";
+import axios from 'axios'
 
 export default {
   components: {
-    videoPlayer,
+    videoPlayer
   },
   data () {
-    let self = this;
+    let self = this
     return {
-       selectedFile: "",
-       progress: 0,
-       value: 0,
+      selectedFile: '',
+      progress: 0,
+      value: 0
       //  playerOptions: {
       //     // videojs options
       //     muted: true,
@@ -90,24 +90,24 @@ export default {
     console.log('this is current player instance object')
   },
   computed: {
-    player() {
+    player () {
       return this.$refs.videoPlayer.player
     },
-    playerOptions() {
+    playerOptions () {
       return {
-          // videojs options
-          muted: true,
-          language: 'en',
-          playbackRates: [0.7, 1.0, 1.5, 2.0],
-          sources: [{
-            type: "video/mp4",
-            // src: "https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm"
-            // src: "https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-webm-file.webm"
-            // src: "../../../assets/images/sample-webm-file.webm"
-            src: this.selectedFile
-          }],
-          poster: "/static/images/author.jpg",
-        }
+        // videojs options
+        muted: true,
+        language: 'en',
+        playbackRates: [0.7, 1.0, 1.5, 2.0],
+        sources: [{
+          type: 'video/mp4',
+          // src: "https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm"
+          // src: "https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-webm-file.webm"
+          // src: "../../../assets/images/sample-webm-file.webm"
+          src: this.selectedFile
+        }],
+        poster: '/static/images/author.jpg'
+      }
     }
   },
   methods: {
@@ -131,73 +131,73 @@ export default {
     // },
 
     // listen event
-    onPlayerPlay(player) {
+    onPlayerPlay (player) {
       console.log('player play!', player)
     },
-    onPlayerPause(player) {
+    onPlayerPause (player) {
       console.log('player pause!', player)
     },
     // ...player event
 
     // or listen state event
-    playerStateChanged(playerCurrentState) {
+    playerStateChanged (playerCurrentState) {
       console.log('player current update state', playerCurrentState)
     },
 
     // player is ready
-    playerReadied(player) {
+    playerReadied (player) {
       console.log('the player is readied', player)
       // you can use it to do something...
       // player.[methods]
     },
-    previous() {
-      const currentTime = this.player.currentTime();
-      this.player.currentTime(currentTime - 1);
+    previous () {
+      const currentTime = this.player.currentTime()
+      this.player.currentTime(currentTime - 1)
     },
-    next() {
-      const currentTime = this.player.currentTime();
-      this.player.currentTime(currentTime + 1);
+    next () {
+      const currentTime = this.player.currentTime()
+      this.player.currentTime(currentTime + 1)
     },
 
-    //yuxuyong add fileupload methods
-    onFileChange(e) {
-      const selectedFile = e.target.files[0]; // accessing file
-      this.selectedFile = selectedFile;
+    // yuxuyong add fileupload methods
+    onFileChange (e) {
+      const selectedFile = e.target.files[0] // accessing file
+      this.selectedFile = selectedFile
       console.log(selectedFile)
-      this.progress = 0;
-      const source = URL.createObjectURL(selectedFile);
-      console.log(source);
-      this.selectedFile = source;
+      this.progress = 0
+      const source = URL.createObjectURL(selectedFile)
+      console.log(source)
+      this.selectedFile = source
       // this.playerOptions.sources[0].src = source;
     },
-    onPlayerTimeupdate(e) {
-      const currentTime = this.player.currentTime();
-      console.log(currentTime);
+    onPlayerTimeupdate (e) {
+      const currentTime = this.player.currentTime()
+      console.log(currentTime)
       // this.value = parseInt(currentTime, 10);
     },
-    onUploadFile() {
-      const formData = new FormData();
-      formData.append("file", this.selectedFile); // appending file
+    onUploadFile () {
+      const formData = new FormData()
+      formData.append('file', this.selectedFile) // appending file
 
       // sending file to backend
       axios
-        .post("http://localhost:4500/upload", formData, {
+        .post('http://localhost:4500/upload', formData, {
           onUploadProgress: ProgressEvent => {
             let progress =
               Math.round((ProgressEvent.loaded / ProgressEvent.total) * 100) +
-              "%";
-            this.progress = progress;
+              '%'
+            this.progress = progress
           }
         })
         .then(res => {
-          console.log(res);
+          console.log(res)
         })
         .catch(err => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     }
-  },
-  
+  }
+
 }
 </script>
 
@@ -250,4 +250,3 @@ button {
   cursor: no-drop;
 }
 </style>
-
