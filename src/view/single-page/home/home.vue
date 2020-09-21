@@ -23,15 +23,15 @@
             Video Info
           </p>
           <div>
-            <Form :model="formTop" label-position="top">
+            <Form :model="formLeft" label-position="left" :label-width="100">
                 <FormItem label="Title">
-                    <Input v-model="formTop.input1"></Input>
+                    <Input v-model="formLeft.input1"></Input>
                 </FormItem>
                 <FormItem label="Title name">
-                    <Input v-model="formTop.input2"></Input>
+                    <Input v-model="formLeft.input2"></Input>
                 </FormItem>
                 <FormItem label="Aligned title">
-                    <Input v-model="formTop.input3"></Input>
+                    <Input v-model="formLeft.input3"></Input>
                 </FormItem>
             </Form>
           </div>
@@ -86,16 +86,8 @@
             Annotation
           </p>
           <div>
-            <!-- <form>
-              <label for="fname">Total Time:</label><br>
-              <input type="text" id="fname" name="fname"><br>
-              <label for="lname">Current Time:</label><br>
-              <input type="text" id="lname" name="lname">
-            </form>
-            <button @click="related"> Related </button> -->
-          <!-- <div>
-            <Slider v-model="value" range />
-          </div> -->
+            <Slider v-model="playTime1" max=int(this.player.duration())></Slider>
+            <Slider v-model="playTime2"></Slider>
             <b-form @submit="onSubmit" @reset="onReset" v-if="show">
               <b-form-group id="input-group-1" label="Start Time:" label-for="input-1">
                 <b-form-input
@@ -149,7 +141,7 @@
 <script>
 import 'video.js/dist/video-js.css';
 import { videoPlayer } from 'vue-video-player';
-// import { dataRequest } from '../request/dataRequest';
+import { dataRequest } from '../../../request/dataRequest';
 import axios from "axios";
 import excel from '@/libs/excel'
 export default {
@@ -159,11 +151,14 @@ export default {
 
   data () {
     return {
-      formTop: {
+      formLeft: {
         input1: '',
         input2: '',
         input3: ''
       },
+      fps: "",
+      width: "",
+      height: "",
       url: "",
       previewImg: "",
       dataurl: "",
@@ -178,8 +173,9 @@ export default {
       start: '',
       end: '',
       label: '',
-
       },
+      playTime1: 0,
+      playTime2: 0,
       show: true,
       playerOptions: {
         autoplay: false,
@@ -201,26 +197,43 @@ export default {
     }
   },
 
+  // mounted: async function() {
+  //   const imgInfo = await dataRequest();
+  //   console.log("11111111111")
+  //   console.log(imgInfo)
+  //   console.log("22222222")
+  //   if (imgInfo.data) {
+  //     this.fps = imgInfo.data.fps;
+  //     this.width = imgInfo.data.width;
+  //     this.height = imgInfo.data.height;
+  //     console.log(this.fps)
+  //   }
+  // },
+
+  mounted: async function(){
+    this.formLeft.input.value = 100
+    this.playTime1.max = 10
+  },
+  
   methods: {
     handleApply () {
         this.playerOptions.sources[0].src = this.url
     },
 
-    related() {
-      // var text = document.getElementById("fname").value;
-      console.log(this.player.currentTime())
-      document.getElementById("fname").value = this.player.duration();
-      document.getElementById("lname").value = this.player.currentTime();
+    async readVideoInfo() {
+      const imgInfo = await dataRequest();
+      console.log("11111111111")
+      console.log(imgInfo)
+      console.log("22222222")
+      if (imgInfo.data) {
+        this.fps = imgInfo.data.fps;
+        this.width = imgInfo.data.width;
+        this.height = imgInfo.data.height;
+      }
+      this.formLeft.input1 = this.fps;
+      this.formLeft.input2 = this.width;
+      this.formLeft.input3 = this.height;
     },
-
-    // onFileChange(e) {
-    //   const selectedFile = e.target.files[0]; // accessing file //what does e mean here?
-    //   this.selectedFile = selectedFile;
-    //   this.progress = 0;
-    //   const source = URL.createObjectURL(selectedFile);
-    //   this.selectedFile = source;
-    //   this.playerOptions.sources[0].src = source; 
-    // },
 
     onFileChange(e) {
       const selectedFile = e.target.files[0]; // accessing file
@@ -228,7 +241,6 @@ export default {
       this.progress = 0;
     },
 
-    //without this function, the uploaded video will not show up 
     onUploadFile() {
       const formData = new FormData();
       formData.append("file", this.selectedFile); // appending file
@@ -247,22 +259,25 @@ export default {
       const source = URL.createObjectURL(this.selectedFile);
       this.selectedFile = source;
       this.playerOptions.sources[0].src = source; 
+      //Get the video info
+      this.readVideoInfo();
+    
+      console.log(this.player.currentTime())
+      this.playTime1.max = int(this.player.duration());
+      // document.getElementById("lname").value = this.player.currentTime();
     },
+
     getVideoPic() {
       let video = document.getElementsByClassName('vjs-tech')[0]
       // let video = document.querySelector('video');
       console.log(video)
       let canvas = document.createElement('canvas')
-      // let w = window.innerWidth
-
-      // let h = window.innerWidth / 16 * 9
       let w = video.videoWidth;
       let h = video.videoHeight;
       canvas.width = w;
       canvas.height = h;
       console.log(canvas)
       const ctx = canvas.getContext('2d')
-
       ctx.drawImage(video, 0, 0, w, h)
       ctx.drawImage(video, 0, 0, w, h);
       this.previewImg = canvas.toDataURL('image/png')
@@ -270,6 +285,7 @@ export default {
       // document.createElement('img').src=dataUrl;
       console.log(this.previewImg)
     },
+
     previous () {
       const currentTime = this.player.currentTime()
       this.player.currentTime(currentTime - 1/30)
@@ -387,8 +403,6 @@ input {
   font-size: 0.9rem;
 }
 
-/* input, */
-/* div, */
 button {
   margin-top: 2rem;
 }
