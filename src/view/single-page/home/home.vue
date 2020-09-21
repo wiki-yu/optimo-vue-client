@@ -1,5 +1,5 @@
 <template>
-  <div> 
+  <div>
     <Row :gutter="20" style="margin-top: 10px;">
       <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
         <Card shadow>
@@ -24,13 +24,13 @@
           </p>
           <div>
             <Form :model="formLeft" label-position="left" :label-width="100">
-                <FormItem label="Title">
+                <FormItem label="Frame Rate: ">
                     <Input v-model="formLeft.input1"></Input>
                 </FormItem>
-                <FormItem label="Title name">
+                <FormItem label="Frame Width:">
                     <Input v-model="formLeft.input2"></Input>
                 </FormItem>
-                <FormItem label="Aligned title">
+                <FormItem label="Frame Height:">
                     <Input v-model="formLeft.input3"></Input>
                 </FormItem>
             </Form>
@@ -86,7 +86,7 @@
             Annotation
           </p>
           <div>
-            <Slider v-model="playTime1" max=int(this.player.duration())></Slider>
+            <Slider v-model="playTime1"></Slider>
             <Slider v-model="playTime2"></Slider>
             <b-form @submit="onSubmit" @reset="onReset" v-if="show">
               <b-form-group id="input-group-1" label="Start Time:" label-for="input-1">
@@ -139,14 +139,14 @@
 </template>
 
 <script>
-import 'video.js/dist/video-js.css';
-import { videoPlayer } from 'vue-video-player';
-import { dataRequest } from '../../../request/dataRequest';
-import axios from "axios";
+import 'video.js/dist/video-js.css'
+import { videoPlayer } from 'vue-video-player'
+import { dataRequest } from '../../../request/dataRequest'
+import axios from 'axios'
 import excel from '@/libs/excel'
 export default {
   components: {
-    videoPlayer,
+    videoPlayer
   },
 
   data () {
@@ -156,13 +156,13 @@ export default {
         input2: '',
         input3: ''
       },
-      fps: "",
-      width: "",
-      height: "",
-      url: "",
-      previewImg: "",
-      dataurl: "",
-      selectedFile: "",
+      fps: '',
+      width: '',
+      height: '',
+      url: '',
+      previewImg: '',
+      dataurl: '',
+      selectedFile: '',
       progress: 0,
       items: [],
       col1: [],
@@ -170,9 +170,9 @@ export default {
       col3: [],
       showTable: true,
       form: {
-      start: '',
-      end: '',
-      label: '',
+        start: '',
+        end: '',
+        label: ''
       },
       playTime1: 0,
       playTime2: 0,
@@ -180,14 +180,14 @@ export default {
       playerOptions: {
         autoplay: false,
         controls: true,
-        sources:[{
-            type: "video/mp4",
-            // src: ""
-            src: "https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-webm-file.webm"
-            // src: "https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm"
-            // src: this.selectedFile
+        sources: [{
+          type: 'video/mp4',
+          // src: ""
+          src: 'https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-webm-file.webm'
+          // src: "https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm"
+          // src: this.selectedFile
         }]
-      },
+      }
     }
   },
 
@@ -210,76 +210,76 @@ export default {
   //   }
   // },
 
-  mounted: async function(){
+  mounted: async function () {
     this.formLeft.input.value = 100
     this.playTime1.max = 10
   },
-  
+
   methods: {
     handleApply () {
-        this.playerOptions.sources[0].src = this.url
+      this.playerOptions.sources[0].src = this.url
     },
 
-    async readVideoInfo() {
-      const imgInfo = await dataRequest();
-      console.log("11111111111")
+    async readVideoInfo () {
+      const imgInfo = await dataRequest()
+      console.log('11111111111')
       console.log(imgInfo)
-      console.log("22222222")
+      console.log('22222222')
       if (imgInfo.data) {
-        this.fps = imgInfo.data.fps;
-        this.width = imgInfo.data.width;
-        this.height = imgInfo.data.height;
+        this.fps = imgInfo.data.fps
+        this.width = imgInfo.data.width
+        this.height = imgInfo.data.height
       }
-      this.formLeft.input1 = this.fps;
-      this.formLeft.input2 = this.width;
-      this.formLeft.input3 = this.height;
+      this.formLeft.input1 = this.fps
+      this.formLeft.input2 = this.width
+      this.formLeft.input3 = this.height
     },
 
-    onFileChange(e) {
-      const selectedFile = e.target.files[0]; // accessing file
-      this.selectedFile = selectedFile;
-      this.progress = 0;
+    onFileChange (e) {
+      const selectedFile = e.target.files[0] // accessing file
+      this.selectedFile = selectedFile
+      this.progress = 0
     },
 
-    onUploadFile() {
-      const formData = new FormData();
-      formData.append("file", this.selectedFile); // appending file
+    onUploadFile () {
+      const formData = new FormData()
+      formData.append('file', this.selectedFile) // appending file
       // sending file to backend
       axios
-        .post("http://localhost:4500/upload", formData)
+        .post('http://localhost:4500/upload', formData)
         .then(res => {
-          console.log(res);
+          console.log(res)
         })
         .catch(err => {
-          console.log(err);
-        });
-        alert("Uploaded")
-      
+          console.log(err)
+        })
+      alert('Uploaded')
+
       // Ready to play the video after uploading
-      const source = URL.createObjectURL(this.selectedFile);
-      this.selectedFile = source;
-      this.playerOptions.sources[0].src = source; 
-      //Get the video info
-      this.readVideoInfo();
-    
+      const source = URL.createObjectURL(this.selectedFile)
+      this.selectedFile = source
+      this.playerOptions.sources[0].src = source
+      // Get the video info
+      this.readVideoInfo()
+
       console.log(this.player.currentTime())
-      this.playTime1.max = int(this.player.duration());
+      this.playTime1.max = int(this.player.duration())
       // document.getElementById("lname").value = this.player.currentTime();
     },
 
-    getVideoPic() {
+    getVideoPic () {
       let video = document.getElementsByClassName('vjs-tech')[0]
       // let video = document.querySelector('video');
       console.log(video)
       let canvas = document.createElement('canvas')
-      let w = video.videoWidth;
-      let h = video.videoHeight;
-      canvas.width = w;
-      canvas.height = h;
+      let w = video.videoWidth
+      let h = video.videoHeight
+      canvas.width = w
+      canvas.height = h
       console.log(canvas)
       const ctx = canvas.getContext('2d')
       ctx.drawImage(video, 0, 0, w, h)
-      ctx.drawImage(video, 0, 0, w, h);
+      ctx.drawImage(video, 0, 0, w, h)
       this.previewImg = canvas.toDataURL('image/png')
       // var dataUrl = canvas.toDataURL("image/png");
       // document.createElement('img').src=dataUrl;
@@ -288,44 +288,44 @@ export default {
 
     previous () {
       const currentTime = this.player.currentTime()
-      this.player.currentTime(currentTime - 1/30)
-      this.player.pause();
-      this.getVideoPic();
+      this.player.currentTime(currentTime - 1 / 30)
+      this.player.pause()
+      this.getVideoPic()
     },
 
     next () {
       const currentTime = this.player.currentTime()
-      this.player.currentTime(currentTime + 1/30)
-      this.player.pause();
-      this.getVideoPic();
+      this.player.currentTime(currentTime + 1 / 30)
+      this.player.pause()
+      this.getVideoPic()
     },
 
     previous_fast () {
       const currentTime = this.player.currentTime()
       this.player.currentTime(currentTime - 1)
-      this.player.pause();
-      this.getVideoPic();
+      this.player.pause()
+      this.getVideoPic()
     },
 
     next_fast () {
       const currentTime = this.player.currentTime()
       this.player.currentTime(currentTime + 1)
-      this.player.pause();
-      this.getVideoPic();
+      this.player.pause()
+      this.getVideoPic()
     },
 
-    onSubmit(evt) {
+    onSubmit (evt) {
       evt.preventDefault()
       // alert(JSON.stringify(this.form))
       // const resp = await dataRequest();
-      this.col1 = this.form.start;
-      this.col2 = this.form.end;
-      this.col3 = this.form.label;
+      this.col1 = this.form.start
+      this.col2 = this.form.end
+      this.col3 = this.form.label
       console.log(this.col1)
-      this.fillTable();
+      this.fillTable()
     },
 
-    onReset(evt) {
+    onReset (evt) {
       evt.preventDefault()
       // Reset our form values
       this.form.start = ''
@@ -338,20 +338,20 @@ export default {
       })
     },
 
-    fillTable: function() {
+    fillTable: function () {
       // this.items = [];
-      this.items.push({Start: this.col1, End: this.col2, Label: this.col3});
-      console.log("111111111111")
+      this.items.push({ Start: this.col1, End: this.col2, Label: this.col3 })
+      console.log('111111111111')
       console.log(this.items)
       alert(JSON.stringify(this.items))
-      console.log("22222222222222")
+      console.log('22222222222222')
     },
 
     exportExcel () {
-      let tableData = [];
+      let tableData = []
       tableData = JSON.stringify(this.items)
       // if (this.tableData) {
-      if(1) {
+      if (1) {
         this.exportLoading = true
         const params = {
           title: ['start', 'end', 'label'],
@@ -360,9 +360,9 @@ export default {
           autoWidth: true,
           filename: 'labelling'
         }
-        console.log("***************")
+        console.log('***************')
         console.log(tableData)
-        console.log("***************")
+        console.log('***************')
         excel.export_json_to_excel(params)
         this.exportLoading = false
       } else {

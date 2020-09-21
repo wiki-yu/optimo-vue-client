@@ -1,7 +1,20 @@
 <template>
   <div>
+    <Row>
+      <Col span="12" style="padding-right: 5px" >
+        <Upload
+          multiple
+          type="drag"
+          action="//jsonplaceholder.typicode.com/posts/">
+          <div style="padding: 20px 0">
+              <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+              <p>Click here to add IP Camera</p>
+          </div>
+      </Upload>
+     </Col>
+    </Row>
     <Row style="padding-top: 10px">
-      <Col span="24" style="padding-right: 5px" >
+      <Col span="12" style="padding-right: 5px" >
         <Card>
           <p slot="title" class="card-title" >
             <Icon type="android-wifi"></Icon>
@@ -24,7 +37,6 @@
       </Col>
     </Row>
 
-
   </div>
 </template>
 
@@ -38,16 +50,16 @@ export default {
   },
   data () {
     return {
-    captures: [],
-    imgReport: [],
-    frontCam: false,
-    webcam: null,
-    img: null,
-    camera: null,
-    deviceId: null,
-    devices: [],
-    googleKey: config.googleVisionKey,
-  }
+      captures: [],
+      imgReport: [],
+      frontCam: false,
+      webcam: null,
+      img: null,
+      camera: null,
+      deviceId: null,
+      devices: [],
+      googleKey: config.googleVisionKey
+    }
   }
 }
 </script>

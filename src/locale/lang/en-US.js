@@ -15,9 +15,9 @@ export default {
   update_table_page: 'Update .CSV',
   update_paste_page: 'Paste Table Data',
   directive_page: 'Monitor',
-  excel: 'Excel',
-  'upload-excel': 'Upload Excel',
-  'export-excel': 'Export Excel',
+  excel: 'Analysis',
+  'upload-excel': 'Upload Data',
+  'export-excel': 'Export Data',
   tools_methods_page: 'Annotation',
   query: 'Query',
   params: 'Params'
