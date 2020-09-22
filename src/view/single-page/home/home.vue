@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Row :gutter="20" style="margin-top: 10px;">
+    <Row :gutter="20" style="margin-top: 10px;" type="flex">
       <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
         <Card shadow>
           <p slot="title" class="card-title" >
@@ -38,7 +38,7 @@
         </Card>
       </i-col>
     </Row>
-    <Row :gutter="20" style="margin-top: 10px;">
+    <Row :gutter="20" style="margin-top: 10px;" type="flex">
       <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
         <Card shadow>
           <p slot="title" class="card-title" >
@@ -78,7 +78,7 @@
       </i-col>
     </Row>
 
-    <Row :gutter="20" style="margin-top: 10px;">
+    <Row :gutter="20" style="margin-top: 10px;" type="flex">
       <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
         <Card shadow>
           <p slot="title" class="card-title" >
@@ -86,8 +86,8 @@
             Annotation
           </p>
           <div>
-            <Slider v-model="playTime1"></Slider>
-            <Slider v-model="playTime2"></Slider>
+            <!-- <Slider v-model="playTime1"></Slider>
+            <Slider v-model="playTime2"></Slider> -->
             <b-form @submit="onSubmit" @reset="onReset" v-if="show">
               <b-form-group id="input-group-1" label="Start Time:" label-for="input-1">
                 <b-form-input
@@ -434,6 +434,10 @@ button {
 
 .control-label {
     display: flex;
+}
+
+.ivu-card {
+  height: 100%;
 }
 
 </style>
