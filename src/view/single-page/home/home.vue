@@ -5,7 +5,7 @@
         <Card shadow>
           <p slot="title" class="card-title" >
             <Icon type="android-wifi"></Icon>
-            Video Upload
+            VIDEO UPLOAD
           </p>
           <div style="height: 150px">
            <div class="file-upload">
@@ -20,7 +20,7 @@
         <Card shadow>
           <p slot="title" class="card-title" >
             <Icon type="android-wifi"></Icon>
-            Video Info
+            VIDEO INFO
           </p>
           <div>
             <Form :model="formLeft" label-position="left" :label-width="100">
@@ -43,7 +43,7 @@
         <Card shadow>
           <p slot="title" class="card-title" >
             <Icon type="android-wifi"></Icon>
-            Video Play
+            VIDEO PLAY
           </p>
           <div style="margin-top: 10px;">
              <video-player class="vjs-custom-skin" ref="videoPlayer" :options="playerOptions"></video-player>
@@ -69,10 +69,14 @@
         <Card shadow>
           <p slot="title" class="card-title" >
             <Icon type="android-wifi"></Icon>
-            Frame Display
+            FRAME DISPLAY
           </p>
           <div>
-            <img style="width: 100%; height: auto;" :src="previewImg" alt="">
+            <!-- <img style="width: 100%; height: auto;" :src="previewImg" alt=""> -->
+            <canvas id="myCanvas" ref="myCanvas" width="460" height="240" @mousedown="mousedown" @mouseup="mouseup" @mousemove="mousemove"> </canvas>
+          </div>
+          <div>
+          <Slider v-model="value_slider" show-input></Slider>
           </div>
         </Card>
       </i-col>
@@ -83,7 +87,7 @@
         <Card shadow>
           <p slot="title" class="card-title" >
             <Icon type="android-wifi"></Icon>
-            Annotation
+            ANNOTATION
           </p>
           <div>
             <!-- <Slider v-model="playTime1"></Slider>
@@ -126,7 +130,7 @@
         <Card shadow>
           <p slot="title" class="card-title" >
             <Icon type="android-wifi"></Icon>
-            Annotation Table
+            ANNOTATION TABLE
           </p>
           <div>
             <b-table v-if="showTable" striped hover :items="items" sticky-header="100%"></b-table>
@@ -174,9 +178,13 @@ export default {
         end: '',
         label: ''
       },
+      value_slider: 0,
       playTime1: 0,
       playTime2: 0,
       show: true,
+      flag: false,
+      x: 0,
+      y: 0,
       playerOptions: {
         autoplay: false,
         controls: true,
@@ -197,19 +205,6 @@ export default {
     }
   },
 
-  // mounted: async function() {
-  //   const imgInfo = await dataRequest();
-  //   console.log("11111111111")
-  //   console.log(imgInfo)
-  //   console.log("22222222")
-  //   if (imgInfo.data) {
-  //     this.fps = imgInfo.data.fps;
-  //     this.width = imgInfo.data.width;
-  //     this.height = imgInfo.data.height;
-  //     console.log(this.fps)
-  //   }
-  // },
-
   mounted: async function () {
     this.formLeft.input.value = 100
     this.playTime1.max = 10
@@ -222,9 +217,7 @@ export default {
 
     async readVideoInfo () {
       const imgInfo = await dataRequest()
-      console.log('11111111111')
       console.log(imgInfo)
-      console.log('22222222')
       if (imgInfo.data) {
         this.fps = imgInfo.data.fps
         this.width = imgInfo.data.width
@@ -232,6 +225,7 @@ export default {
       }
       this.formLeft.input1 = this.fps
       this.formLeft.input2 = this.width
+      
       this.formLeft.input3 = this.height
     },
 
@@ -269,9 +263,11 @@ export default {
 
     getVideoPic () {
       let video = document.getElementsByClassName('vjs-tech')[0]
-      // let video = document.querySelector('video');
-      console.log(video)
-      let canvas = document.createElement('canvas')
+      // let video = document.querySelector('video'); // an alternative to replace the code above
+
+      // let canvas = document.createElement('canvas') //when use img element
+      var canvas = document.getElementById('myCanvas');
+
       let w = video.videoWidth
       let h = video.videoHeight
       canvas.width = w
@@ -279,11 +275,52 @@ export default {
       console.log(canvas)
       const ctx = canvas.getContext('2d')
       ctx.drawImage(video, 0, 0, w, h)
-      ctx.drawImage(video, 0, 0, w, h)
-      this.previewImg = canvas.toDataURL('image/png')
+      // this.previewImg = canvas.toDataURL('image/png')
       // var dataUrl = canvas.toDataURL("image/png");
       // document.createElement('img').src=dataUrl;
-      console.log(this.previewImg)
+      // console.log(this.previewImg)
+    },
+
+    drawRect(e){
+      if(this.flag){
+        console.log("绘制图形");
+        const canvas = this.$refs.myCanvas;
+        let video = document.getElementsByClassName('vjs-tech')[0]
+        var ctx = canvas.getContext("2d");
+        let x = this.x;
+        let y = this.y;
+
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        let w = video.videoWidth
+        let h = video.videoHeight
+        canvas.width = w
+        canvas.height = h
+        ctx.drawImage(video, 0, 0, w, h)
+        ctx.beginPath();
+
+        //设置线条颜色，必须放在绘制之前
+        ctx.strokeStyle = '#00ff00';
+        // 线宽设置，必须放在绘制之前
+        ctx.lineWidth = 1;
+
+        ctx.strokeRect(x,y,e.offsetX-x,e.offsetY-y);
+      }
+    },
+
+
+    mousedown(e){
+      console.log("鼠标落下");
+      this.flag = true;
+      this.x = e.offsetX; // 鼠标落下时的X
+      this.y = e.offsetY; // 鼠标落下时的Y
+    },
+    mouseup(e){
+      console.log("鼠标抬起");
+      this.flag = false;
+    },
+    mousemove(e){
+      // console.log("鼠标移动");
+      this.drawRect(e);
     },
 
     previous () {
