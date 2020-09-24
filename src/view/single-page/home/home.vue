@@ -46,7 +46,8 @@
             VIDEO PLAY
           </p>
           <div style="margin-top: 10px;">
-             <video-player class="vjs-custom-skin" ref="videoPlayer" :options="playerOptions"></video-player>
+             <video-player class="vjs-custom-skin" ref="videoPlayer" :options="playerOptions"
+             @loadeddata="onPlayerLoadeddata()"></video-player>
           </div>
           <div style="text-align:center">
             <b-button-toolbar key-nav aria-label="Toolbar with button groups">
@@ -76,7 +77,7 @@
             <canvas id="myCanvas" ref="myCanvas" width="460" height="240" @mousedown="mousedown" @mouseup="mouseup" @mousemove="mousemove"> </canvas>
           </div>
           <div>
-          <Slider v-model="value_slider" show-input></Slider>
+            <Slider v-model="value8" @on-change="on_change" show-input :max="sliderMax" :step="sliderStep" :value="sliderVal"></Slider>
           </div>
         </Card>
       </i-col>
@@ -90,8 +91,6 @@
             ANNOTATION
           </p>
           <div>
-            <!-- <Slider v-model="playTime1"></Slider>
-            <Slider v-model="playTime2"></Slider> -->
             <b-form @submit="onSubmit" @reset="onReset" v-if="show">
               <b-form-group id="input-group-1" label="Start Time:" label-for="input-1">
                 <b-form-input
@@ -160,6 +159,9 @@ export default {
         input2: '',
         input3: ''
       },
+      exportLoading: false,
+      sliderMax: 100,
+      sliderStep: 1,
       fps: '',
       width: '',
       height: '',
@@ -178,20 +180,22 @@ export default {
         end: '',
         label: ''
       },
-      value_slider: 0,
-      playTime1: 0,
-      playTime2: 0,
+      value8: 0, //the slider
       show: true,
       flag: false,
       x: 0,
       y: 0,
+      x_leftUpper: 0,
+      y_leftUpper: 0,
+      x_lowerRight: 0,
+      y_lowerRight: 0,
       playerOptions: {
         autoplay: false,
         controls: true,
         sources: [{
           type: 'video/mp4',
-          // src: ""
-          src: 'https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-webm-file.webm'
+          src: ""
+          // src: 'https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-webm-file.webm'
           // src: "https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm"
           // src: this.selectedFile
         }]
@@ -206,26 +210,24 @@ export default {
   },
 
   mounted: async function () {
-    this.formLeft.input.value = 100
-    this.playTime1.max = 10
+    this.sliderMax = 10
   },
 
   methods: {
+
     handleApply () {
       this.playerOptions.sources[0].src = this.url
     },
 
-    async readVideoInfo () {
-      const imgInfo = await dataRequest()
+    async readVideoInfo (imgInfo) {
       console.log(imgInfo)
-      if (imgInfo.data) {
-        this.fps = imgInfo.data.fps
-        this.width = imgInfo.data.width
-        this.height = imgInfo.data.height
+      if (imgInfo) {
+        this.fps = imgInfo.fps
+        this.width = imgInfo.width
+        this.height = imgInfo.height
       }
       this.formLeft.input1 = this.fps
       this.formLeft.input2 = this.width
-      
       this.formLeft.input3 = this.height
     },
 
@@ -243,6 +245,8 @@ export default {
         .post('http://localhost:4500/upload', formData)
         .then(res => {
           console.log(res)
+          this.readVideoInfo(res.data)
+          this.setSliderStep((1/this.formLeft.input1).toFixed(2));
         })
         .catch(err => {
           console.log(err)
@@ -254,20 +258,13 @@ export default {
       this.selectedFile = source
       this.playerOptions.sources[0].src = source
       // Get the video info
-      this.readVideoInfo()
-
-      console.log(this.player.currentTime())
-      this.playTime1.max = int(this.player.duration())
-      // document.getElementById("lname").value = this.player.currentTime();
     },
 
     getVideoPic () {
       let video = document.getElementsByClassName('vjs-tech')[0]
       // let video = document.querySelector('video'); // an alternative to replace the code above
-
       // let canvas = document.createElement('canvas') //when use img element
       var canvas = document.getElementById('myCanvas');
-
       let w = video.videoWidth
       let h = video.videoHeight
       canvas.width = w
@@ -279,60 +276,65 @@ export default {
       // var dataUrl = canvas.toDataURL("image/png");
       // document.createElement('img').src=dataUrl;
       // console.log(this.previewImg)
+      ctx.strokeStyle = '#00ff00';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(this.x_leftUpper, this.y_leftUpper, this.x_lowerRight, this.y_lowerRight);
     },
 
-    drawRect(e){
+    drawRect (e) {
       if(this.flag){
-        console.log("绘制图形");
+        console.log("Drawing!!");
         const canvas = this.$refs.myCanvas;
         let video = document.getElementsByClassName('vjs-tech')[0]
         var ctx = canvas.getContext("2d");
         let x = this.x;
         let y = this.y;
-
         ctx.clearRect(0,0,canvas.width,canvas.height);
+
         let w = video.videoWidth
         let h = video.videoHeight
         canvas.width = w
         canvas.height = h
         ctx.drawImage(video, 0, 0, w, h)
+        
         ctx.beginPath();
+        ctx.strokeStyle = '#00ff00'; //set up the rectangle line color
+        ctx.lineWidth = 1; //set up the rectangle line width
 
-        //设置线条颜色，必须放在绘制之前
-        ctx.strokeStyle = '#00ff00';
-        // 线宽设置，必须放在绘制之前
-        ctx.lineWidth = 1;
-
-        ctx.strokeRect(x,y,e.offsetX-x,e.offsetY-y);
+        ctx.strokeRect(x, y, e.offsetX-x, e.offsetY-y);
+        this.x_leftUpper = x;
+        this.y_leftUpper = y;
+        this.x_lowerRight = e.offsetX-x;
+        this.y_lowerRight = e.offsetY-y;
       }
     },
 
-
-    mousedown(e){
-      console.log("鼠标落下");
+    mousedown (e) {
+      console.log("mouse down");
       this.flag = true;
-      this.x = e.offsetX; // 鼠标落下时的X
-      this.y = e.offsetY; // 鼠标落下时的Y
+      this.x = e.offsetX; // the X coordinate when mouse down
+      this.y = e.offsetY; // the Y coordinate when mouse down
     },
-    mouseup(e){
-      console.log("鼠标抬起");
+
+    mouseup (e) {
+      console.log("mouse up");
       this.flag = false;
     },
-    mousemove(e){
-      // console.log("鼠标移动");
+
+    mousemove (e) {
       this.drawRect(e);
     },
 
     previous () {
       const currentTime = this.player.currentTime()
-      this.player.currentTime(currentTime - 1 / 30)
+      this.player.currentTime(currentTime - 1/this.formLeft.input1)
       this.player.pause()
       this.getVideoPic()
     },
 
     next () {
       const currentTime = this.player.currentTime()
-      this.player.currentTime(currentTime + 1 / 30)
+      this.player.currentTime(currentTime + 1/this.formLeft.input1)
       this.player.pause()
       this.getVideoPic()
     },
@@ -349,6 +351,12 @@ export default {
       this.player.currentTime(currentTime + 1)
       this.player.pause()
       this.getVideoPic()
+    },
+
+    on_change () {
+      console.log("###########11111")
+      console.log(this.sliderVal)
+      console.log("###########22222")
     },
 
     onSubmit (evt) {
@@ -378,10 +386,23 @@ export default {
     fillTable: function () {
       // this.items = [];
       this.items.push({ Start: this.col1, End: this.col2, Label: this.col3 })
-      console.log('111111111111')
       console.log(this.items)
       alert(JSON.stringify(this.items))
-      console.log('22222222222222')
+    },
+
+    onPlayerLoadeddata(e) {
+      this.setSliderMax(this.player.duration());
+    },
+
+    setSliderMax(max) {
+      this.sliderMax = max;
+    },
+
+    setSliderStep(step) {
+      if (!step) {
+        return;
+      }
+      this.sliderStep = Number(step);
     },
 
     exportExcel () {
