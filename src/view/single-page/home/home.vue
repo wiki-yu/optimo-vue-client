@@ -77,7 +77,7 @@
             <canvas id="myCanvas" ref="myCanvas" width="460" height="240" @mousedown="mousedown" @mouseup="mouseup" @mousemove="mousemove"> </canvas>
           </div>
           <div>
-            <Slider v-model="value8" @on-change="on_change" show-input :max="sliderMax" :step="sliderStep" :value="sliderVal"></Slider>
+            <Slider v-model="value8" @on-change="on_change" show-input :max="sliderMax" :step="sliderStep" :value="sliderVal"></Slider> 
           </div>
         </Card>
       </i-col>
@@ -180,7 +180,7 @@ export default {
         end: '',
         label: ''
       },
-      value8: 0, //the slider
+      value8: 0, // the slider
       show: true,
       flag: false,
       x: 0,
@@ -194,7 +194,7 @@ export default {
         controls: true,
         sources: [{
           type: 'video/mp4',
-          src: ""
+          src: ''
           // src: 'https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-webm-file.webm'
           // src: "https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm"
           // src: this.selectedFile
@@ -246,7 +246,7 @@ export default {
         .then(res => {
           console.log(res)
           this.readVideoInfo(res.data)
-          this.setSliderStep((1/this.formLeft.input1).toFixed(2));
+          this.setSliderStep((1 / this.formLeft.input1).toFixed(2))
         })
         .catch(err => {
           console.log(err)
@@ -264,7 +264,7 @@ export default {
       let video = document.getElementsByClassName('vjs-tech')[0]
       // let video = document.querySelector('video'); // an alternative to replace the code above
       // let canvas = document.createElement('canvas') //when use img element
-      var canvas = document.getElementById('myCanvas');
+      var canvas = document.getElementById('myCanvas')
       let w = video.videoWidth
       let h = video.videoHeight
       canvas.width = w
@@ -276,65 +276,65 @@ export default {
       // var dataUrl = canvas.toDataURL("image/png");
       // document.createElement('img').src=dataUrl;
       // console.log(this.previewImg)
-      ctx.strokeStyle = '#00ff00';
-      ctx.lineWidth = 1;
-      ctx.strokeRect(this.x_leftUpper, this.y_leftUpper, this.x_lowerRight, this.y_lowerRight);
+      ctx.strokeStyle = '#00ff00'
+      ctx.lineWidth = 1
+      ctx.strokeRect(this.x_leftUpper, this.y_leftUpper, this.x_lowerRight, this.y_lowerRight)
     },
 
     drawRect (e) {
-      if(this.flag){
-        console.log("Drawing!!");
-        const canvas = this.$refs.myCanvas;
+      if (this.flag) {
+        console.log('Drawing!!')
+        const canvas = this.$refs.myCanvas
         let video = document.getElementsByClassName('vjs-tech')[0]
-        var ctx = canvas.getContext("2d");
-        let x = this.x;
-        let y = this.y;
-        ctx.clearRect(0,0,canvas.width,canvas.height);
+        var ctx = canvas.getContext('2d')
+        let x = this.x
+        let y = this.y
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
 
         let w = video.videoWidth
         let h = video.videoHeight
         canvas.width = w
         canvas.height = h
         ctx.drawImage(video, 0, 0, w, h)
-        
-        ctx.beginPath();
-        ctx.strokeStyle = '#00ff00'; //set up the rectangle line color
-        ctx.lineWidth = 1; //set up the rectangle line width
 
-        ctx.strokeRect(x, y, e.offsetX-x, e.offsetY-y);
-        this.x_leftUpper = x;
-        this.y_leftUpper = y;
-        this.x_lowerRight = e.offsetX-x;
-        this.y_lowerRight = e.offsetY-y;
+        ctx.beginPath()
+        ctx.strokeStyle = '#00ff00' // set up the rectangle line color
+        ctx.lineWidth = 1 // set up the rectangle line width
+
+        ctx.strokeRect(x, y, e.offsetX - x, e.offsetY - y)
+        this.x_leftUpper = x
+        this.y_leftUpper = y
+        this.x_lowerRight = e.offsetX - x
+        this.y_lowerRight = e.offsetY - y
       }
     },
 
     mousedown (e) {
-      console.log("mouse down");
-      this.flag = true;
-      this.x = e.offsetX; // the X coordinate when mouse down
-      this.y = e.offsetY; // the Y coordinate when mouse down
+      console.log('mouse down')
+      this.flag = true
+      this.x = e.offsetX // the X coordinate when mouse down
+      this.y = e.offsetY // the Y coordinate when mouse down
     },
 
     mouseup (e) {
-      console.log("mouse up");
-      this.flag = false;
+      console.log('mouse up')
+      this.flag = false
     },
 
     mousemove (e) {
-      this.drawRect(e);
+      this.drawRect(e)
     },
 
     previous () {
       const currentTime = this.player.currentTime()
-      this.player.currentTime(currentTime - 1/this.formLeft.input1)
+      this.player.currentTime(currentTime - 1 / this.formLeft.input1)
       this.player.pause()
       this.getVideoPic()
     },
 
     next () {
       const currentTime = this.player.currentTime()
-      this.player.currentTime(currentTime + 1/this.formLeft.input1)
+      this.player.currentTime(currentTime + 1 / this.formLeft.input1)
       this.player.pause()
       this.getVideoPic()
     },
@@ -354,9 +354,9 @@ export default {
     },
 
     on_change () {
-      console.log("###########11111")
+      console.log('###########11111')
       console.log(this.sliderVal)
-      console.log("###########22222")
+      console.log('###########22222')
     },
 
     onSubmit (evt) {
@@ -390,19 +390,19 @@ export default {
       alert(JSON.stringify(this.items))
     },
 
-    onPlayerLoadeddata(e) {
-      this.setSliderMax(this.player.duration());
+    onPlayerLoadeddata (e) {
+      this.setSliderMax(this.player.duration())
     },
 
-    setSliderMax(max) {
-      this.sliderMax = max;
+    setSliderMax (max) {
+      this.sliderMax = max
     },
 
-    setSliderStep(step) {
+    setSliderStep (step) {
       if (!step) {
-        return;
+        return
       }
-      this.sliderStep = Number(step);
+      this.sliderStep = Number(step)
     },
 
     exportExcel () {
