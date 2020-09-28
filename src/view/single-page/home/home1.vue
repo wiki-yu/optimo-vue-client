@@ -4,8 +4,8 @@
       <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
         <Card shadow>
           <p slot="title" class="card-title" >
-            <Icon type="ios-cloud-upload" :size="20" />
-             VIDEO UPLOAD
+            <Icon type="android-wifi"></Icon>
+            VIDEO UPLOAD
           </p>
           <div style="height: 150px">
            <div class="file-upload">
@@ -16,11 +16,10 @@
           </div>
         </Card>
       </i-col>
-      <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
+            <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
         <Card shadow>
           <p slot="title" class="card-title" >
-            <Icon type="ios-apps" :size="20"/>
-            <!-- <Icon type="md-refresh" :size="28"/> -->
+            <Icon type="android-wifi"></Icon>
             VIDEO INFO
           </p>
           <div>
@@ -39,52 +38,46 @@
         </Card>
       </i-col>
     </Row>
-
     <Row :gutter="20" style="margin-top: 10px;" type="flex">
       <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
         <Card shadow>
           <p slot="title" class="card-title" >
-            <Icon type="md-desktop" size:="20"/>
-            VIDEO ANNOTATION
+            <Icon type="android-wifi"></Icon>
+            VIDEO PLAY
           </p>
           <div style="margin-top: 10px;">
              <video-player class="vjs-custom-skin" ref="videoPlayer" :options="playerOptions"
              @loadeddata="onPlayerLoadeddata()"></video-player>
           </div>
-
-          <div style="margin-bottom: 20px;">
-            <ButtonGroup>
-                <Button type="primary" icon="md-arrow-back" @click="previous_fast"></Button>
-                <Button type="primary" icon="ios-skip-backward" @click="previous"></Button>
-                <Button type="primary" icon="md-arrow-dropright-circle" @click="getVideoPic"></Button>
-                <Button type="primary" icon="ios-skip-forward" @click="next"></Button>
-                <Button type="primary" icon="md-arrow-forward" @click="next_fast"></Button>
-            </ButtonGroup>
-            <ButtonGroup>
-                <Button icon="ios-color-wand-outline"></Button>
-                <Button icon="ios-sunny-outline"></Button>
-                <Button icon="ios-crop"></Button>
-                <Button icon="ios-color-filter-outline"></Button>
-            </ButtonGroup>
-          </div>
-          <div style="width: 80%">
-            <label>Start Time: </label>
-            <Slider v-model="sliderVal" @on-input="on_input" show-input :max="sliderMax" :step="sliderStep"></Slider> 
-            <label>End Time: </label>
-            <Slider v-model="sliderValEnd" @on-input="on_input_end" show-input :max="sliderMax" :step="sliderStep"></Slider> 
+          <div style="text-align:center">
+            <b-button-toolbar key-nav aria-label="Toolbar with button groups">
+              <b-button-group class="mx-1">
+                <b-button @click="previous_fast">&laquo;</b-button>
+                <b-button @click="previous">&lsaquo;</b-button>
+              </b-button-group>
+                <b-button-group class="mx-1">
+                  <b-button  @click="getVideoPic"> Snap </b-button>
+                </b-button-group>
+              <b-button-group class="mx-1">
+                <b-button @click="next">&rsaquo;</b-button>
+                <b-button @click="next_fast">&raquo;</b-button>
+              </b-button-group>
+            </b-button-toolbar>
           </div>
         </Card>
       </i-col>
       <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
         <Card shadow>
           <p slot="title" class="card-title" >
-            <Icon type="md-desktop" size:="20"/>
-            Frame Display
+            <Icon type="android-wifi"></Icon>
+            FRAME DISPLAY
           </p>
           <div>
             <!-- <img style="width: 100%; height: auto;" :src="previewImg" alt=""> -->
-            <!-- <canvas id="myCanvas" ref="myCanvas" width="460" height="240" @mousedown="mousedown" @mouseup="mouseup" @mousemove="mousemove"> </canvas> -->
-            <canvas id="myCanvas" ref="myCanvas"  @mousedown="mousedown" @mouseup="mouseup" @mousemove="mousemove"> </canvas>
+            <canvas id="myCanvas" ref="myCanvas" width="460" height="240" @mousedown="mousedown" @mouseup="mouseup" @mousemove="mousemove"> </canvas>
+          </div>
+          <div>
+            <Slider v-model="value8" @on-change="on_change" show-input :max="sliderMax" :step="sliderStep" :value="sliderVal"></Slider> 
           </div>
         </Card>
       </i-col>
@@ -94,7 +87,7 @@
       <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
         <Card shadow>
           <p slot="title" class="card-title" >
-            <Icon type="ios-settings" :size="20" />
+            <Icon type="android-wifi"></Icon>
             ANNOTATION
           </p>
           <div>
@@ -117,18 +110,9 @@
                 ></b-form-input>
               </b-form-group>
 
-              <b-form-group id="input-group-3" label="Coordinates:" label-for="input-3">
+              <b-form-group id="input-group-3" label="Label:" label-for="input-3">
                 <b-form-input
                   id="input-3"
-                  v-model="form.coord"
-                  required
-                  placeholder="Coorinates"
-                ></b-form-input>
-              </b-form-group>
-
-              <b-form-group id="input-group-4" label="Label:" label-for="input-4">
-                <b-form-input
-                  id="input-4"
                   v-model="form.label"
                   required
                   placeholder="Enter the label"
@@ -190,15 +174,13 @@ export default {
       col1: [],
       col2: [],
       col3: [],
-      col4: [],
       showTable: true,
       form: {
         start: '',
         end: '',
-        coord: '',
         label: ''
       },
-      sliderVal: 0, // the slider
+      value8: 0, // the slider
       show: true,
       flag: false,
       x: 0,
@@ -212,8 +194,7 @@ export default {
         controls: true,
         sources: [{
           type: 'video/mp4',
-          poster: "http://vjs.zencdn.net/v/oceans.png",
-          src: 'http://techslides.com/demos/sample-videos/small.webm'
+          src: ''
           // src: 'https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-webm-file.webm'
           // src: "https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm"
           // src: this.selectedFile
@@ -325,8 +306,6 @@ export default {
         this.y_leftUpper = y
         this.x_lowerRight = e.offsetX - x
         this.y_lowerRight = e.offsetY - y
-        var coordinates = x.toString() + ' ' + y.toString() + ' ; ' + this.x_lowerRight.toString() + ' ' + this.y_lowerRight.toString() + ';' 
-        this.form.coord = coordinates
       }
     },
 
@@ -374,18 +353,10 @@ export default {
       this.getVideoPic()
     },
 
-    on_input () {
+    on_change () {
+      console.log('###########11111')
       console.log(this.sliderVal)
-      this.player.currentTime(this.sliderVal)
-      this.getVideoPic () 
-      this.form.start = this.sliderVal
-    },
-
-    on_input_end () {
-      console.log(this.sliderVal)
-      this.player.currentTime(this.sliderValEnd)
-      this.getVideoPic () 
-      this.form.end = this.sliderValEnd
+      console.log('###########22222')
     },
 
     onSubmit (evt) {
@@ -394,8 +365,7 @@ export default {
       // const resp = await dataRequest();
       this.col1 = this.form.start
       this.col2 = this.form.end
-      this.col3 = this.form.coord
-      this.col4 = this.form.label
+      this.col3 = this.form.label
       console.log(this.col1)
       this.fillTable()
     },
@@ -415,14 +385,15 @@ export default {
 
     fillTable: function () {
       // this.items = [];
-      this.items.push({ Start: this.col1, End: this.col2, Coord: this.col3, Lable: this.col4 })
+      this.items.push({ Start: this.col1, End: this.col2, Label: this.col3 })
       console.log(this.items)
+      alert(JSON.stringify(this.items))
     },
 
     onPlayerLoadeddata (e) {
       this.setSliderMax(this.player.duration())
     },
-    
+
     setSliderMax (max) {
       this.sliderMax = max
     },
