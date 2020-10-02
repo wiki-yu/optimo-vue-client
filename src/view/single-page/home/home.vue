@@ -228,6 +228,7 @@ export default {
         label: ''
       },
       sliderVal: 0, // the slider
+      sliderValEnd: 0,
       show: true,
       flag: false,
       x: 0,
@@ -245,7 +246,7 @@ export default {
         // height: "500px",
         sources: [{
           type: 'video/mp4',
-          src: '',
+          src: 'C://Users//xuyong.yu//Desktop//github//OPTIMO-Express-server//public//sample.webm',
           // src: 'http://techslides.com/demos/sample-videos/small.webm'
           // src: 'https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-webm-file.webm'
           // src: "https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm"
@@ -301,7 +302,7 @@ export default {
       formData.append('file', this.selectedFile) // appending file
       // sending file to backend
       axios
-        .post('http://localhost:4500/upload', formData)
+        .post('http://localhost:4500/uploadVideo', formData)
         .then(res => {
           console.log(res)
           this.readVideoInfo(res.data)

@@ -77,10 +77,8 @@ export default {
     },
 
     async readInfo (info) {
-      console.log(info)
+      console.log("The return value from the server: ", info)
       if (info) {
-        console.log("22222222222222222")
-        console.log(info.animal)
         this.previewImg2 = this.url;
         if (info.animal == 0) {
           document.getElementById('btn_cat').innerHTML = "This is a cat!!!"
@@ -90,24 +88,17 @@ export default {
           document.getElementById('btn_cat').innerHTML = "This is a dog!!!"
           document.getElementById('btn_cat').style.backgroundColor = 'Red';  
         }
-        
-        console.log("333333333333333")
-
       }
     },
 
     onUploadFile() {
       const formData = new FormData();
       formData.append("file", this.selectedFile); // appending file
-
-      // sending file to backend
       axios
-        .post("http://localhost:5000/upload", formData,)
+        .post("http://localhost:4500/uploadImg", formData,)
         .then(res => {
           console.log(res.data);
           this.readInfo(res.data);
-          // this.previewImg2 = res.data;
-
         })
         .catch(err => {
           console.log(err);
