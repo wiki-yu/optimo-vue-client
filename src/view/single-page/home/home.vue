@@ -39,7 +39,6 @@
         </Card>
       </i-col>
     </Row>
-
     <Row :gutter="20" style="margin-top: 10px;" type="flex">
       <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
         <Card shadow>
@@ -154,6 +153,18 @@
         </Card>
       </i-col>
     </Row>
+        <Row :gutter="20" style="margin-top: 10px;">
+      <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
+        <Card shadow>
+          <chart-pie style="height: 300px;" :value="pieData" text="Video Analysis"></chart-pie>
+        </Card>
+      </i-col>
+      <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
+        <Card shadow>
+          <chart-bar style="height: 300px;" :value="barData" text="Video Params"/>
+        </Card>
+      </i-col>
+    </Row>
   </div>
 </template>
 
@@ -163,13 +174,31 @@ import { videoPlayer } from 'vue-video-player'
 import { dataRequest } from '../../../request/dataRequest'
 import axios from 'axios'
 import excel from '@/libs/excel'
+import { ChartPie, ChartBar } from '_c/charts'
+import Example from './example.vue'
 export default {
+  name: 'home',
   components: {
-    videoPlayer
+    videoPlayer,
+    ChartPie,
+    ChartBar,
   },
 
   data () {
     return {
+      pieData: [
+        { value: 3, name: 'Motion1' },
+        { value: 10, name: 'Motion2' },
+        { value: 5, name: 'Motion3' },
+        { value: 12, name: 'Motion4' },
+      ],
+      barData: {
+        Rate: 30,
+        Width: 640,
+        Lenght: 360,
+        Param1: 0,
+        Param2: 0
+      },
       formLeft: {
         input1: '',
         input2: '',
@@ -207,17 +236,22 @@ export default {
       y_leftUpper: 0,
       x_lowerRight: 0,
       y_lowerRight: 0,
+
       playerOptions: {
         autoplay: false,
         controls: true,
+        // fluid: true,
+        // width: "500px",
+        // height: "500px",
         sources: [{
           type: 'video/mp4',
-          poster: "http://vjs.zencdn.net/v/oceans.png",
-          src: 'http://techslides.com/demos/sample-videos/small.webm'
+          src: '',
+          // src: 'http://techslides.com/demos/sample-videos/small.webm'
           // src: 'https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-webm-file.webm'
           // src: "https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm"
           // src: this.selectedFile
-        }]
+        }],
+        poster: "http://vjs.zencdn.net/v/oceans.png",
       }
     }
   },
@@ -248,6 +282,12 @@ export default {
       this.formLeft.input1 = this.fps
       this.formLeft.input2 = this.width
       this.formLeft.input3 = this.height
+      this.barData.Mon = this.fps
+      this.barData.Tue = this.width
+      this.barData.Wed = this.height
+      console.log("test1111111111110")
+      console.log(this.barData.Mon)
+      console.log("test22222222222222")
     },
 
     onFileChange (e) {
@@ -286,6 +326,8 @@ export default {
       var canvas = document.getElementById('myCanvas')
       let w = video.videoWidth
       let h = video.videoHeight
+      // let w = window.innerWidth
+      // let h = window.innerHeight
       canvas.width = w
       canvas.height = h
       console.log(canvas)
@@ -464,14 +506,14 @@ export default {
 <style scoped>
 .file-upload {
   box-shadow: 2px 2px 4px 2px #ccc;
-  border-radius: 1rem;
-  padding: 1rem;
+  border-radius: 0rem;
+  padding: 3rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   font-size: 1rem;
   width: 100%;
-  margin: 0 auto;
+  margin: 100 auto;
 }
 
 .col {

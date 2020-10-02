@@ -121,7 +121,7 @@ export default [
         path: 'join_page',
         name: 'join_page',
         meta: {
-          icon: 'ios-infinite',
+          icon: 'md-aperture',
           title: 'Train'
         },
         component: () => import('@/view/train.vue')
@@ -132,7 +132,7 @@ export default [
     path: '/update',
     name: 'update',
     meta: {
-      icon: 'md-cloud-upload',
+      icon: 'ios-apps',
       title: '数据上传'
     },
     component: Main,
@@ -141,7 +141,7 @@ export default [
         path: 'update_table_page',
         name: 'update_table_page',
         meta: {
-          icon: 'ios-document',
+          icon: 'md-construct',
           title: '上传Csv'
         },
         component: () => import('@/view/update/update-table.vue')
