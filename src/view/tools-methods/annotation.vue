@@ -13,6 +13,7 @@
               <input type="file" @change="onFileChange" />
               <div v-if="progress" class="progess-bar" :style="{'width': progress}">{{progress}}</div>
               <button @click="onUploadFile" class="upload-button" :disabled="!this.selectedFile">Upload file</button>
+              <!-- <Button icon="ios-cloud-upload-outline" @click="onUploadFile" class="upload-button" :disabled="!this.selectedFile">Upload file</Button> -->
             </div>
           </div>
         </Card>
@@ -162,7 +163,7 @@
       </i-col>
       <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
         <Card shadow>
-          <chart-bar style="height: 300px;" :value="barData" text="Video Params">{{barData}}</chart-bar>
+          <chart-bar style="height: 300px;" :value="barData" text="Video Params"></chart-bar>
         </Card>
       </i-col>
     </Row>
@@ -197,8 +198,8 @@ export default {
         rate: '',
         width: '',
         height: '',
-        param1: 0,
-        param2: 0
+        param1: '',
+        param2: ''
       },
       formLeft: {
         input1: '',
@@ -511,7 +512,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .file-upload {
-  box-shadow: 2px 2px 4px 2px #ccc;
+  /* box-shadow: 2px 2px 4px 2px #ccc; */
   border-radius: 0rem;
   padding: 3rem;
   display: flex;

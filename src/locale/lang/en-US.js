@@ -18,7 +18,7 @@ export default {
   excel: 'ANALYSIS',
   'upload-excel': 'Upload Data',
   'export-excel': 'Export Data',
-  tools_methods_page: 'ANNOTATION',
+  tools_methods_page: 'STUDIES',
   query: 'Query',
   params: 'Params'
 }

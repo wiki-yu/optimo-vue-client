@@ -48,7 +48,7 @@ export default {
         { title: 'User Number', icon: 'md-person-add', count: 21, color: '#2d8cf0' },
         { title: 'Annotations', icon: 'md-locate', count: 232, color: '#19be6b' },
         { title: 'Revenue', icon: 'md-help-circle', count: 14200, color: '#ff9900' },
-        { title: 'Analysis', icon: 'md-share', count: 657, color: '#ed3f14' },
+        { title: 'Videos', icon: 'md-share', count: 57, color: '#ed3f14' },
       ],
       pieData: [
         { value: 335, name: 'Motion1' },

@@ -1,29 +1,20 @@
 <template>
   <div>
-<Upload 
-            ref="upload"
-            multiple='true'  
-            :show-upload-list="true"  
-            :before-upload="handleUpload" 
-            :data="uploadFile"
-            :on-success="uploadSuccess"  
-            :headers='{"Authorization": session}' 
-            :action="actionUrl"
-        >
-            选择Excel文件：<Button icon="ios-cloud-upload-outline">选择上传文件</Button>
-        </Upload>
-        <!-- <Button type="primary" @click="clear" >清空上传记录</Button> //这里是手动上传的时候 清空之前的上传记录 或者点击的错误文件-->
-        <!-- <Button type="primary" @click="upload" >点击上传文件</Button> //如果不设置则为自动上传，这里可以设置手动上传文件-->
+      <!-- <img :src="'../assets/images/jupyter.png'"> -->
+      <!-- <img style="width: 100%; height: auto;" :src="@/assets/images/jupyter.png" alt="">  -->
+      <img style="width: 100%; height: auto;" :src="jupyterNotebook" key="max-logo" />
+      
   </div>
 </template>
 
-
 <script>
+import jupyterNotebook from '@/assets/images/jupyter.png'
 export default {
         data(){
             return {
                 files:null,//上传的文件
                 fileName:'',
+                jupyterNotebook,
             }
         },
         methods:{
