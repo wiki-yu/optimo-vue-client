@@ -14,7 +14,7 @@ export default {
   join_page: 'TRIAN',
   update_table_page: 'CLASSIFICATION',
   update_paste_page: 'OBJECT DETECTION',
-  directive_page: 'MONITOR',
+  directive_page: 'STREAM',
   excel: 'ANALYSIS',
   'upload-excel': 'Upload Data',
   'export-excel': 'Export Data',

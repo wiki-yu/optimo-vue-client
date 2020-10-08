@@ -28,6 +28,14 @@ export default {
           }
         }
       },
+      title : {
+        text:"Recent Video Analysis",
+        // subtext:"test",
+        x:'center'
+      },
+      // legend :{
+
+      // },
       grid: {
         top: '3%',
         left: '1.2%',
@@ -39,7 +47,7 @@ export default {
         {
           type: 'category',
           boundaryGap: false,
-          data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+          data: ['Video 1', 'Video 2', 'Video 3', 'Video 4', 'Video 5', 'Video 6', 'Video 7']
         }
       ],
       yAxis: [
@@ -49,7 +57,7 @@ export default {
       ],
       series: [
         {
-          name: '运营商/网络服务',
+          name: 'Motion 1',
           type: 'line',
           stack: '总量',
           areaStyle: { normal: {
@@ -58,7 +66,7 @@ export default {
           data: [120, 132, 101, 134, 90, 230, 210]
         },
         {
-          name: '银行/证券',
+          name: 'Motion 2',
           type: 'line',
           stack: '总量',
           areaStyle: { normal: {
@@ -67,7 +75,7 @@ export default {
           data: [257, 358, 278, 234, 290, 330, 310]
         },
         {
-          name: '游戏/视频',
+          name: 'Motion 3',
           type: 'line',
           stack: '总量',
           areaStyle: { normal: {
@@ -76,7 +84,7 @@ export default {
           data: [379, 268, 354, 269, 310, 478, 358]
         },
         {
-          name: '餐饮/外卖',
+          name: 'Motion 4',
           type: 'line',
           stack: '总量',
           areaStyle: { normal: {
@@ -85,7 +93,7 @@ export default {
           data: [320, 332, 301, 334, 390, 330, 320]
         },
         {
-          name: '快递/电商',
+          name: 'Motion 5',
           type: 'line',
           stack: '总量',
           label: {

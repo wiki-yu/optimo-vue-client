@@ -144,7 +144,7 @@ export default [
           icon: 'md-construct',
           title: '上传Csv'
         },
-        component: () => import('@/view/update/update-table.vue')
+        component: () => import('@/view/update/image-classify.vue')
       },
       {
         path: 'update_paste_page',
@@ -153,7 +153,7 @@ export default [
           icon: 'md-clipboard',
           title: '粘贴表格数据'
         },
-        component: () => import('@/view/update/update-paste.vue')
+        component: () => import('@/view/update/object-detection.vue')
       }
     ]
   },

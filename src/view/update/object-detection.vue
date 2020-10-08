@@ -7,11 +7,13 @@
             <Icon type="ios-desktop" :size="20" />
              TEST
           </p>
-          <div style="height: 150px">
+          <!-- <div style="height: 150px"> -->
+          <div>
            <div class="file-upload">
               <input type="file" @change="onFileChange" />
               <!-- <div v-if="progress" class="progess-bar" :style="{'width': progress}">{{progress}}</div> -->
-              <button @click="onUploadFile" class="upload-button" :disabled="!this.selectedFile">CLASSIFY</button>
+              <button v-if="!detectLoading" @click="onUploadFile" class="upload-button" :disabled="!this.selectedFile">DETECT</button>
+              <Button v-else type="primary" loading>Processing...</Button>
             </div>
           </div>
         </Card>
@@ -44,11 +46,11 @@
         <Card shadow>
           <p slot="title" class="card-title" >
             <Icon type="ios-desktop" :size="20" />
-             TEST
+             Detection Info
           </p>
-          <div>
-            <Button id="btn_cat" type="dashed">Which Pet?</Button>
-          </div>
+          <!-- <div>
+            <Button id="btn_info" type="dashed">Detection info</Button>
+          </div> -->
         </Card>
       </i-col>
     </Row>
@@ -64,7 +66,11 @@ export default {
       selectedFile: "",
       previewImg1: '',
       previewImg2: '',
-      url: null,
+      url: '',
+      serverUrl: '',
+      imgInfo: '',
+      detectLoading: false
+
     };
   },
   methods: {
@@ -76,11 +82,14 @@ export default {
       document.getElementById("img2").src='';
     },
 
-    async readInfo (info) {
-      console.log("The return value from the server: ", info)
-      if (info) {
-        this.previewImg2 = this.url;
-        if (info.animal == 0) {
+    async readProcessInfo (info) {
+      console.log("[INFO]The return value from the server: ", info)
+      if (info.serverUrl) {
+        this.previewImg2 = this.serverUrl;
+      }
+      if (info.imgInfo) {
+        if (info.imgInfo.animal == 0)
+        {
           document.getElementById('btn_cat').innerHTML = "This is a cat!!!"
           document.getElementById('btn_cat').style.backgroundColor = 'Green';  
         }
@@ -91,14 +100,45 @@ export default {
       }
     },
 
+    async readImgInfo (info) {
+      console.log("The return base 64 url from the server: ", info)
+      if (info) {
+        this.previewImg2 = info;
+      }
+    },
+    
+    async readInfo (info) {
+      console.log("[INFO]raw data: ", info)
+      console.log("[INFO]The return image url from the server: ", info.serverUrl)
+      console.log("[INFO]The return processed DL info from the server: ", info.imgInfo)
+      if (info.serverUrl) {
+        this.previewImg2 = info.serverUrl;
+        if (info.imgInfo) {
+          if (info.imgInfo.animal == 0)
+          {
+            document.getElementById('btn_cat').innerHTML = "This is a cat!!!"
+            document.getElementById('btn_cat').style.backgroundColor = 'Green';  
+          }
+          else {
+            document.getElementById('btn_cat').innerHTML = "This is a dog!!!"
+            document.getElementById('btn_cat').style.backgroundColor = 'Red';  
+          }
+        }
+      }
+    },
+
     onUploadFile() {
       const formData = new FormData();
       formData.append("file", this.selectedFile); // appending file
+      this.detectLoading = true;
       axios
-        .post("http://localhost:4500/uploadImg", formData,)
+        .post("http://localhost:5000/imgDetect", formData,)
         .then(res => {
-          console.log(res.data);
-          this.readInfo(res.data);
+          console.log("**************$$$$$$ Receiving data from server!!!!! ");
+          //this.readInfo(res.data);
+          this.readImgInfo(res.data);
+          // this.readProcessInfo(res.data);
+          this.detectLoading = false;
         })
         .catch(err => {
           console.log(err);

@@ -14,7 +14,7 @@
         <header-bar :collapsed="collapsed" @on-coll-change="handleCollapsedChange">
           <user :message-unread-count="unreadCount" :user-avatar="userAvatar"/>
           <language v-if="$config.useI18n" @on-lang-change="setLocal" style="margin-right: 10px;" :lang="local"/>
-          <error-store v-if="$config.plugin['error-store'] && $config.plugin['error-store'].showInHeader" :has-read="hasReadErrorPage" :count="errorCount"></error-store>
+          <!-- <error-store v-if="$config.plugin['error-store'] && $config.plugin['error-store'].showInHeader" :has-read="hasReadErrorPage" :count="errorCount"></error-store> -->
           <fullscreen v-model="isFullscreen" style="margin-right: 10px;"/>
         </header-bar>
       </Header>
@@ -42,11 +42,11 @@ import User from './components/user'
 import ABackTop from './components/a-back-top'
 import Fullscreen from './components/fullscreen'
 import Language from './components/language'
-import ErrorStore from './components/error-store'
+// import ErrorStore from './components/error-store'
 import { mapMutations, mapActions, mapGetters } from 'vuex'
 import { getNewTagList, routeEqual } from '@/libs/util'
 import routers from '@/router/routers'
-import minLogo from '@/assets/images/logo-min.jpg'
+import minLogo from '@/assets/images/logo-min.png'
 import maxLogo from '@/assets/images/logo.png'
 import './main.less'
 export default {
@@ -57,7 +57,7 @@ export default {
     Language,
     TagsNav,
     Fullscreen,
-    ErrorStore,
+    // ErrorStore,
     User,
     ABackTop
   },

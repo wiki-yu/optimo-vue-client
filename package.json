@@ -34,6 +34,8 @@
     "vue-core-video-player": "^0.1.9",
     "vue-i18n": "^7.8.0",
     "vue-router": "^3.0.1",
+    "vue-simple-uploader": "^0.7.5",
+    "vue-upload-component": "^2.8.20",
     "vue-video": "^0.1.7",
     "vue-video-player": "^5.0.2",
     "vue-web-cam": "^1.9.0",
