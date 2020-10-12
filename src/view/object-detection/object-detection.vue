@@ -4,8 +4,8 @@
       <i-col :md="24" :lg="24" style="margin-bottom: 20px;">
         <Card shadow>
           <p slot="title" class="card-title" >
-            <Icon type="ios-desktop" :size="20" />
-             TEST
+            <Icon type="ios-cloud-upload-outline" :size="20" />
+             UPLOAD FILE
           </p>
           <!-- <div style="height: 150px"> -->
           <div>
@@ -21,41 +21,47 @@
     </Row>
     <Row :gutter="20" style="margin-top: 10px;" type="flex">
       <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
-        <Card shadow>
-          <p slot="title" class="card-title" >
-            <Icon type="ios-desktop" :size="20" />
-             CLIENT
-          </p>
-          <p>The image from client side</p>
-          <img id="img1" style="width: 40%; height: auto;" :src="previewImg1" alt="">
-        </Card>
+        <div v-if="uploaded">
+          <Card shadow>
+            <p slot="title" class="card-title" >
+              <Icon type="ios-desktop-outline" :size="20" />
+              CLIENT
+            </p>
+            <img id="img1" style="width: 40%; height: auto;" :src="previewImg1" alt="">
+          </Card>
+        </div>
       </i-col>
       <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
-        <Card shadow>
-          <p slot="title" class="card-title" >
-            <Icon type="ios-easel" :size="20"/>
-            SERVER
-          </p>
-          <p>The image from Server side</p>
-          <img id="img2" style="width: 40%; height: auto;" :src="previewImg2" alt="">
-        </Card>
+        <div v-if="serverRtn">
+          <Card shadow>
+            <p slot="title" class="card-title" >
+              <Icon type="ios-easel-outline" :size="20"/>
+              SERVER
+            </p>
+            <img id="img2" style="width: 40%; height: auto;" :src="previewImg2" alt="">
+          </Card>
+        </div>
       </i-col>
     </Row>
     <Row :gutter="20" style="margin-top: 10px;" type="flex">
       <i-col :md="24" :lg="24" style="margin-bottom: 20px;">
+        <div v-if="uploaded">
         <Card shadow>
           <p slot="title" class="card-title" >
             <Icon type="ios-desktop" :size="20" />
-             Detection Info
+             DETECTION INFO
           </p>
           <!-- <div>
             <Button id="btn_info" type="dashed">Detection info</Button>
           </div> -->
         </Card>
+        </div>
       </i-col>
     </Row>
   </div>
 </template>
+
+
 <script>
 import axios from "axios";
 // import { dataRequest } from '../request/dataRequest'
@@ -69,8 +75,9 @@ export default {
       url: '',
       serverUrl: '',
       imgInfo: '',
-      detectLoading: false
-
+      detectLoading: false,
+      uploaded: false,
+      serverRtn: false
     };
   },
   methods: {
@@ -128,6 +135,8 @@ export default {
     },
 
     onUploadFile() {
+      this.uploaded = true
+      console.log("********************", this.uploaded)
       const formData = new FormData();
       formData.append("file", this.selectedFile); // appending file
       this.detectLoading = true;
@@ -135,6 +144,7 @@ export default {
         .post("http://localhost:5000/imgDetect", formData,)
         .then(res => {
           console.log("**************$$$$$$ Receiving data from server!!!!! ");
+          this.serverRtn = true
           //this.readInfo(res.data);
           this.readImgInfo(res.data);
           // this.readProcessInfo(res.data);
@@ -151,7 +161,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .file-upload {
-  box-shadow: 2px 2px 2px 2px #ccc;
+  /* box-shadow: 2px 2px 2px 2px #ccc; */
   border-radius: 0rem;
   padding: 1rem;
   display: flex;
@@ -163,7 +173,7 @@ export default {
 }
 
 .col {
-  box-shadow: 2px 2px 2px 2px #ccc;
+  /* box-shadow: 2px 2px 2px 2px #ccc; */
   border-radius: 1rem;
   padding: 2rem;
   display: flex;

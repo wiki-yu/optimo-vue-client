@@ -50,87 +50,159 @@ export default [
       }
     ]
   },
+  // {
+  //   path: '/message',
+  //   name: 'message',
+  //   component: Main,
+  //   meta: {
+  //     hideInBread: true,
+  //     hideInMenu: true
+  //   },
+  //   children: [
+  //     {
+  //       path: 'message_page',
+  //       name: 'message_page',
+  //       meta: {
+  //         icon: 'md-notifications',
+  //         title: '消息中心'
+  //       },
+  //       component: () => import('@/view/single-page/message/index.vue')
+  //     }
+  //   ]
+  // },
   {
-    path: '/message',
-    name: 'message',
-    component: Main,
-    meta: {
-      hideInBread: true,
-      hideInMenu: true
-    },
-    children: [
-      {
-        path: 'message_page',
-        name: 'message_page',
-        meta: {
-          icon: 'md-notifications',
-          title: '消息中心'
-        },
-        component: () => import('@/view/single-page/message/index.vue')
-      }
-    ]
-  },
-  {
-    path: '/directive',
-    name: 'directive',
+    path: '/stream',
+    name: 'stream',
     meta: {
       hideInBread: true
     },
     component: Main,
     children: [
       {
-        path: 'directive_page',
-        name: 'directive_page',
+        path: 'stream_page',
+        name: 'stream_page',
         meta: {
-          icon: 'ios-navigate',
+          icon: 'ios-camera',
           title: 'Monitor'
         },
-        component: () => import('@/view/directive/monitor.vue')
+        component: () => import('@/view/stream/stream.vue')
       }
     ]
   },
+
   {
-    path: '/tools_methods',
-    name: 'tools_methods',
+    path: '/studies',
+    name: 'studies',
     meta: {
       hideInBread: true
     },
     component: Main,
     children: [
       {
-        path: 'tools_methods_page',
-        name: 'tools_methods_page',
+        path: 'studies_page',
+        name: 'studies_page',
         meta: {
-          icon: 'ios-hammer',
+          icon: 'ios-navigate',
           title: 'Annotate',
           beforeCloseName: 'before_close_normal'
         },
-        component: () => import('@/view/tools-methods/annotation.vue')
+        component: () => import('@/view/studies/studies.vue')
       }
     ]
   },
+
   {
-    path: '/join',
-    name: 'join',
+    path: '/train',
+    name: 'train',
     component: Main,
     meta: {
       hideInBread: true
     },
     children: [
       {
-        path: 'join_page',
-        name: 'join_page',
+        path: 'train_page',
+        name: 'train_page',
         meta: {
-          icon: 'md-aperture',
+          icon: 'md-construct',
           title: 'Train'
         },
-        component: () => import('@/view/train.vue')
+        component: () => import('@/view/train/train.vue')
+      }
+    ]
+  },
+
+  {
+    path: '/data',
+    name: 'data',
+    meta: {
+      icon: 'ios-stats',
+      title: '数据导入导出'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'upload_data_page',
+        name: 'upload_data_page',
+        meta: {
+          icon: 'md-add',
+          title: '导入数据'
+        },
+        component: () => import('@/view/data/upload-data.vue')
+      },
+      {
+        path: 'export_data_page',
+        name: 'export_data_page',
+        meta: {
+          icon: 'md-download',
+          title: '导出数据'
+        },
+        component: () => import('@/view/data/export-data.vue')
+      }
+    ]
+  },
+
+  {
+    path: '/image_classification',
+    name: '/image_classification',
+    meta: {
+      hideInBread: true
+    },
+    component: Main,
+    children: [
+      {
+        path: 'image_classification_page',
+        name: 'image_classification_page',
+        meta: {
+          icon: 'ios-albums',
+          title: '图像分类'
+        },
+        component: () => import('@/view/image-classification/image-classification.vue')
       }
     ]
   },
   {
-    path: '/update',
-    name: 'update',
+    path: '/object-detection',
+    name: 'object-detection',
+    meta: {
+      hideInBread: true
+    },
+    component: Main,
+    children: [
+      {
+        path: 'object_detection_page',
+        name: 'object_detection_page',
+        meta: {
+          icon: 'ios-compass',
+          title: 'test1111'
+        },
+        component: () => import('@/view/object-detection/object-detection.vue')
+      }
+    ]
+  },
+
+  {
+    path: '/backup',
+    name: 'backup',
     meta: {
       icon: 'ios-apps',
       title: '数据上传'
@@ -138,54 +210,26 @@ export default [
     component: Main,
     children: [
       {
-        path: 'update_table_page',
-        name: 'update_table_page',
-        meta: {
-          icon: 'md-construct',
-          title: '上传Csv'
-        },
-        component: () => import('@/view/update/image-classify.vue')
-      },
-      {
-        path: 'update_paste_page',
-        name: 'update_paste_page',
+        path: 'backup1_page',
+        name: 'backup1_page',
         meta: {
           icon: 'md-clipboard',
-          title: '粘贴表格数据'
+          title: 'Backup page1'
         },
-        component: () => import('@/view/update/object-detection.vue')
-      }
-    ]
-  },
-  {
-    path: '/excel',
-    name: 'excel',
-    meta: {
-      icon: 'ios-stats',
-      title: 'EXCEL导入导出'
-    },
-    component: Main,
-    children: [
-      {
-        path: 'upload-excel',
-        name: 'upload-excel',
-        meta: {
-          icon: 'md-add',
-          title: '导入EXCEL'
-        },
-        component: () => import('@/view/excel/upload-excel.vue')
+        component: () => import('@/view/backup/backup1.vue')
       },
       {
-        path: 'export-excel',
-        name: 'export-excel',
+        path: 'backup2_page',
+        name: 'backup2_page',
         meta: {
-          icon: 'md-download',
-          title: '导出EXCEL'
+          icon: 'md-clipboard',
+          title: 'Backup page2'
         },
-        component: () => import('@/view/excel/export-excel.vue')
+        component: () => import('@/view/backup/backup2.vue')
       }
     ]
   },
+
   {
     path: '/argu',
     name: 'argu',

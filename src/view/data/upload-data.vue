@@ -3,10 +3,10 @@
 </style>
 <template>
   <div>
-    <Card title="导入EXCEL">
+    <Card title="Upload Data">
       <Row>
-        <Upload action="" :before-upload="handleBeforeUpload" accept=".xls, .xlsx">
-          <Button icon="ios-cloud-upload-outline" :loading="uploadLoading" @click="handleUploadFile">上传文件</Button>
+        <Upload action="" :before-upload="handleBeforeUpload" accept="">
+          <Button icon="ios-cloud-upload-outline" :loading="uploadLoading" @click="handleUploadFile">Upload File</Button>
         </Upload>
       </Row>
       <Row>
@@ -21,10 +21,12 @@
           <Progress v-if="showProgress" :percent="progressPercent" :stroke-width="2">
             <div v-if="progressPercent == 100">
               <Icon type="ios-checkmark-circle"></Icon>
-              <span>成功</span>
+              <span>Sucess!</span>
             </div>
           </Progress>
         </transition>
+        <!-- <button @click="onUploadFile" class="upload-button" :disabled="!this.file"></button> -->
+        <Button type="primary" @click="onUploadFile" class="upload-button" :disabled="!this.file">Upload file</Button>
       </Row>
     </Card>
     <Row class="margin-top-10">
@@ -32,8 +34,10 @@
     </Row>
   </div>
 </template>
+
 <script>
 import excel from '@/libs/excel'
+import axios from 'axios'
 export default {
   name: 'upload-excel',
   data () {
@@ -75,6 +79,21 @@ export default {
         })
       }
       return false
+    },
+
+    onUploadFile () {
+      const formData = new FormData()
+      formData.append('file', this.file) // appending file
+      // sending file to backend
+      axios
+        .post('http://localhost:4500/uploadVideo', formData)
+        .then(res => {
+          console.log(res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+      alert('Uploaded')
     },
     // 读取文件
     readFile (file) {
