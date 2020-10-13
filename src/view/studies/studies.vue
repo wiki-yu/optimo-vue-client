@@ -345,7 +345,7 @@ export default {
       // document.createElement('img').src=dataUrl;
       // console.log(this.previewImg)
       ctx.strokeStyle = '#00ff00'
-      ctx.lineWidth = 1
+      ctx.lineWidth = 3
       ctx.strokeRect(this.x_leftUpper, this.y_leftUpper, this.x_lowerRight, this.y_lowerRight)
     },
 
