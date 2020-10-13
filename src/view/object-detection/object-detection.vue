@@ -5,27 +5,28 @@
         <Card shadow>
           <p slot="title" class="card-title" >
             <Icon type="ios-cloud-upload-outline" :size="20" />
-             UPLOAD FILE
+             UPLOAD IMAGE
           </p>
           <!-- <div style="height: 150px"> -->
           <div>
            <div class="file-upload">
-              <input type="file" @change="onFileChange" />
+              <input type="file" @change="onFileChangeImg" />
               <!-- <div v-if="progress" class="progess-bar" :style="{'width': progress}">{{progress}}</div> -->
-              <button v-if="!detectLoading" @click="onUploadFile" class="upload-button" :disabled="!this.selectedFile">DETECT</button>
+              <button v-if="!detectLoading" @click="onUploadImage" class="upload-button" :disabled="!this.selectedImage">DETECT</button>
               <Button v-else type="primary" loading>Processing...</Button>
             </div>
           </div>
         </Card>
       </i-col>
     </Row>
+
     <Row :gutter="20" style="margin-top: 10px;" type="flex">
       <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
         <div v-if="uploaded">
           <Card shadow>
             <p slot="title" class="card-title" >
               <Icon type="ios-desktop-outline" :size="20" />
-              CLIENT
+              CLIENT IMAGE
             </p>
             <img id="img1" style="width: 40%; height: auto;" :src="previewImg1" alt="">
           </Card>
@@ -36,26 +37,58 @@
           <Card shadow>
             <p slot="title" class="card-title" >
               <Icon type="ios-easel-outline" :size="20"/>
-              SERVER
+              SERVER IMAGE
             </p>
             <img id="img2" style="width: 40%; height: auto;" :src="previewImg2" alt="">
           </Card>
         </div>
       </i-col>
     </Row>
+
     <Row :gutter="20" style="margin-top: 10px;" type="flex">
       <i-col :md="24" :lg="24" style="margin-bottom: 20px;">
-        <div v-if="uploaded">
         <Card shadow>
           <p slot="title" class="card-title" >
-            <Icon type="ios-desktop" :size="20" />
-             DETECTION INFO
+            <Icon type="ios-cloud-upload" :size="20" />
+            UPLOAD VIDEO
           </p>
-          <!-- <div>
-            <Button id="btn_info" type="dashed">Detection info</Button>
-          </div> -->
+          <!-- <div style="height: 150px"> -->
+          <div>
+           <div class="file-upload">
+              <input type="file" @change="onFileChangeVideo" />
+              <div v-if="progress" class="progess-bar" :style="{'width': progress}">{{progress}}</div>
+              <button @click="onUploadVideo" class="upload-button" :disabled="!this.selectedVideo">DETECT</button>
+            </div>
+          </div>
         </Card>
-        </div>
+      </i-col>
+    </Row>
+
+    <Row :gutter="20" style="margin-top: 10px;" type="flex">
+      <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
+        <Card shadow>
+          <p slot="title" class="card-title" >
+            <Icon type="md-desktop" size:="20"/>
+            CLIENT VIDEO
+          </p>
+          <div v-if="hasVideo">
+             <video-player class="vjs-custom-skin" ref="videoPlayer" :options="playerOptions"
+             @loadeddata="onPlayerLoadeddata()"></video-player>
+          </div>
+        </Card>
+      </i-col>
+
+      <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
+        <Card shadow>
+          <p slot="title" class="card-title" >
+            <Icon type="md-desktop" size:="20"/>
+            SEVER VIDEO
+          </p>
+          <div v-if="hasVideo">
+             <video-player class="vjs-custom-skin" ref="videoPlayer" :options="playerOptions"
+             @loadeddata="onPlayerLoadeddata()"></video-player>
+          </div>
+        </Card>
       </i-col>
     </Row>
   </div>
@@ -63,13 +96,19 @@
 
 
 <script>
-import axios from "axios";
-// import { dataRequest } from '../request/dataRequest'
+import 'video.js/dist/video-js.css'
+import { videoPlayer } from 'vue-video-player'
+import { dataRequest } from '../../request/dataRequest'
+import axios from 'axios'
 
 export default {
+  components: {
+    videoPlayer,
+  },
   data() {
     return {
-      selectedFile: "",
+      selectedImage: "",
+      selectedVideo: "",
       previewImg1: '',
       previewImg2: '',
       url: '',
@@ -77,83 +116,108 @@ export default {
       imgInfo: '',
       detectLoading: false,
       uploaded: false,
-      serverRtn: false
+      serverRtn: false,
+      playerOptions: {
+        autoplay: false,
+        controls: true,
+        fluid: true,
+        sources: [{
+          type: 'video/mp4',
+          src: '',
+        }],
+      }
     };
   },
+
+  computed: {
+    player () {
+      return this.$refs.videoPlayer.player
+    },
+    hasVideo() {
+      return !!this.playerOptions.sources[0].src;
+    }
+  },
+
   methods: {
-    onFileChange(e) {
-      const selectedFile = e.target.files[0]; // accessing file
-      this.selectedFile = selectedFile;
-      this.url = URL.createObjectURL(selectedFile);
+    onFileChangeImg(e) {
+      const selectedImage = e.target.files[0]; // accessing file
+      this.selectedImage = selectedImage;
+      this.url = URL.createObjectURL(selectedImage);
       this.previewImg1 = this.url;
       document.getElementById("img2").src='';
     },
 
-    async readProcessInfo (info) {
-      console.log("[INFO]The return value from the server: ", info)
-      if (info.serverUrl) {
-        this.previewImg2 = this.serverUrl;
-      }
-      if (info.imgInfo) {
-        if (info.imgInfo.animal == 0)
-        {
-          document.getElementById('btn_cat').innerHTML = "This is a cat!!!"
-          document.getElementById('btn_cat').style.backgroundColor = 'Green';  
-        }
-        else {
-          document.getElementById('btn_cat').innerHTML = "This is a dog!!!"
-          document.getElementById('btn_cat').style.backgroundColor = 'Red';  
-        }
-      }
+    onFileChangeVideo(e) {
+      console.log("haaaaaaaaaaaaaaaaaaaaaa")
+      const selectedVideo = e.target.files[0]; // accessing file
+      this.selectedVideo = selectedVideo;
+      this.url = URL.createObjectURL(selectedVideo);
+      console.log("testurlhahahaha")
+      console.log(this.url)
     },
 
-    async readImgInfo (info) {
-      console.log("The return base 64 url from the server: ", info)
+    async showServerImage (info) {
+      console.log("The return Base64 image url from the server: ", info)
       if (info) {
         this.previewImg2 = info;
       }
     },
-    
-    async readInfo (info) {
-      console.log("[INFO]raw data: ", info)
-      console.log("[INFO]The return image url from the server: ", info.serverUrl)
-      console.log("[INFO]The return processed DL info from the server: ", info.imgInfo)
-      if (info.serverUrl) {
-        this.previewImg2 = info.serverUrl;
-        if (info.imgInfo) {
-          if (info.imgInfo.animal == 0)
-          {
-            document.getElementById('btn_cat').innerHTML = "This is a cat!!!"
-            document.getElementById('btn_cat').style.backgroundColor = 'Green';  
-          }
-          else {
-            document.getElementById('btn_cat').innerHTML = "This is a dog!!!"
-            document.getElementById('btn_cat').style.backgroundColor = 'Red';  
-          }
-        }
+
+  async showServerVideo (info) {
+      console.log("The return Base64 video url from the server: ", info)
+      if (info) {
+        this.previewImg2 = info;
+        this.playerOptions.sources[0].src = info
+        // player.src = "data:video/webm;base64,"+btoa(evt.target.result);
       }
     },
-
-    onUploadFile() {
+    
+    
+    onUploadImage() {
       this.uploaded = true
-      console.log("********************", this.uploaded)
       const formData = new FormData();
-      formData.append("file", this.selectedFile); // appending file
+      formData.append("file", this.selectedImage); // appending file
       this.detectLoading = true;
       axios
         .post("http://localhost:5000/imgDetect", formData,)
         .then(res => {
-          console.log("**************$$$$$$ Receiving data from server!!!!! ");
+          console.log("Receiving data from server after uploading IMAGE! ");
+          console.log(res)
           this.serverRtn = true
-          //this.readInfo(res.data);
-          this.readImgInfo(res.data);
-          // this.readProcessInfo(res.data);
+          this.showServerImage(res.data);
           this.detectLoading = false;
         })
         .catch(err => {
           console.log(err);
         });
-    }
+    },
+
+    onUploadVideo () {
+      const formData = new FormData()
+      formData.append('file', this.selectedVideo) // appending file
+      axios
+        .post('http://localhost:5000/videoDetect', formData)
+        .then(res => {
+          console.log("Receiving data from server after uploading VIDEO! ");
+          console.log(res.data)
+          this.showServerVideo(res.data)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+      alert('Uploaded')
+
+      // Ready to play the video after uploading
+      console.log("Getting started to play video!")
+      const source = URL.createObjectURL(this.selectedVideo)
+      this.selectedVideo = source
+      this.playerOptions.sources[0].src = source
+    },
+
+    handleApply () {
+      this.playerOptions.sources[0].src = this.url
+    },
+
   }
 };
 </script>
