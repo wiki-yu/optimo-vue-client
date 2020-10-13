@@ -18,6 +18,7 @@ export default {
   export_data_page: 'Export Data',
   image_classification_page: 'Image Classification',
   object_detection_page: 'Object Detection',
+  analysis_page: 'Analysis',
   backup: 'Backup',
   backup1_page: 'Backup1',
   backup2_page: 'Backup2',

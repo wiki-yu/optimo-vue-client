@@ -50,26 +50,6 @@ export default [
       }
     ]
   },
-  // {
-  //   path: '/message',
-  //   name: 'message',
-  //   component: Main,
-  //   meta: {
-  //     hideInBread: true,
-  //     hideInMenu: true
-  //   },
-  //   children: [
-  //     {
-  //       path: 'message_page',
-  //       name: 'message_page',
-  //       meta: {
-  //         icon: 'md-notifications',
-  //         title: '消息中心'
-  //       },
-  //       component: () => import('@/view/single-page/message/index.vue')
-  //     }
-  //   ]
-  // },
   {
     path: '/stream',
     name: 'stream',
@@ -193,12 +173,31 @@ export default [
         name: 'object_detection_page',
         meta: {
           icon: 'ios-compass',
-          title: 'test1111'
+          title: 'detection'
         },
         component: () => import('@/view/object-detection/object-detection.vue')
       }
     ]
   },
+
+  {
+  path: '/analysis',
+  name: 'analysis',
+  meta: {
+    hideInBread: true,
+  },
+  children: [
+    {
+      path: 'analysis_page',
+      name: 'analysis_page',
+      meta: {
+        icon: 'logo-buffer',
+        title: 'analysis'
+      },
+      component: () => import('@/view/analysis/analysis.vue')
+    }
+  ]
+},
 
   {
     path: '/backup',

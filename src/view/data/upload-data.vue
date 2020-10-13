@@ -21,12 +21,11 @@
           <Progress v-if="showProgress" :percent="progressPercent" :stroke-width="2">
             <div v-if="progressPercent == 100">
               <Icon type="ios-checkmark-circle"></Icon>
-              <span>Sucess!</span>
+              <span>OK</span>
             </div>
           </Progress>
         </transition>
-        <!-- <button @click="onUploadFile" class="upload-button" :disabled="!this.file"></button> -->
-        <Button type="primary" @click="onUploadFile" class="upload-button" :disabled="!this.file">Upload file</Button>
+        <Button type="primary" @click="onUploadFile" class="upload-button" :disabled="!this.file">Sent  file</Button>
       </Row>
     </Card>
     <Row class="margin-top-10">
@@ -65,17 +64,16 @@ export default {
     },
     handleRemove () {
       this.initUpload()
-      this.$Message.info('上传的文件已删除！')
+      this.$Message.info('Uploaded file has been removed！')
     },
     handleBeforeUpload (file) {
       const fileExt = file.name.split('.').pop().toLocaleLowerCase()
-      if (fileExt === 'xlsx' || fileExt === 'xls') {
-        this.readFile(file)
+      if (fileExt === 'mp4' || fileExt === 'webm') {
         this.file = file
       } else {
         this.$Notice.warning({
-          title: '文件类型错误',
-          desc: '文件：' + file.name + '不是EXCEL文件，请选择后缀为.xlsx或者.xls的EXCEL文件。'
+          title: 'Incorrect file type!',
+          desc: 'File：'+ file.name+'is not the supported video type!'
         })
       }
       return false
