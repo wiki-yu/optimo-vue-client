@@ -56,7 +56,7 @@
           <div>
            <div class="file-upload">
               <input type="file" @change="onFileChangeVideo" />
-              <div v-if="progress" class="progess-bar" :style="{'width': progress}">{{progress}}</div>
+              <!-- <div v-if="progress" class="progess-bar" :style="{'width': progress}">{{progress}}</div> -->
               <button @click="onUploadVideo" class="upload-button" :disabled="!this.selectedVideo">DETECT</button>
             </div>
           </div>
@@ -72,7 +72,7 @@
             CLIENT VIDEO
           </p>
           <div v-if="hasVideo">
-             <video-player class="vjs-custom-skin" ref="videoPlayer" :options="playerOptions"
+             <video-player class="vjs-custom-skin" ref="videoPlayer" :options="playerOptions1"
              @loadeddata="onPlayerLoadeddata()"></video-player>
           </div>
         </Card>
@@ -85,7 +85,7 @@
             SEVER VIDEO
           </p>
           <div v-if="hasVideo">
-             <video-player class="vjs-custom-skin" ref="videoPlayer" :options="playerOptions"
+             <video-player class="vjs-custom-skin" ref="videoPlayer" :options="playerOptions2"
              @loadeddata="onPlayerLoadeddata()"></video-player>
           </div>
         </Card>
@@ -117,7 +117,16 @@ export default {
       detectLoading: false,
       uploaded: false,
       serverRtn: false,
-      playerOptions: {
+      playerOptions1: {
+        autoplay: false,
+        controls: true,
+        fluid: true,
+        sources: [{
+          type: 'video/mp4',
+          src: '',
+        }],
+      },
+      playerOptions2: {
         autoplay: false,
         controls: true,
         fluid: true,
@@ -134,7 +143,7 @@ export default {
       return this.$refs.videoPlayer.player
     },
     hasVideo() {
-      return !!this.playerOptions.sources[0].src;
+      return !!this.playerOptions1.sources[0].src;
     }
   },
 
@@ -166,9 +175,7 @@ export default {
   async showServerVideo (info) {
       console.log("The return Base64 video url from the server: ", info)
       if (info) {
-        this.previewImg2 = info;
-        this.playerOptions.sources[0].src = info
-        // player.src = "data:video/webm;base64,"+btoa(evt.target.result);
+        this.playerOptions2.sources[0].src = info
       }
     },
     
@@ -211,11 +218,11 @@ export default {
       console.log("Getting started to play video!")
       const source = URL.createObjectURL(this.selectedVideo)
       this.selectedVideo = source
-      this.playerOptions.sources[0].src = source
+      this.playerOptions1.sources[0].src = source
     },
 
     handleApply () {
-      this.playerOptions.sources[0].src = this.url
+      this.playerOptions1.sources[0].src = this.url
     },
 
   }
