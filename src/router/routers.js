@@ -92,6 +92,27 @@ export default [
   },
 
   {
+    path: '/annotation',
+    name: 'annotation',
+    meta: {
+      hideInBread: true,
+    },
+    component: Main,
+    children: [
+      {
+        path: 'annotation_page',
+        name: 'annotation_page',
+        meta: {
+          icon: 'ios-navigate',
+          title: 'annotation'
+        },
+        component: () => import('@/view/annotation/annotation.vue')
+      }
+    ]
+  },
+  
+
+  {
     path: '/train',
     name: 'train',
     component: Main,
@@ -186,6 +207,7 @@ export default [
   meta: {
     hideInBread: true,
   },
+  component: Main,
   children: [
     {
       path: 'analysis_page',

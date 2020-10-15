@@ -12,6 +12,7 @@ export default {
 
   stream_page: 'Stream',
   studies_page: 'Studies',
+  annotation_page: 'Annotation',
   train_page: 'Training',
   data: 'Data Management',
   upload_data_page: 'Upload Data',

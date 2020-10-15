@@ -77,16 +77,22 @@
           </ButtonGroup>
         </div>
       </i-col>
+      <video controls>
+        <source src="../../assets/images/project-ori.mp4" type="video/mp4" />
+      </video>
     </Row>
+    
   </div>
 </template>
 
 <script>
 import 'video.js/dist/video-js.css'
 import { videoPlayer } from 'vue-video-player'
+import streamVideo from '@/assets/images/project-ori.mp4'
 export default {
   components: {
     videoPlayer,
+    streamVideo
   },
     data () {
       return {
@@ -116,7 +122,7 @@ export default {
         fluid: true,
         sources: [{
           type: 'video/mp4',
-          src: 'https://upload.wikimedia.org/wikipedia/commons/e/ed/4-Cars_of_Central_Link_Light_Rail.webm'
+          src: ("@/assets/images/sample.webm")
           }],
         },
         sliderMax: 100,

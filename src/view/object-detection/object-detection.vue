@@ -72,8 +72,7 @@
             CLIENT VIDEO
           </p>
           <div v-if="hasVideo">
-             <video-player class="vjs-custom-skin" ref="videoPlayer" :options="playerOptions1"
-             @loadeddata="onPlayerLoadeddata()"></video-player>
+             <video-player class="vjs-custom-skin" ref="videoPlayer" :options="playerOptions1"></video-player>
           </div>
         </Card>
       </i-col>
@@ -85,8 +84,7 @@
             SEVER VIDEO
           </p>
           <div v-if="hasVideo">
-             <video-player class="vjs-custom-skin" ref="videoPlayer" :options="playerOptions2"
-             @loadeddata="onPlayerLoadeddata()"></video-player>
+             <video-player class="vjs-custom-skin" ref="videoPlayer" :options="playerOptions2"></video-player>
           </div>
         </Card>
       </i-col>
@@ -94,13 +92,12 @@
   </div>
 </template>
 
-
 <script>
 import 'video.js/dist/video-js.css'
 import { videoPlayer } from 'vue-video-player'
 import { dataRequest } from '../../request/dataRequest'
 import axios from 'axios'
-
+ 
 export default {
   components: {
     videoPlayer,
@@ -139,9 +136,9 @@ export default {
   },
 
   computed: {
-    player () {
-      return this.$refs.videoPlayer.player
-    },
+    // player () {
+    //   return this.$refs.videoPlayer.player
+    // },
     hasVideo() {
       return !!this.playerOptions1.sources[0].src;
     }
@@ -179,7 +176,6 @@ export default {
       }
     },
     
-    
     onUploadImage() {
       this.uploaded = true
       const formData = new FormData();
@@ -197,6 +193,26 @@ export default {
         .catch(err => {
           console.log(err);
         });
+    },
+
+    b64toBlob (b64Data, contentType='', sliceSize=512) {
+      const byteCharacters = atob(b64Data);
+      const byteArrays = [];
+
+      for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+        const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+        const byteNumbers = new Array(slice.length);
+        for (let i = 0; i < slice.length; i++) {
+          byteNumbers[i] = slice.charCodeAt(i);
+        }
+
+        const byteArray = new Uint8Array(byteNumbers);
+        byteArrays.push(byteArray);
+      }
+
+      const blob = new Blob(byteArrays, {type: contentType});
+      return blob;
     },
 
     onUploadVideo () {
@@ -217,14 +233,8 @@ export default {
       // Ready to play the video after uploading
       console.log("Getting started to play video!")
       const source = URL.createObjectURL(this.selectedVideo)
-      this.selectedVideo = source
       this.playerOptions1.sources[0].src = source
     },
-
-    handleApply () {
-      this.playerOptions1.sources[0].src = this.url
-    },
-
   }
 };
 </script>
