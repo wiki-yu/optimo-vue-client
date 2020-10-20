@@ -1,7 +1,8 @@
 .DS_Store
 node_modules
 /dist
-
+/src/assets/videoCut
+/src/assets/videos
 package-lock.json
 
 /tests/e2e/videos/

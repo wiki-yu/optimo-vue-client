@@ -29,35 +29,35 @@
         </Card>
       </i-col>
     </Row>
-    <Row :gutter="20" style="margin-top: 10px;" type="flex">
-      <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
-        <div v-if="camAdded">
-          <Card shadow>
-            <p slot="title" class="card-title" >
-              <Icon type="md-desktop" size:="20"/>
-              IP Camera
-            </p>
-            <div>
-              <video-player class="vjs-custom-skin" ref="videoPlayer" :options="playerOptions"
-              @loadeddata="onPlayerLoadeddata()"></video-player>
-            </div>
-          </Card>
-        </div>
-      </i-col>
-      <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
-        <div v-if="addCanvas">
-          <Card shadow>
-            <p slot="title" class="card-title" >
-              <Icon type="md-desktop" size:="20"/>
-              Frame Display
-            </p>
-            <div>
-              <canvas id="myCanvas" ref="myCanvas" style="width: 100%" @mousedown="mousedown" @mouseup="mouseup" @mousemove="mousemove"> </canvas>
-            </div>
-          </Card>
-        </div>
-      </i-col>
-    </Row>
+    <div v-if="camAdded">
+      <Row :gutter="20" style="margin-top: 10px;" type="flex">
+        <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
+            <Card shadow>
+              <p slot="title" class="card-title" >
+                <Icon type="md-desktop" size:="20"/>
+                IP Camera
+              </p>
+              <div>
+                <video-player class="vjs-custom-skin" ref="videoPlayer" :options="playerOptions"
+                @loadeddata="onPlayerLoadeddata()"></video-player>
+              </div>
+            </Card>
+        </i-col>
+        <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
+          <!-- <div v-if="addCanvas"> -->
+            <Card shadow>
+              <p slot="title" class="card-title" >
+                <Icon type="md-desktop" size:="20"/>
+                Frame Display
+              </p>
+              <div>
+                <canvas id="myCanvas" ref="myCanvas" style="width: 100%" @mousedown="mousedown" @mouseup="mouseup" @mousemove="mousemove"> </canvas>
+              </div>
+            </Card>
+          <!-- </div> -->
+        </i-col>
+      </Row>
+    </div>
     <Row :gutter="20" style="margin-top: 10px;" type="flex">
       <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
         <div class="btnGrp" style="margin-top: 20px;" v-if="camAdded">
@@ -77,9 +77,9 @@
           </ButtonGroup>
         </div>
       </i-col>
-      <video controls>
-        <source src="../../assets/images/project-ori.mp4" type="video/mp4" />
-      </video>
+      <!-- <video controls width="50%">
+        <source src="../../assets/videos/new.mp4" type="video/mp4" />
+      </video> -->
     </Row>
     
   </div>
@@ -88,19 +88,16 @@
 <script>
 import 'video.js/dist/video-js.css'
 import { videoPlayer } from 'vue-video-player'
-import streamVideo from '@/assets/images/project-ori.mp4'
+
 export default {
   components: {
     videoPlayer,
-    streamVideo
   },
     data () {
       return {
         pressAddCamBtn: false,
         addCanvas: false,
         camAdded: false,
-        sliderMax: 100,
-        sliderStep: 1,
 
         formInline: {
           user: '',
@@ -122,7 +119,7 @@ export default {
         fluid: true,
         sources: [{
           type: 'video/mp4',
-          src: ("@/assets/images/sample.webm")
+          src: require('../../assets/videos/new.mp4')
           }],
         },
         sliderMax: 100,

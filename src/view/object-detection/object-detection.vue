@@ -12,38 +12,36 @@
            <div class="file-upload">
               <input type="file" @change="onFileChangeImg" />
               <!-- <div v-if="progress" class="progess-bar" :style="{'width': progress}">{{progress}}</div> -->
-              <button v-if="!detectLoading" @click="onUploadImage" class="upload-button" :disabled="!this.selectedImage">DETECT</button>
-              <Button v-else type="primary" loading>Processing...</Button>
+              <button v-if="!detectImgLoading" @click="onUploadImage" class="upload-button" :disabled="!this.selectedImage">DETECT</button>
+              <Button v-else type="primary" loading>Image Processing...</Button>
             </div>
           </div>
         </Card>
       </i-col>
     </Row>
 
-    <Row :gutter="20" style="margin-top: 10px;" type="flex">
-      <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
-        <div v-if="uploaded">
-          <Card shadow>
-            <p slot="title" class="card-title" >
-              <Icon type="ios-desktop-outline" :size="20" />
-              CLIENT IMAGE
-            </p>
-            <img id="img1" style="width: 40%; height: auto;" :src="previewImg1" alt="">
-          </Card>
-        </div>
-      </i-col>
-      <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
-        <div v-if="serverRtn">
-          <Card shadow>
-            <p slot="title" class="card-title" >
-              <Icon type="ios-easel-outline" :size="20"/>
-              SERVER IMAGE
-            </p>
-            <img id="img2" style="width: 40%; height: auto;" :src="previewImg2" alt="">
-          </Card>
-        </div>
-      </i-col>
-    </Row>
+    <div v-if="imgUploaded">
+      <Row :gutter="20" style="margin-top: 10px;" type="flex">
+          <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
+            <Card shadow>
+              <p slot="title" class="card-title" >
+                <Icon type="ios-desktop-outline" :size="20" />
+                CLIENT IMAGE
+              </p>
+              <img id="img1" style="width: 100%; height: auto;" :src="previewImg1" alt="">
+            </Card>
+          </i-col>
+          <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
+            <Card shadow>
+              <p slot="title" class="card-title" >
+                <Icon type="ios-easel-outline" :size="20"/>
+                SERVER IMAGE
+              </p>
+              <img id="img2" style="width: 100%; height: auto;" :src="previewImg2" alt="">
+            </Card>
+          </i-col>
+      </Row>
+    </div>
 
     <Row :gutter="20" style="margin-top: 10px;" type="flex">
       <i-col :md="24" :lg="24" style="margin-bottom: 20px;">
@@ -57,38 +55,39 @@
            <div class="file-upload">
               <input type="file" @change="onFileChangeVideo" />
               <!-- <div v-if="progress" class="progess-bar" :style="{'width': progress}">{{progress}}</div> -->
-              <button @click="onUploadVideo" class="upload-button" :disabled="!this.selectedVideo">DETECT</button>
+              <button v-if="!detectVideoLoading" @click="onUploadVideo" class="upload-button" :disabled="!this.selectedVideo">DETECT</button>
+              <Button v-else type="primary" loading>Video Processing...</Button>
             </div>
           </div>
         </Card>
       </i-col>
     </Row>
-
-    <Row :gutter="20" style="margin-top: 10px;" type="flex">
-      <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
-        <Card shadow>
-          <p slot="title" class="card-title" >
-            <Icon type="md-desktop" size:="20"/>
-            CLIENT VIDEO
-          </p>
-          <div v-if="hasVideo">
-             <video-player class="vjs-custom-skin" ref="videoPlayer" :options="playerOptions1"></video-player>
-          </div>
-        </Card>
-      </i-col>
-
-      <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
-        <Card shadow>
-          <p slot="title" class="card-title" >
-            <Icon type="md-desktop" size:="20"/>
-            SEVER VIDEO
-          </p>
-          <div v-if="hasVideo">
-             <video-player class="vjs-custom-skin" ref="videoPlayer" :options="playerOptions2"></video-player>
-          </div>
-        </Card>
-      </i-col>
-    </Row>
+    <div v-if="videoUploaded">
+      <Row :gutter="20" style="margin-top: 10px;" type="flex">
+        <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
+          <Card shadow>
+            <p slot="title" class="card-title" >
+              <Icon type="md-desktop" size:="20"/>
+              CLIENT VIDEO
+            </p>
+            <div v-if="hasVideo">
+              <video-player class="vjs-custom-skin" ref="videoPlayer" :options="playerOptions1"></video-player>
+            </div>
+          </Card>
+        </i-col>
+        <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
+          <Card shadow>
+            <p slot="title" class="card-title" >
+              <Icon type="md-desktop" size:="20"/>
+              SERVER VIDEO
+            </p>
+            <div v-if="hasVideo">
+              <video-player class="vjs-custom-skin" ref="videoPlayer" :options="playerOptions2"></video-player>
+            </div>
+          </Card>
+        </i-col>
+      </Row>
+    </div>
   </div>
 </template>
 
@@ -111,8 +110,10 @@ export default {
       url: '',
       serverUrl: '',
       imgInfo: '',
-      detectLoading: false,
-      uploaded: false,
+      detectImgLoading: false,
+      detectVideoLoading: false,
+      imgUploaded: false,
+      videoUpload: false,
       serverRtn: false,
       playerOptions1: {
         autoplay: false,
@@ -177,10 +178,10 @@ export default {
     },
     
     onUploadImage() {
-      this.uploaded = true
+      this.imgUploaded = true
       const formData = new FormData();
       formData.append("file", this.selectedImage); // appending file
-      this.detectLoading = true;
+      this.detectImgLoading = true;
       axios
         .post("http://localhost:5000/imgDetect", formData,)
         .then(res => {
@@ -188,7 +189,7 @@ export default {
           console.log(res)
           this.serverRtn = true
           this.showServerImage(res.data);
-          this.detectLoading = false;
+          this.detectImgLoading = false;
         })
         .catch(err => {
           console.log(err);
@@ -216,14 +217,17 @@ export default {
     },
 
     onUploadVideo () {
+      this.videoUploaded = true
       const formData = new FormData()
       formData.append('file', this.selectedVideo) // appending file
+      this.detectVideoLoading = true, 
       axios
         .post('http://localhost:5000/videoDetect', formData)
         .then(res => {
           console.log("Receiving data from server after uploading VIDEO! ");
           console.log(res.data)
           this.showServerVideo(res.data)
+          this.detectVideoLoading = false
         })
         .catch(err => {
           console.log(err)

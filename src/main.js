@@ -20,6 +20,14 @@ import VueVideoPlayer from 'vue-video-player'
 import WebCam from 'vue-cam-vision'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 
+// Xuyong add video cut part
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+import '@/assets/css/iconfont.css'
+Vue.prototype.Event = new Vue
+Vue.use(ElementUI);
+Vue.config.productionTip = false
+
 // require videojs style
 import 'video.js/dist/video-js.css'
 import 'bootstrap/dist/css/bootstrap.css'
