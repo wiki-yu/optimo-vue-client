@@ -113,11 +113,9 @@ export default {
         }
       })
     },
-
     registerSwitch () {
       this.registerOn = true
     },
-
     handleSubmitTest () {
        console.log(this.form.userName)
        console.log(this.form.password)
@@ -132,7 +130,6 @@ export default {
           console.log(err)
         })
     },
-
     registerInfoSubmit () {
        console.log(this.formValidate.name)
        console.log(this.formValidate.email)

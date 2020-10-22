@@ -119,7 +119,7 @@ export default {
         fluid: true,
         sources: [{
           type: 'video/mp4',
-          src: require('../../assets/videos/new.mp4')
+          src: require('../../assets/videoCut/demo.mp4')
           }],
         },
         sliderMax: 100,

@@ -5,18 +5,15 @@
         <div @click="onControl(1)" class="iconfont icon-dadian" :title="clickmsg">
           <span>{{clickmsg}}</span>
         </div>
-        <!-- <div @click="onControl(2)" class="iconfont icon-biaoji" title="视音频分离">
-          <span>视音频分离</span>
-        </div> -->
         <div
           @click="onControl(3)"
           class="iconfont icon-kaishijianji"
-          title="快速选段"
+          title="Quick Selection"
           @keyup.83="onControl(3)"
         >
           <span>Quick Selection</span>
         </div>
-        <div @click="onControl(4)" class="iconfont icon-zidong" title="自动选段">
+        <div @click="onControl(4)" class="iconfont icon-zidong" title="Automatic Selection">
           <span>Automatic Selection</span>
         </div>
         <div class="contorlBtn">
@@ -35,8 +32,8 @@
         <i class="iconfont icon-kuaijin-" @click="nextpage"></i>
       </div>
       <div class="rule">
-        <!-- <span class="iconfont icon-fanxuan" title="反选" @click="turnReserve"></span>
-        <span class="iconfont icon-qingchu" title="删除所有拆条" @click="clearAllVideo"></span> -->
+        <span class="iconfont icon-fanxuan" title="Reverse" @click="turnReserve"></span>
+        <span class="iconfont icon-qingchu" title="Delete All Sections" @click="clearAllVideo"></span>
         <div class="block">
           <el-slider v-model="value2" :step="20" show-stops @change="stepChange"></el-slider>
         </div>
@@ -79,7 +76,7 @@
             
               @mouseup="pkLup"
           >
-            <el-button class="weitiaoL"> <span class="icon-zuo iconfont" @click="weitiao(index,1,1)"></span>微调<span class="icon-you iconfont" @click="weitiao(index,1,2)"></span></el-button>
+            <el-button class="weitiaoL"> <span class="icon-zuo iconfont" @click="weitiao(index,1,1)"></span>Adjust<span class="icon-you iconfont" @click="weitiao(index,1,2)"></span></el-button>
             <span
               class="dragLeft icon-zuo iconfont"
               @mousedown="pkLdown(index,$event)"
@@ -96,76 +93,76 @@
               @mousedown="pkRdown(index,$event)"
               @mouseup="pkRup"
             ></span>
-            <el-button class="weitiaoR"> <span class="icon-zuo iconfont" @click="weitiao(index,2,1)"></span>微调<span class="icon-you iconfont" @click="weitiao(index,2,2)"></span></el-button>
+            <el-button class="weitiaoR"> <span class="icon-zuo iconfont" @click="weitiao(index,2,1)"></span>Adjust<span class="icon-you iconfont" @click="weitiao(index,2,2)"></span></el-button>
           </div>
         </div>
       </div>
     </div>
 
     <el-dialog
-      title="拆条设置"
+      title="Split Setting"
       :visible.sync="dialogVisibleAuto"
       width="600"
       append-to-body
       class="autuSplice"
     >
       <el-radio-group v-model="radio">
-        <el-radio :label="1">自定义拆条</el-radio>
-        <el-radio :label="2">平均拆条</el-radio>
+        <el-radio :label="1">Customized Split</el-radio>
+        <el-radio :label="2">Even Split</el-radio>
       </el-radio-group>
       <el-table :data="tableData" style="width: 100%" v-if="radio==1">
-        <el-table-column type="index" label="拆条列表" width="200" align="center"></el-table-column>
-        <el-table-column prop="timeLong" label="时长" align="center"></el-table-column>
-        <el-table-column fixed="right" label="操作" align="center">
+        <el-table-column type="index" label="Section Table" width="200" align="center"></el-table-column>
+        <el-table-column prop="timeLong" label="Duration" align="center"></el-table-column>
+        <el-table-column fixed="right" label="Action" align="center">
           <template slot-scope="scope">
             <el-button
               @click.native.prevent="deleteRow(scope.$index, tableData)"
               type="text"
               size="small"
-            >移除</el-button>
+            >Remove</el-button>
             <el-button
               @click.native.prevent="addRow(scope.$index, tableData)"
               type="text"
               size="small"
-            >添加</el-button>
+            >Add</el-button>
           </template>
         </el-table-column>
       </el-table>
       <div class="round" v-else>
-        <span>每段时长</span>
+        <span>Length</span>
         <el-input-number
           v-model="autoNum"
           :min="1"
           :max="60"
-          label="设置平均拆条时间"
+          label="Set Section Time"
           controls-position="right"
         ></el-input-number>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisibleAuto = false">取 消</el-button>
-        <el-button type="primary" @click="autuEnsure">确 定</el-button>
+        <el-button @click="dialogVisibleAuto = false">Cancel</el-button>
+        <el-button type="primary" @click="autuEnsure">Confirm</el-button>
       </span>
     </el-dialog>
     <el-dialog :title="spliceMsg" :visible.sync="dialogVisible" width="600" append-to-body>
-      <span>选择存放文件夹</span>
+      <!-- <span>Select Save Path</span>
       <div class="wenjianBox" style="height:160px;overflow:auto;">
         <el-tree :data="wenjianList" accordion @node-click="handleNodeClick"></el-tree>
-      </div>
+      </div> -->
       <el-table :data="cutCoverList" style="width: 100%">
-        <el-table-column label="名称" align="center" show-overflow-tooltip prop="text"></el-table-column>
-        <el-table-column label="开始时间" align="center" show-overflow-tooltip prop="startTime"></el-table-column>
-        <el-table-column label="结束时间" align="center" show-overflow-tooltip prop="endTime"></el-table-column>
-        <el-table-column label="分段时长" align="center" show-overflow-tooltip prop="timeLong"></el-table-column>
-        <el-table-column label="修改" align="center">
+        <el-table-column label="Name" align="center" show-overflow-tooltip prop="text"></el-table-column>
+        <el-table-column label="Start Time" align="center" show-overflow-tooltip prop="startTime"></el-table-column>
+        <el-table-column label="End Time" align="center" show-overflow-tooltip prop="endTime"></el-table-column>
+        <el-table-column label="Section Len" align="center" show-overflow-tooltip prop="timeLong"></el-table-column>
+        <el-table-column label="Modify" align="center">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-            <el-button size="mini" @click="handleDelt(scope.$index, scope.row)">删除</el-button>
+            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
+            <el-button size="mini" @click="handleDelt(scope.$index, scope.row)">Delete</el-button>
           </template>
         </el-table-column>
       </el-table>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="entureChaitiao">确 定</el-button>
+        <el-button @click="dialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="entureChaitiao">Confirm</el-button>
       </span>
     </el-dialog>
   </footer>
@@ -206,7 +203,7 @@ export default {
       canvas: null,
       canvasWidth: 60000,
       cxt: null,
-      clickmsg: "Point", //打入打出 打入点
+      clickmsg: "Point", //打入打出 START
       config: {},
       timeCurrentLeft: "00:00:00:00", //当前距离左侧时间
       clickCurrentTime: null, //点击距离
@@ -236,7 +233,7 @@ export default {
       currentRunMsg: "run",
       signIndex: null, //当前点击标记的index
       signLeft: "0px",
-      signText: "标记1",
+      signText: "Mark1",
 
       // 快速选段
       quickChoseTime: 6,
@@ -244,7 +241,7 @@ export default {
       mainImgUrl: "../../assets/videoCut/demo.jpg", //底部封面图
       mainFlag: false, //是否选择了视频
       numberFlag: "00", //00 拆分  01合并
-      spliceMsg: "拆分提交",
+      spliceMsg: "Sections Submit",
       countNumber: 1,
       firstCutVideo:{},//页面拆分相关数据
       blueBgFlag:false,
@@ -413,7 +410,7 @@ export default {
       // console.log(finleft)
       if(finleft>(parseFloat(this.imgWidth)-40) || finleft < -40){
         this.stop();
-        this.$message.error("超过限制区域")
+        this.$message.error("Exceed Limitation")
         return
       }
       document.getElementById("blueBg").style.left = finleft +  "px";
@@ -575,7 +572,7 @@ export default {
       } else if (e.keyCode == 40) {
         // 打入点打出点
         this.timeMove();
-        this.clickmsg = this.clickmsg == "打入点" ? "打出点" : "打入点";
+        this.clickmsg = this.clickmsg == "START" ? "END" : "START";
       } else if (e.keyCode == 35) {
         //end
         this.backToend();
@@ -597,7 +594,7 @@ export default {
         e.preventDefault(); //阻止浏览器默认行为
         // console.log('ctrl + -');
         if (this.value2 == 0) {
-          this.$message.error("不能再减了~");
+          this.$message.error("Cannot reduce more~");
           return;
         }
         this.value2 -= 20;
@@ -607,7 +604,7 @@ export default {
         e.preventDefault(); //阻止浏览器默认行为
         // console.log('ctrl + +');
         if (this.value2 == 100) {
-          this.$message.error("不能再加了~");
+          this.$message.error("Cannot add more~");
           return;
         }
         this.value2 += 20;
@@ -646,7 +643,7 @@ export default {
             left: prevRight + "px",
             width: currentWidth + "px",
             clickFlag: true,
-            text: "拆条" + i,
+            text: "Section" + i,
             startTime: this.getStartEndTime(prevRight),
             endTime: this.getStartEndTime(currentWidth + prevRight),
             timeLong: this.getStartEndTime(currentWidth)
@@ -665,7 +662,7 @@ export default {
             timeLong: this.getStartEndTime(
               parseFloat(this.cutCoverList[0].left)
             ),
-            text: "第一条"
+            text: "The First"
           });
         }
         var last = this.cutCoverList[this.cutCoverList.length - 1];
@@ -692,32 +689,32 @@ export default {
               parseFloat(this.imgWidth) -
                 (parseFloat(last.left) + parseFloat(last.width))
             ),
-            text: "最后一条"
+            text: "The Last"
           });
         }
         this.cutCoverList = turnReverse;
       } else {
-        this.$message("还没有进行拆条");
+        this.$message("Have not splited Yet");
       }
     },
     //清除所有拆条1
     clearAllVideo() {
-      this.$confirm("是否删除所有拆条?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
+      this.$confirm("Delected all sections?", "INFO", {
+        confirmButtonText: "Yes",
+        cancelButtonText: "No",
         type: "warning"
       })
         .then(() => {
           this.cutCoverList = [];
           this.$message({
             type: "success",
-            message: "删除成功!"
+            message: "Deleted!"
           });
         })
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除"
+            message: "Cancelled"
           });
         });
     },
@@ -725,29 +722,29 @@ export default {
       rows.splice(index, 1);
     },
     addRow(index, rows) {
-      this.$prompt("请输拆条时长（总秒数）", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
+      this.$prompt("Set Section Time", "INFO", {
+        confirmButtonText: "Confirm",
+        cancelButtonText: "Cancel",
         inputPattern: /^[0-9]*$/,
-        inputErrorMessage: "请输入数字"
+        inputErrorMessage: "Please Input Numbers"
       })
         .then(({ value }) => {
           rows.splice(index + 1, 0, {
-            timeLong: value + "秒"
+            timeLong: value + "Sec"
           });
         })
         .catch(() => {
           this.$message({
             type: "info",
-            message: "取消输入"
+            message: "Cancel Input"
           });
         });
     },
 
     signDelete() {
-      this.$confirm("是否删除标记?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
+      this.$confirm("Delete Mark?", "INFO", {
+        confirmButtonText: "Yes",
+        cancelButtonText: "No",
         type: "warning"
       })
         .then(() => {
@@ -755,13 +752,13 @@ export default {
           this.signFlag = false;
           this.$message({
             type: "success",
-            message: "删除成功"
+            message: "Deleted!"
           });
         })
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除"
+            message: "Canceled"
           });
         });
 
@@ -776,8 +773,8 @@ export default {
     },
     // 修改分段标题
     handleEdit(index, row) {
-      if(this.clickmsg === "打出点"){
-          this.$message.error("请先打出点后再删除")
+      if(this.clickmsg === "END"){
+          this.$message.error("Please set end point and then delete")
           return;
       }
       this.changeText(index);
@@ -787,8 +784,8 @@ export default {
     },
     // 分段播放
     subSection(value) {
-      if(this.clickmsg === "打出点"){
-          this.$message.error("请先打出点后再删除")
+      if(this.clickmsg === "END"){
+          this.$message.error("Please set end point and then delete")
           return;
       }
       this.subPlayValue = value;
@@ -878,9 +875,9 @@ export default {
     },
     // 修改标记名称
     changeSignText(index) {
-      this.$prompt("请输入标记标题", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消"
+      this.$prompt("Please Input Marker Title", "INFO", {
+        confirmButtonText: "Confirm",
+        cancelButtonText: "Cancel"
       })
         .then(({ value }) => {
           this.makeSignList[this.signIndex].text = value;
@@ -889,15 +886,15 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
-            message: "取消输入"
+            message: "Cancel Input"
           });
         });
     },
     // 修改片段名称
     changeText(index) {
-      this.$prompt("请输入拆条标题", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消"
+      this.$prompt("Please input Section Title", "INFO", {
+        confirmButtonText: "Confirm",
+        cancelButtonText: "Cancel"
       })
         .then(({ value }) => {
           this.cutCoverList[index].text = value;
@@ -905,14 +902,14 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
-            message: "取消输入"
+            message: "Cancel Input"
           });
         });
     },
     // 删除单个覆盖盒子
     clearCoverBox(index) {
-      if(this.clickmsg === "打出点"){
-          this.$message.error("请先打出点后再删除")
+      if(this.clickmsg === "END"){
+          this.$message.error("Please set end point and then delete")
           return;
       }
       this.cutCoverList.splice(index, 1);
@@ -950,7 +947,7 @@ export default {
     running() {
       // clearInterval(this.clickIn);
     //   if (!this.mainFlag) {
-    //     this.$message.error("您还没有选择视频~");
+    //     this.$message.error("No video selected~");
     //     return;
     //   }
       this.bofangFlag = false;
@@ -1125,7 +1122,7 @@ export default {
         if (parseFloat(this.moveLeft) + 40 >= parseFloat(this.imgWidth)) {
           clearInterval(this.clickIn);
           this.timeMove();
-          this.clickmsg = "打入点";
+          this.clickmsg = "START";
           timeMove.style.left = this.moveLeft;
           timeMove.style.transition = "none";
           this.stop();
@@ -1242,7 +1239,7 @@ export default {
         var scrollLeft = scrollpd.scrollLeft;
 
         if (e.offsetX > parseInt(scrollLeft) + 1400) {
-          that.$message.error("超过最大位置，请选择左侧位置~");
+          that.$message.error("Exceed maximum, please select the left postion~");
           return;
         }
         that.stop();
@@ -1433,7 +1430,7 @@ export default {
     },
     timeMove() {
       const timeMove = document.getElementsByClassName("blueBg")[0];
-      if (this.clickmsg == "打出点") {
+      if (this.clickmsg == "END") {
         // 添加结束时间
         var currentBox = this.cutCoverList[this.cutCoverList.length - 1];
         var start = this.getCountS(currentBox.startTime);
@@ -1443,8 +1440,8 @@ export default {
           )
         );
         if (end - start < 3) {
-          this.$message.error("最短剪辑3秒");
-          this.clickmsg = "打入点";
+          this.$message.error("Cut at least 3 secs");
+          this.clickmsg = "START";
           return;
         }
         currentBox.endTime = this.getStartEndTime(
@@ -1465,7 +1462,7 @@ export default {
         //   );
         //   this.coverBoxWidth =parseFloat(this.moveLeft) - parseFloat(this.clickCurrentLeft);
         // }, 10);
-      } else if (this.clickmsg == "打入点") {
+      } else if (this.clickmsg == "START") {
         // this.bofangFlag = false;
         clearInterval(this.timeId);
         this.currentRunMsg = "clickIn";
@@ -1477,7 +1474,7 @@ export default {
         // 添加覆盖盒子
         this.$set(this.cutCoverList, this.cutCoverList.length, {
           clickFlag: true,
-          text: "拆条" + parseInt(parseInt(this.cutCoverList.length) + 1),
+          text: "Section" + parseInt(parseInt(this.cutCoverList.length) + 1),
           left: parseFloat(this.clickCurrentLeft) + 40 + "px",
           width: "0px",
           startTime: this.getStartEndTime(
@@ -1491,13 +1488,13 @@ export default {
     // 点击控制线控件
     onControl(index) {
       switch (index) {
-        case 1: //打入点
+        case 1: //START
         //   if (!this.mainFlag) {
         //     this.$message.error("您还没有选择视频~");
         //     return;
         //   }
           this.timeMove();
-          this.clickmsg = this.clickmsg == "打入点" ? "打出点" : "打入点";
+          this.clickmsg = this.clickmsg == "START" ? "END" : "START";
           break;
         case 2: //视音频分离
           var curVideo = this.firstCutVideo;
@@ -1570,7 +1567,7 @@ export default {
               left: left + "px",
               width: "0",
               clickFlag: true,
-              text: "片段" + (i + 1),
+              text: "Piece" + (i + 1),
               startTime: "00:00:00.00",
               endTime: "00:00:00.00",
               timeLong: "00:00:00.00"
@@ -1584,7 +1581,7 @@ export default {
             width,
             clickFlag: true,
             text:
-              "片段" +
+              "Piece" +
               parseInt(
                 parseInt(this.cutCoverList.length) + setAutoList.length + 1
               ),
@@ -1618,7 +1615,7 @@ export default {
               left: left + "px",
               width: "0px",
               clickFlag: true,
-              text: "拆条1",
+              text: "Section1",
               startTime: this.getStartEndTime(left),
               endTime: this.getStartEndTime(autoWidth),
               timeLong: this.getStartEndTime(autoWidth)
@@ -1630,7 +1627,7 @@ export default {
             left: parseFloat(prev.left) + parseFloat(prev.width) + "px",
             width: autoWidth + "px",
             clickFlag: true,
-            text: "拆条" + (this.cutCoverList.length + i + 1),
+            text: "Section" + (this.cutCoverList.length + i + 1),
             startTime: this.getStartEndTime(
               parseFloat(prev.left) + parseFloat(prev.width)
             ),
@@ -1713,7 +1710,7 @@ export default {
         fileFL: curVideo.fileFL,
         parentId: curVideo.parentId,
         isSrcVideo: false,
-        fileName: "拆条1"
+        fileName: "Section1"
       };
       console.log(data);
       // return
@@ -1723,12 +1720,12 @@ export default {
     },
     submitOne() {
       if (this.cutCoverList.length == 0) {
-        this.$message.error("还没有进行拆条");
+        this.$message.error("Have not splited");
         return;
       }
-      this.$confirm("是否合并提交视频?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
+      this.$confirm("Merge the videos to Submmit?", "INFO", {
+        confirmButtonText: "Confirm",
+        cancelButtonText: "Cancel",
         type: "info"
       })
         .then(() => {
@@ -1737,7 +1734,7 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除"
+            message: "Cancelled"
           });
         });
     },
