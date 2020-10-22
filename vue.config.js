@@ -51,7 +51,7 @@ module.exports = {
       // 匹配代理的url
       '/api': {
         // 目标服务器地址
-        target: 'localhost:5000',
+        target: 'localhost:3000',
         // 路径重写
         pathRewrite: {
           '^/api': '/api'

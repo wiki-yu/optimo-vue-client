@@ -75,6 +75,7 @@ export default {
   actions: {
     // 登录
     handleLogin ({ commit }, { userName, password }) {
+      console.log("@store/module/user.js page!!!", userName, password)
       userName = userName.trim()
       return new Promise((resolve, reject) => {
         login({

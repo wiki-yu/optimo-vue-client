@@ -1,6 +1,7 @@
 import axios from '@/libs/api.request'
 
 export const login = ({ userName, password }) => {
+  console.log("@api/user.js page!!!", userName, password)
   const data = {
     userName,
     password
