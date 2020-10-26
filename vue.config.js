@@ -22,7 +22,7 @@ module.exports = {
   // https://www.foobar.com/my-app/
   // then change this to '/my-app/'
   publicPath: process.env.NODE_ENV === 'production'
-    ? '/hpe-material-forecast/'
+    ? '/'
     : '/',
   // tweak internal webpack configuration.
   // see https://github.com/vuejs/vue-cli/blob/dev/docs/webpack.md
