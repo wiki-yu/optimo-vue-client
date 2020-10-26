@@ -24,23 +24,23 @@
         </FormItem>
       </Form>
     </div> 
-
     <div v-if="registerOn">
-      <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
-        <FormItem label="Name" prop="name">
-            <Input v-model="formValidate.name" placeholder="Enter your name"></Input>
-        </FormItem>
-        <FormItem label="E-mail" prop="email">
+      <!-- <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80"> -->
+      <Form ref="formValidate" :model="formValidate" :label-width="100">
+        <FormItem label="E-mail:" prop="email">
             <Input v-model="formValidate.email" placeholder="Enter your e-mail"></Input>
         </FormItem>
-        <FormItem label="Password" prop="password">
+        <FormItem label="Password:" prop="password">
             <Input v-model="formValidate.password" placeholder="Enter your password"></Input>
+        </FormItem>
+        <FormItem label="User Name:" prop="name">
+            <Input v-model="formValidate.name" placeholder="Enter your name"></Input>
         </FormItem>
         <FormItem>
           <Button @click="registerInfoSubmit" type="primary" long>Register</Button>
         </FormItem>
         <FormItem>
-          <Button @click="regLoginTest" type="primary" long>Test</Button>
+          <Button @click="loginSwitch" type="primary" long>Login</Button>
         </FormItem>
       </Form>
     </div>
@@ -76,7 +76,7 @@ export default {
       passwordPass: '',
       registerOn: false, //xuyong
       form: {
-        userName: 'super_admin',
+        userName: 'admin',
         password: ''
       },
       //add by xuyong
@@ -86,15 +86,15 @@ export default {
         password: '',
       },
       ruleValidate: {
-          name: [
-              { required: true, message: 'The name cannot be empty', trigger: 'blur' }
-          ],
           email: [
               { required: true, message: 'Mailbox cannot be empty', trigger: 'blur' },
               { type: 'email', message: 'Incorrect email format', trigger: 'blur' }
           ],
           password: [
               { required: true, message: 'The pwd cannot be empty', trigger: 'blur' }
+          ],
+          name: [
+              { required: true, message: 'The name cannot be empty', trigger: 'blur' }
           ],
       }
     }
@@ -115,37 +115,43 @@ export default {
     handleSubmit () {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
-          console.log("Login-form.vue page!!!", this.form.userName, this.form.password)
-          this.$emit('on-success-valid', {
-            userName: this.form.userName,
-            password: this.form.password
-          })
-        }
-      })
-    },
-    handleSubmit1 () {
-      console.log("testtttt page!!!", this.formValidate.name, this.formValidate.password)
-      this.$emit('on-success-valid', {
-        userName: this.formValidate.name,
-        password: this.formValidate.password
-      })
-    },
-    registerSwitch () {
-      this.registerOn = true
-    },
-    handleSubmitTest () {
-       console.log(this.form.userName)
-       console.log(this.form.password)
-       axios
-        .post('http://localhost:3000/login', this.form)
+        axios
+        .post('http://localhost:3000/test1', this.form)
         .then(res => {
           console.log("[START]Login: Receiving data from backend!!!!!")
-          console.log(res)
-          console.log("[END]Receiving completed!!!!!")
+          console.log(res.data)
+          console.log("[END]Login: Receiving completed!!!!!")
+          if (res.data.auth) {
+            console.log("Login-form.vue page!!! DB match sucess!", this.form.userName, this.form.password)
+            this.$emit('on-success-valid', {
+              userName: this.form.userName,
+              password: this.form.password
+            })
+          }
+          else {
+            alert("User name or password incorrect!")
+          }
         })
         .catch(err => {
           console.log(err)
+          alert("User name or password incorrect!")
         })
+        }
+      })
+    },
+    // //register done and enter home page directly
+    // handleSubmit1 () {
+    //   console.log("testtttt page!!!", this.formValidate.name, this.formValidate.password)
+    //   this.$emit('on-success-valid', {
+    //     userName: this.formValidate.name,
+    //     password: this.formValidate.password
+    //   })
+    // },
+    registerSwitch () {
+      this.registerOn = true
+    },
+    loginSwitch () {
+      this.registerOn = false
     },
     registerInfoSubmit () {
        console.log(this.formValidate.name)
@@ -157,33 +163,14 @@ export default {
           console.log("[START]Receiving data from backend!!!!!")
           console.log(res)
           console.log("[END]Receiving completed!!!!!")
-          this.handleSubmit1()
-          // console.log("testt000000")    
-          // userNamePass =  this.formValidate.name  
-          // passwordPass = this.formValidate.password
-          // console.log("testt111111")
-          // console.log("testtest page!!!", userNamePass, passwordPass)
-          // this.handleLogin({ userNamePass, passwordPass }).then(res => {
-          //   this.getUserInfo().then(res => {
-          //     this.$router.push({
-          //       name: this.$config.homeName
-          //     })
-          //   })
-          // })
-
-
+          this.registerOn = false
+          return alert("Registered")
+          // this.handleSubmit1()
         })
         .catch(err => {
           console.log(err)
         })
     },
-    regLoginTest () {
-        // this.$router.push({name: 'login'})
-        userNamePass = "test"
-        console.log("1111111")
-        console.log(userNamePass)
-        console.log("22222222222")
-    }
   }
 }
 </script>
