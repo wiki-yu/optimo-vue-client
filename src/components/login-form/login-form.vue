@@ -39,6 +39,9 @@
         <FormItem>
           <Button @click="registerInfoSubmit" type="primary" long>Register</Button>
         </FormItem>
+        <FormItem>
+          <Button @click="regLoginTest" type="primary" long>Test</Button>
+        </FormItem>
       </Form>
     </div>
   </div>
@@ -46,6 +49,7 @@
 
 <script>
 import axios from 'axios'
+import { mapActions } from 'vuex'
 export default {
   name: 'LoginForm',
   props: {
@@ -68,6 +72,8 @@ export default {
   },
   data () {
     return {
+      userNamePass: '',
+      passwordPass: '',
       registerOn: false, //xuyong
       form: {
         userName: 'super_admin',
@@ -90,7 +96,7 @@ export default {
           password: [
               { required: true, message: 'The pwd cannot be empty', trigger: 'blur' }
           ],
-}
+      }
     }
   },
   computed: {
@@ -102,6 +108,10 @@ export default {
     }
   },
   methods: {
+    ...mapActions([
+      'handleLogin',
+      'getUserInfo'
+    ]),
     handleSubmit () {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
@@ -111,6 +121,13 @@ export default {
             password: this.form.password
           })
         }
+      })
+    },
+    handleSubmit1 () {
+      console.log("testtttt page!!!", this.formValidate.name, this.formValidate.password)
+      this.$emit('on-success-valid', {
+        userName: this.formValidate.name,
+        password: this.formValidate.password
       })
     },
     registerSwitch () {
@@ -140,10 +157,32 @@ export default {
           console.log("[START]Receiving data from backend!!!!!")
           console.log(res)
           console.log("[END]Receiving completed!!!!!")
+          this.handleSubmit1()
+          // console.log("testt000000")    
+          // userNamePass =  this.formValidate.name  
+          // passwordPass = this.formValidate.password
+          // console.log("testt111111")
+          // console.log("testtest page!!!", userNamePass, passwordPass)
+          // this.handleLogin({ userNamePass, passwordPass }).then(res => {
+          //   this.getUserInfo().then(res => {
+          //     this.$router.push({
+          //       name: this.$config.homeName
+          //     })
+          //   })
+          // })
+
+
         })
         .catch(err => {
           console.log(err)
         })
+    },
+    regLoginTest () {
+        // this.$router.push({name: 'login'})
+        userNamePass = "test"
+        console.log("1111111")
+        console.log(userNamePass)
+        console.log("22222222222")
     }
   }
 }

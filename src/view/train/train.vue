@@ -3,7 +3,7 @@
       <!-- window.location.href="www.baidu.com" -->
       <!-- <a href="www.google.com">Google</a> -->
       <!-- <img style="width: 100%; height: auto;" :src="jupyterNotebook" key="max-logo" /> -->
-    <iframe src="https://www.baidu.com"  width="100%" 
+    <iframe src="http://localhost:8888/tree"  width="100%" 
     height="650" frameborder="0" style="position:relative;" >
   </iframe>
   </div>
@@ -19,8 +19,7 @@ export default {
                 jupyterNotebook,
             }
         },
-        methods:{
-                
+        methods:{    
         }
     }
 </script>
