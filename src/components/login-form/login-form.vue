@@ -76,7 +76,7 @@ export default {
       passwordPass: '',
       registerOn: false, //xuyong
       form: {
-        userName: 'admin',
+        userName: '',
         password: ''
       },
       //add by xuyong
@@ -116,7 +116,7 @@ export default {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
         axios
-        .post('http://localhost:3000/test1', this.form)
+        .post('http://192.168.0.128:3000/test1', this.form)
         .then(res => {
           console.log("[START]Login: Receiving data from backend!!!!!")
           console.log(res.data)
@@ -158,7 +158,7 @@ export default {
        console.log(this.formValidate.email)
        console.log(this.formValidate.password)
        axios
-        .post('http://localhost:3000/register', this.formValidate)
+        .post('http://192.168.0.128:3000/register', this.formValidate)
         .then(res => {
           console.log("[START]Receiving data from backend!!!!!")
           console.log(res)

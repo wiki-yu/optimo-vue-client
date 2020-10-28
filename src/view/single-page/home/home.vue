@@ -11,12 +11,12 @@
     <Row :gutter="20" style="margin-top: 10px;">
         <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
         <Card shadow>
-          <chart-bar style="height: 300px;" :value="barData" text="Image Annotation Amount"/>
+          <chart-bar style="height: 300px;" :value="barData" text="Classification Distribution"/>
         </Card>
       </i-col>
       <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
         <Card shadow>
-          <chart-pie style="height: 300px;" :value="pieData" text="Saved Video Analysis"></chart-pie>
+          <chart-pie style="height: 300px;" :value="pieData" text="Lean Classification"></chart-pie>
         </Card>
       </i-col>
     </Row>
@@ -51,20 +51,20 @@ export default {
         { title: 'Videos', icon: 'md-share', count: 57, color: '#ed3f14' },
       ],
       pieData: [
-        { value: 335, name: 'Motion1' },
-        { value: 310, name: 'Motion2' },
-        { value: 234, name: 'Motion3' },
-        { value: 135, name: 'Motion4' },
-        { value: 1548, name: 'Motion5' }
+        { value: 335, name: 'VA' },
+        { value: 310, name: 'NVA' },
+        { value: 234, name: 'RNVA' }
       ],
       barData: {
-        Mon: 1325,
-        Tue: 3425,
-        Wed: 2621,
-        Thu: 1240,
-        Fri: 2443,
-        Sat: 122,
-        Sun: 134
+        'Unit Pick-Up/Transfer': 1170,
+        'Operation': 7280,
+        'Material Setup/Handling': 0,
+        'Fixture Setup/Handling': 1080,
+        'Inspection': 470,
+        'Tool Setup/Handling': 0,
+        'Operation Trash': 0,
+        'Scanning': 0,
+        'Cleaning': 0
       }
     }
   },

@@ -93,24 +93,34 @@ export default [
 
   {
     path: '/annotation',
-    name: 'annotation',
+    name: 'annotation_page',
     meta: {
-      hideInBread: true,
+      icon: 'ios-navigate',
+      title: 'Annotation',
+      hideInBread: true
     },
     component: Main,
     children: [
       {
-        path: 'annotation_page',
-        name: 'annotation_page',
+        path: 'object_annotation_page',
+        name: 'object_annotation_page',
         meta: {
           icon: 'ios-navigate',
-          title: 'annotation'
+          title: 'Object Detection Annotation'
         },
-        component: () => import('@/view/annotation/annotation.vue')
+        component: () => import('@/view/annotation/objectAnnotation.vue')
+      },
+      {
+        path: 'motion_study_page',
+        name: 'motion_study_page',
+        meta: {
+          icon: 'ios-navigate',
+          title: 'Motion Study'
+        },
+        component: () => import('@/view/annotation/motionStudy.vue')
       }
     ]
   },
-  
 
   {
     path: '/train',

@@ -127,7 +127,7 @@ export default {
       const formData = new FormData();
       formData.append("file", this.selectedFile); // appending file
       axios
-        .post("http://localhost:4500/uploadImg", formData,)
+        .post("http://localhost:4000/uploadImg", formData,)
         .then(res => {
           // console.log("**************$$$$$$the Raw value return from server: ", res.data);
           this.readInfo(res.data);

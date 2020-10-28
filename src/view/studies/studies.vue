@@ -308,7 +308,7 @@ export default {
       formData.append('file', this.selectedFile) // appending file
       // sending file to backend
       axios
-        .post('http://localhost:4500/uploadVideo', formData)
+        .post('http://localhost:4000/uploadVideo', formData)
         .then(res => {
           console.log(res)
           this.readVideoInfo(res.data)
