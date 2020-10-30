@@ -5,12 +5,7 @@
         <div @click="onControl(1)" class="iconfont icon-dadian" :title="clickmsg">
           <span>{{clickmsg}}</span>
         </div>
-        <div
-          @click="onControl(3)"
-          class="iconfont icon-kaishijianji"
-          title="Quick Selection"
-          @keyup.83="onControl(3)"
-        >
+        <div @click="onControl(3)" class="iconfont icon-kaishijianji" title="Quick Selection" @keyup.83="onControl(3)">
           <span>Quick Selection</span>
         </div>
         <div @click="onControl(4)" class="iconfont icon-zidong" title="Automatic Selection">
@@ -39,73 +34,40 @@
         </div>
       </div>
     </div>
+
     <div class="controlLine">
       <div class="signshowImg" v-if="signFlag" :style="`left:${signLeft}`">
         <span class="signDetail icon-qingchu iconfont" @click="signDelete"></span>
         <span class="signClose icon-chuyidong iconfont" @click="signFlag = false"></span>
-        
         <div class="icon-xiugai iconfont text" @click="changeSignText">{{signText}}</div>
       </div>
       <div class="dyc" id="pickeddeng">
         <div class="canFa" @mouseup="blueBgUp">
           <canvas id="canvas" :width="canvasWidth" height="80" @mousemove="showMoveImg"></canvas>
-          <div
-            class="signcircle"
-            v-for="(item,index) in makeSignList"
-            :key="index"
-            :style="`left:${item.left}`"
-            @click="signClick(item,index)"
-          ></div>
+          <div class="signcircle" v-for="(item,index) in makeSignList" :key="index" :style="`left:${item.left}`" @click="signClick(item,index)"></div>
           <div class="blueBg" id="blueBg" ref="timeMove" @mousedown="blueBgDown" @mousemove="blueBgMove" @mouseup="blueBgUp">
             {{timeCurrentLeft}}
             <span class="turnDowm"></span>
           </div>
         </div>
-        <div
-          class="imgbackground"
-          id="imgbackground"
-          :style="`width:${imgWidth};`"
-          @mousemove="faPKMove"
-          @mouseup="faPKup"
-        >
-          <div
-            class="coverlist"
-            v-for="(item,index) in cutCoverList"
-            :key="index"
-            :style="`width:${item.width};left:${item.left}`"
-            
-              @mouseup="pkLup"
-          >
+        <div class="imgbackground" id="imgbackground" :style="`width:${imgWidth};`" @mousemove="faPKMove" @mouseup="faPKup">
+          <div class="coverlist" v-for="(item,index) in cutCoverList" :key="index" :style="`width:${item.width};left:${item.left}`" @mouseup="pkLup">
             <el-button class="weitiaoL"> <span class="icon-zuo iconfont" @click="weitiao(index,1,1)"></span>Adjust<span class="icon-you iconfont" @click="weitiao(index,1,2)"></span></el-button>
-            <span
-              class="dragLeft icon-zuo iconfont"
-              @mousedown="pkLdown(index,$event)"
-            ></span>
-
+            <span class="dragLeft icon-zuo iconfont" @mousedown="pkLdown(index,$event)"></span>
             <div>
               <span class="icon-bofang iconfont" @click="subSection(item)"></span>
               <span class="icon-qingchu iconfont" @click="clearCoverBox(index)"></span>
               <div>{{item.timeLong}}</div>
               <div class="icon-xiugai iconfont" @click="changeText(index)">{{item.text}}</div>
             </div>
-            <span
-              class="dragRight icon-you iconfont"
-              @mousedown="pkRdown(index,$event)"
-              @mouseup="pkRup"
-            ></span>
+            <span class="dragRight icon-you iconfont" @mousedown="pkRdown(index,$event)" @mouseup="pkRup"></span>
             <el-button class="weitiaoR"> <span class="icon-zuo iconfont" @click="weitiao(index,2,1)"></span>Adjust<span class="icon-you iconfont" @click="weitiao(index,2,2)"></span></el-button>
           </div>
         </div>
       </div>
     </div>
 
-    <el-dialog
-      title="Split Setting"
-      :visible.sync="dialogVisibleAuto"
-      width="600"
-      append-to-body
-      class="autuSplice"
-    >
+    <el-dialog title="Split Setting" :visible.sync="dialogVisibleAuto" width="600" append-to-body class="autuSplice">
       <el-radio-group v-model="radio">
         <el-radio :label="1">Customized Split</el-radio>
         <el-radio :label="2">Even Split</el-radio>
@@ -115,28 +77,14 @@
         <el-table-column prop="timeLong" label="Duration" align="center"></el-table-column>
         <el-table-column fixed="right" label="Action" align="center">
           <template slot-scope="scope">
-            <el-button
-              @click.native.prevent="deleteRow(scope.$index, tableData)"
-              type="text"
-              size="small"
-            >Remove</el-button>
-            <el-button
-              @click.native.prevent="addRow(scope.$index, tableData)"
-              type="text"
-              size="small"
-            >Add</el-button>
+            <el-button @click.native.prevent="deleteRow(scope.$index, tableData)" type="text" size="small">Remove</el-button>
+            <el-button @click.native.prevent="addRow(scope.$index, tableData)" type="text" size="small">Add</el-button>
           </template>
         </el-table-column>
       </el-table>
       <div class="round" v-else>
         <span>Length</span>
-        <el-input-number
-          v-model="autoNum"
-          :min="1"
-          :max="60"
-          label="Set Section Time"
-          controls-position="right"
-        ></el-input-number>
+        <el-input-number v-model="autoNum" :min="1" :max="60" label="Set Section Time" controls-position="right"></el-input-number>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisibleAuto = false">Cancel</el-button>
@@ -167,6 +115,7 @@
     </el-dialog>
   </footer>
 </template>
+
 <script>
 export default {
   data() {
@@ -176,10 +125,10 @@ export default {
       index: null,
       tableData: [
         {
-          timeLong: "3秒"
+          timeLong: "3 Secs"
         },
         {
-          timeLong: "4秒"
+          timeLong: "4 Secs"
         }
       ],
       autoNum: 5,
@@ -1652,26 +1601,6 @@ export default {
       // console.log(this.$store.state.curVideo);
       var optionTimes = [];
 
-      // if (this.numberFlag == "01") {
-      //   //  拆分
-      //   for (var i = 0; i < this.cutCoverList.length; i++) {
-      //     var Lstart = this.cutCoverList[i].startTime.split(".")[0];
-      //     var Lend = this.cutCoverList[i].endTime.split(".")[0];
-      //     var Rstart = String(
-      //       (parseInt(this.cutCoverList[i].startTime.split(".")[1]) / 100) *
-      //         1000
-      //     );
-      //     var Rend = String(
-      //       (parseInt(this.cutCoverList[i].endTime.split(".")[1]) / 100) * 1000
-      //     );
-      //     optionTimes.push({
-      //       fileName: this.cutCoverList[i].text,
-      //       startTime: Lstart + "." + Rstart,
-      //       endTime: Lend + "." + Rend
-      //     });
-      //   }
-      // } else if (this.numberFlag == "00") {
-        // 合并
         for (var i = 0; i < this.cutCoverList.length; i++) {
           var Lstart = this.cutCoverList[i].startTime.split(".")[0];
           var Rstart = String(
