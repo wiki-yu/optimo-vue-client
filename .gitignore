@@ -5,6 +5,9 @@ package-lock.json
 /tests/e2e/videos/
 /tests/e2e/screenshots/
 /src/assets/
+/src/assets/videoCut/demo.mp4
+src/assets/
+*.mp4
 
 # local env files
 .env.local
