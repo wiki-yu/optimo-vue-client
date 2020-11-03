@@ -231,35 +231,55 @@ export default [
   ]
 },
 
-  {
-    path: '/backup',
-    name: 'backup',
-    meta: {
-      icon: 'ios-apps',
-      title: '数据上传'
-    },
-    component: Main,
-    children: [
-      {
-        path: 'backup1_page',
-        name: 'backup1_page',
-        meta: {
-          icon: 'md-clipboard',
-          title: 'Backup page1'
-        },
-        component: () => import('@/view/backup/backup1.vue')
-      },
-      {
-        path: 'backup2_page',
-        name: 'backup2_page',
-        meta: {
-          icon: 'md-clipboard',
-          title: 'Backup page2'
-        },
-        component: () => import('@/view/backup/backup2.vue')
-      }
-    ]
+{
+  path: '/test',
+  name: 'test',
+  meta: {
+    hideInBread: true
   },
+  component: Main,
+  children: [
+    {
+      path: 'test_page',
+      name: 'test_page',
+      meta: {
+        icon: 'ios-camera',
+        title: 'Test'
+      },
+      component: () => import('@/view/test/test.vue')
+    }
+  ]
+},
+
+{
+  path: '/backup',
+  name: 'backup',
+  meta: {
+    icon: 'ios-apps',
+    title: '数据上传'
+  },
+  component: Main,
+  children: [
+    {
+      path: 'backup1_page',
+      name: 'backup1_page',
+      meta: {
+        icon: 'md-clipboard',
+        title: 'Backup page1'
+      },
+      component: () => import('@/view/backup/backup1.vue')
+    },
+    {
+      path: 'backup2_page',
+      name: 'backup2_page',
+      meta: {
+        icon: 'md-clipboard',
+        title: 'Backup page2'
+      },
+      component: () => import('@/view/backup/backup2.vue')
+    }
+  ]
+},
 
   {
     path: '/argu',

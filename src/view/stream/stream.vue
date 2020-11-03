@@ -57,98 +57,31 @@
           <!-- </div> -->
         </i-col>
       </Row>
-      <Row :gutter="20" style="margin-top: 10px;" type="flex">
-        <i-col :md="24" :lg="24" style="margin-bottom: 20px; display: inline-block;">
-          <div class="btnGrp" style="margin-top: 20px;">
-            <Button type="primary" size="large" icon="ios-power" @click="startStudy"></Button>
-            <ButtonGroup size="large" style="margin-left: 8px">
-                <Button type="primary" icon="md-arrow-back" @click="previous_fast"></Button>
-                <Button type="primary" icon="ios-skip-backward" @click="previous"></Button>
-                <Button type="primary" icon="md-arrow-dropright-circle" @click="getVideoPic"></Button>
-                <Button type="primary" icon="ios-skip-forward" @click="next"></Button>
-                <Button type="primary" icon="md-arrow-forward" @click="next_fast"></Button>
-            </ButtonGroup>
-            <ButtonGroup size="large" style="margin-left: 8px">
-                <Button icon="ios-color-wand-outline"></Button>
-                <Button icon="ios-sunny-outline"></Button>
-                <Button icon="ios-crop"></Button>
-                <Button icon="ios-color-filter-outline"></Button>
-            </ButtonGroup>
-          </div>
-          <div style="width: 80% display: inline-block;">
-            <label>Start Time: </label>
-            <Slider v-model="sliderVal" @on-input="on_input" show-input :max="sliderMax" :step="sliderStep"></Slider> 
-            <label>End Time: </label>
-            <Slider v-model="sliderValEnd" @on-input="on_input_end" show-input :max="sliderMax" :step="sliderStep"></Slider> 
-          </div>
-        </i-col>
-      </Row>
-    
-      <Row :gutter="20" style="margin-top: 10px;" type="flex">
-        <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
-          <Card shadow>
-            <p slot="title" class="card-title" >
-              <Icon type="ios-settings" :size="20" />
-              ANNOTATION
-            </p>
-            <div>
-              <b-form @submit="onSubmit" @reset="onReset" v-if="show">
-                <b-form-group id="input-group-1" label="Start Time:" label-for="input-1">
-                  <b-form-input
-                    id="input-1"
-                    v-model="form.start"
-                    required
-                    placeholder="Enter start time"
-                  ></b-form-input>
-                </b-form-group>
-
-                <b-form-group id="input-group-2" label="End Time:" label-for="input-2">
-                  <b-form-input
-                    id="input-2"
-                    v-model="form.end"
-                    required
-                    placeholder="Enter end time"
-                  ></b-form-input>
-                </b-form-group>
-
-                <b-form-group id="input-group-3" label="Coordinates:" label-for="input-3">
-                  <b-form-input
-                    id="input-3"
-                    v-model="form.coord"
-                    required
-                    placeholder="Coorinates"
-                  ></b-form-input>
-                </b-form-group>
-
-                <b-form-group id="input-group-4" label="Label:" label-for="input-4">
-                  <b-form-input
-                    id="input-4"
-                    v-model="form.label"
-                    required
-                    placeholder="Enter the label"
-                  ></b-form-input>
-                </b-form-group>
-
-                <b-button type="submit" variant="primary">Add</b-button>
-                <b-button type="reset" variant="danger">Reset</b-button>
-              </b-form>
-            </div>
-          </Card>
-        </i-col>
-        <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
-          <Card shadow>
-            <p slot="title" class="card-title" >
-              <Icon type="android-wifi"></Icon>
-              ANNOTATION TABLE
-            </p>
-            <div>
-              <b-table v-if="showTable" striped hover :items="items" sticky-header="100%"></b-table>
-            </div>
-            <Button icon="md-download" :loading="exportLoading" @click="exportExcel">Export File</Button>
-          </Card>
-        </i-col>
-      </Row>
     </div>
+    <Row :gutter="20" style="margin-top: 10px;" type="flex">
+      <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
+        <div class="btnGrp" style="margin-top: 20px;" v-if="camAdded">
+          <Button type="primary" size="large" icon="ios-power" @click="startStudy"></Button>
+          <ButtonGroup size="large" style="margin-left: 8px">
+              <Button type="primary" icon="md-arrow-back" @click="previous_fast"></Button>
+              <Button type="primary" icon="ios-skip-backward" @click="previous"></Button>
+              <Button type="primary" icon="md-arrow-dropright-circle" @click="getVideoPic"></Button>
+              <Button type="primary" icon="ios-skip-forward" @click="next"></Button>
+              <Button type="primary" icon="md-arrow-forward" @click="next_fast"></Button>
+          </ButtonGroup>
+          <ButtonGroup size="large" style="margin-left: 8px">
+              <Button icon="ios-color-wand-outline"></Button>
+              <Button icon="ios-sunny-outline"></Button>
+              <Button icon="ios-crop"></Button>
+              <Button icon="ios-color-filter-outline"></Button>
+          </ButtonGroup>
+        </div>
+      </i-col>
+      <!-- <video controls width="50%">
+        <source src="../../assets/videos/new.mp4" type="video/mp4" />
+      </video> -->
+    </Row>
+    
   </div>
 </template>
 
@@ -194,12 +127,6 @@ export default {
         url: '',
         previewImg: '',
         dataurl: '',
-        exportLoading: false,
-        items: [],
-        col1: [],
-        col2: [],
-        col3: [],
-        col4: [],
         showTable: true,
         form: {
           start: '',
@@ -238,7 +165,6 @@ export default {
     startStudy () {
       console.log("&&&&&&&&&&&&")
       this.addCanvas = true
-      this.setSliderStep((1 / 30).toFixed(2))
       console.log(addCanvas)
     },
     handleSubmit(name) {
@@ -287,19 +213,16 @@ export default {
         let x = this.x
         let y = this.y
         ctx.clearRect(0, 0, canvas.width, canvas.height)
-        console.log("canvas w, h: ", canvas.width, canvas.height)
-        // let w = video.videoWidth
-        // let h = video.videoHeight
-        let w = canvas.width
-        let h = canvas.height
-        
+
+        let w = video.videoWidth
+        let h = video.videoHeight
         canvas.width = w
         canvas.height = h
         ctx.drawImage(video, 0, 0, w, h)
 
         ctx.beginPath()
         ctx.strokeStyle = '#00ff00' // set up the rectangle line color
-        ctx.lineWidth = 8 // set up the rectangle line width
+        ctx.lineWidth = 3 // set up the rectangle line width
 
         ctx.strokeRect(x, y, e.offsetX - x, e.offsetY - y)
         this.x_leftUpper = x
@@ -316,13 +239,11 @@ export default {
       this.flag = true
       this.x = e.offsetX // the X coordinate when mouse down
       this.y = e.offsetY // the Y coordinate when mouse down
-      console.log("mouse down x, y: ", this.x, this.y)
     },
 
     mouseup (e) {
       console.log('mouse up')
       this.flag = false
-      console.log("mouse up x, y: ", this.x, this.y)
     },
 
     mousemove (e) {
@@ -417,10 +338,6 @@ export default {
       this.sliderStep = Number(step)
     },
 
-    exportExcel () {
-      console.log("test")
-    }
-
   },
 }
 </script>
@@ -456,13 +373,6 @@ export default {
   justify-content: center;/*项目在主轴上的对齐方式*/
   align-items: center;/*项目在交叉轴上如何对齐*/
   align-content: center;
-}
-
-.btnGrp {
-  display: block;
-  width: 100%;
-  clear: both;
-  margin: 0 auto;
 }
 
 .item{
