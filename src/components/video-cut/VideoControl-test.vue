@@ -2,15 +2,6 @@
   <footer>
     <!-- Top level: menus -->
     <div class="menu">
-      <div class="controlMenu">
-        <div @click="onControl(1)" class="iconfont icon-dadian" :title="clickmsg">
-          <span>{{clickmsg}}</span>
-        </div>
-        <div class="contorlBtn">
-          <el-button class="el-icon-success" size="mini" @click="serveSubmit('00')">Sub Submmit</el-button>
-          <el-button class="iconfont icon-tuisong" size="mini" @click="serveSubmit('01')">Merge Submmit</el-button>
-        </div>
-      </div>
       <div class="videoContorl">
         <div class="timeLong">
           <em>Duration: </em>
@@ -40,41 +31,8 @@
             <span class="turnDowm"></span>
           </div>
         </div>
-        <!-- background picture -->
-        <div class="imgbackground" id="imgbackground" :style="`width:${imgWidth};`" @mousemove="faPKMove" @mouseup="faPKup">
-          <div class="coverlist" v-for="(item,index) in cutCoverList" :key="index" :style="`width:${item.width};left:${item.left}`" @mouseup="pkLup">
-            <el-button class="weitiaoL"> <span class="icon-zuo iconfont" @click="weitiao(index,1,1)"></span>Adjust<span class="icon-you iconfont" @click="weitiao(index,1,2)"></span></el-button>
-            <span class="dragLeft icon-zuo iconfont" @mousedown="pkLdown(index,$event)"></span>
-            <div>
-              <span class="icon-bofang iconfont" @click="subSection(item)"></span>
-              <!-- <span class="icon-qingchu iconfont" @click="clearCoverBox(index)"></span> -->
-              <div>{{item.timeLong}}</div>
-              <div class="icon-xiugai iconfont" @click="changeText(index)">{{item.text}}</div>
-            </div>
-            <span class="dragRight icon-you iconfont" @mousedown="pkRdown(index,$event)" @mouseup="pkRup"></span>
-            <el-button class="weitiaoR"> <span class="icon-zuo iconfont" @click="weitiao(index,2,1)"></span>Adjust<span class="icon-you iconfont" @click="weitiao(index,2,2)"></span></el-button>
-          </div>
-        </div>
       </div>
     </div>
-    <el-dialog :title="spliceMsg" :visible.sync="dialogVisible" width="600" append-to-body>
-      <el-table :data="cutCoverList" style="width: 100%">
-        <el-table-column label="Name" align="center" show-overflow-tooltip prop="text"></el-table-column>
-        <el-table-column label="Start Time" align="center" show-overflow-tooltip prop="startTime"></el-table-column>
-        <el-table-column label="End Time" align="center" show-overflow-tooltip prop="endTime"></el-table-column>
-        <el-table-column label="Section Len" align="center" show-overflow-tooltip prop="timeLong"></el-table-column>
-        <el-table-column label="Modify" align="center">
-          <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
-            <el-button size="mini" @click="handleDelt(scope.$index, scope.row)">Delete</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="entureChaitiao">Confirm</el-button>
-      </span>
-    </el-dialog>
   </footer>
 </template>
 
