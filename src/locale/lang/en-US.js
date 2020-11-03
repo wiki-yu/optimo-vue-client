@@ -20,6 +20,7 @@ export default {
   image_classification_page: 'Image Classification',
   object_detection_page: 'Object Detection',
   analysis_page: 'Analysis',
+  test: 'Test',
   backup: 'Backup',
   backup1_page: 'Backup1',
   backup2_page: 'Backup2',
