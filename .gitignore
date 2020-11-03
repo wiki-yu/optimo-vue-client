@@ -4,6 +4,7 @@ node_modules
 package-lock.json
 /tests/e2e/videos/
 /tests/e2e/screenshots/
+/src/assets/
 
 # local env files
 .env.local
