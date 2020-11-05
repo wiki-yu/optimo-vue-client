@@ -28,14 +28,16 @@
         <!-- <Button type="primary" @click="onUploadFile" class="upload-button" :disabled="!this.file">Send  file</Button> -->
       </Row>
     </Card>
-    <Card title="Video" style="margin-top: 10px;">
-      <div>
-        <div class="playVideo">
-          <video src="../../assets/videoCut/demo.mp4" id="myVideo"></video>
-        </div>
-      </div>
-    </Card>
-
+    <Card title="Video" style="margin-top: 10px;">  
+        <Row :gutter="20" style="margin-top: 10px;" type="flex">
+          <i-col :md="24" :lg="24" style="margin-bottom: 20px;">
+            <div class="videoShow">
+                  <p>Current Type: <span class="badge badge-success">mp4</span></p>
+                  <video id="myVideo" width="100%"></video>
+            </div>
+          </i-col>
+        </Row>
+      </Card>
   </div>
 </template>
 
@@ -54,18 +56,72 @@ export default {
       showProgress: false,
       showRemoveFile: false,
       file: null,
-      playerOptions: {
-        autoplay: false,
-        controls: false,
-        fluid: true,
-        sources: [{
-          type: 'video/mp4',
-          src: '',
-        }],
-      }
     }
   },
 
+  computed: {
+  },
+
+  methods: {
+    initUpload () {
+      this.file = null
+      this.showProgress = false
+      this.loadingProgress = 0
+    },
+    handleUploadFile () {
+      this.initUpload()
+    },
+    handleRemove () {
+      this.initUpload()
+      this.$Message.info('Uploaded file has been removed！')
+    },
+    handleBeforeUpload (file) {
+      const fileExt = file.name.split('.').pop().toLocaleLowerCase()
+      if (fileExt === 'mp4' || fileExt === 'webm') {
+        console.log("start to read file!!!")
+        this.uploadLoading = false
+        this.showRemoveFile = true
+        this.file = file
+        // Ready to play the video after uploading
+        var video = document.getElementById('myVideo');
+        const source = URL.createObjectURL(this.file)
+        video.src = source
+        console.log(video.src)
+        // this.$refs.video.src = source
+        // console.log(source)
+      } else {
+        this.$Notice.warning({
+          title: 'Incorrect file type!',
+          desc: 'File：'+ file.name+'is not the supported video type!'
+        })
+      }
+      return false
+    },
+
+    onUploadFile () {
+      const formData = new FormData()
+      formData.append('file', this.file) // appending file
+      // sending file to backend
+      axios
+        .post('http://localhost:4000/uploadVideo', formData)
+        .then(res => {
+          console.log(res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+      this.$Message.info('File has been uploaded!')
+    },
+
+    formData(time){
+      var h = time.split(":")[0];
+      var m = time.split(":")[1];
+      var s = time.split(":")[2];
+      var ms = time.split(".")[1];
+      return parseInt(h) * 3600 + parseInt(m) * 60 + parseInt(s) + "." + ms;
+    }
+
+  },
   created() {
     this.$nextTick(() => {
       var vedio = document.getElementById("myVideo");
@@ -94,44 +150,17 @@ export default {
       var x = document.getElementById("myVideo");
       x.currentTime = String(this.formData(value.startTime))
     });
-
   },
   mounted(){
     // this.$store.dispatch('changeVideo',d);
   },
-  methods: {
-    formData(time){
-      var h = time.split(":")[0];
-      var m = time.split(":")[1];
-      var s = time.split(":")[2];
-      var ms = time.split(".")[1];
-      return parseInt(h) * 3600 + parseInt(m) * 60 + parseInt(s) + "." + ms;
-    }
-  }
 };
 </script>
 
-<style lang="less">
-.playVideo{
-    display: flex;
-    .quickey{
-        width: 500px;
-        height: auto;
-    }
-.playVedio {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
+<style scoped>
+.videoShow {
+    position: relative;
 }
-.playVedio video {
-  height: 100%;
-  width: auto;
-}
-}
-
 </style>
 
 

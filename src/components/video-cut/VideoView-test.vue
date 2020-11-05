@@ -28,15 +28,17 @@
         <!-- <Button type="primary" @click="onUploadFile" class="upload-button" :disabled="!this.file">Send  file</Button> -->
       </Row>
     </Card>
-    <Card title="Video" style="margin-top: 10px;" v-if="showVideo">
-      <div>
-        <!-- <video width="1280" height="auto" src="../../assets/videoCut/demo.mp4" id="myVideo"></video> -->
-        <!-- <video id="video" width="320" height="240"></video> -->
-        <div v-if="hasVideo">
-            <video-player class="vjs-custom-skin" ref="videoPlayer" :options="playerOptions" ></video-player>
-        </div>
-      </div>
-    </Card>
+    <Card title="Video" style="margin-top: 10px;">  
+        <Row :gutter="20" style="margin-top: 10px;" type="flex">
+          <i-col :md="24" :lg="24" style="margin-bottom: 20px;">
+            <div class="videoShow">
+                  <p>Current Type: <span class="badge badge-success">mp4</span></p>
+                  <video id="myVideo" width="100%"></video>
+            </div>
+          </i-col>
+        </Row>
+      </Card>
+
   </div>
 </template>
 
@@ -75,7 +77,6 @@ export default {
       return !!this.playerOptions.sources[0].src;
     }
   },
-
   methods: {
     initUpload () {
       this.file = null
@@ -97,9 +98,12 @@ export default {
         this.showRemoveFile = true
         this.file = file
         // Ready to play the video after uploading
+        var video = document.getElementById('myVideo');
         const source = URL.createObjectURL(this.file)
-        this.playerOptions.sources[0].src = source
-        this.showVideo = true
+        video.src = source
+        console.log(video.src)
+        // this.$refs.video.src = source
+        // console.log(source)
       } else {
         this.$Notice.warning({
           title: 'Incorrect file type!',
@@ -133,7 +137,6 @@ export default {
     }
 
   },
-  
   created() {
     this.$nextTick(() => {
       var vedio = document.getElementById("myVideo");
@@ -147,24 +150,20 @@ export default {
     this.Event.$on("paly", data => {
       var vedio = document.getElementById("myVideo");
       if (data) {
-        // vedio.play(); //播放
-        this.player.play()
+        vedio.play(); //播放
       } else {
-        // vedio.pause(); //暂停
-        this.player.pause()
+        vedio.pause(); //暂停
       }
     });
     //设置当前时间
     this.Event.$on("currentTime", time => {
-      // console.log("test111111",time)
-      const currentTime = this.player.currentTime()
-      this.player.currentTime(String(this.formData(time)))
-      this.player.pause()
+      var x = document.getElementById("myVideo");
+      x.currentTime = String(this.formData(time))
     });
   },
   mounted () {
 
-  },
+  }
 
 }
 </script>
