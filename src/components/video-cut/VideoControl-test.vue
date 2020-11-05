@@ -39,31 +39,11 @@
 export default {
   data() {
     return {
-      // wenjianList: [], 
       turnFlag: "",
       index: null,
-      tableData: [
-        {
-          timeLong: "3 Secs"
-        },
-        {
-          timeLong: "4 Secs"
-        }
-      ],
-      autoNum: 5,
-      ctNum: 0, //剪辑的视频段落数量
-      isCtData: false, //是否已剪辑了视频
-      isVideoData: false, //是否已添加视频文件
       dialogVisible: false, //弹框显示隐藏
-
-      // 自动拆条
-      dialogVisibleAuto: false, //拆条flag
-      radio: 1,
-
-      videoList: null, //视频列表
-      // dialogVisible: false,
-      //   底部dyc
-      topMoveBox: null, //移动的蓝色时间盒子
+  
+      topMoveBox: null, //移动的蓝色时间盒子 ???
       number: 5, //刻度对应秒数
       maxTimeLong: 360000, //除以10 即为刻度尺 个 刻度
       videoLongTime: "00:00:00",
@@ -71,7 +51,7 @@ export default {
       canvas: null,
       canvasWidth: 60000,
       cxt: null,
-      clickmsg: "Point", //打入打出 START
+      clickmsg: "Point", //打入打出 START ???
       config: {},
       timeCurrentLeft: "00:00:00:00", //当前距离左侧时间
       clickCurrentTime: null, //点击距离
@@ -103,15 +83,6 @@ export default {
       signLeft: "0px",
       signText: "Mark1",
 
-      // 快速选段
-      quickChoseTime: 6,
-
-      mainImgUrl: "../../assets/videoCut/demo.jpg", //底部封面图
-      mainFlag: false, //是否选择了视频
-      numberFlag: "00", //00 拆分  01合并
-      spliceMsg: "Sections Submit",
-      countNumber: 1,
-      firstCutVideo:{},//页面拆分相关数据
       blueBgFlag:false,
       timeMoveNumber:0,// 控制滚动数字
     };
@@ -119,20 +90,13 @@ export default {
 
   created() {
     this.Event.$on("allTime", data => {
-      console.log("Created() start!")
-      console.log("video len: ", data); 
       this.videoLongTime = this.setTime(data);
       this.videoLong = data;
       this.maxTimeLong = Math.ceil(data) * 100;
-      console.log("maxTimeLong: ", this.maxTimeLong)
-      console.log("number: ", this.number)
       this.imgWidth = (this.videoLong / this.number) * 100 + "px"; //Thumbnail len matches with video length
-      console.log("imgWidth: ", this.imgWidth)
       this.target = parseFloat(this.imgWidth) - 40;
-      console.log("Created() over!")
     });
     this.setKeydown()
-    console.log("setKeydown!")
   },
 
   mounted() {
@@ -156,31 +120,16 @@ export default {
       h: 10, // 刻度线基础长度
       // 事件相关
       mousedown: false
-      // start: []
     };
     this.config = config;
-    // this.config.width = this.canvasWidth
     this.showCanvas();
-    // console.log(this.setTime(600));
     const timeMove = document.getElementsByClassName("blueBg")[0];
     this.topMoveBox = timeMove;
-    // console.log(timeMove,timeMove.style.left)
     timeMove.style.left = "-40px";
-
-    // 设置图片盒子宽度
-    this.imgWidth = (this.videoLong / this.number) * 100 + "px";
-    // this.pickeddeng = document.getElementById("pickeddeng");
-    // this.pickeddeng.addEventListener("scroll", this.handleScroll, true);
-
-    // 快速选段改变
-    this.Event.$on("quickChooseTime", val => {
-      this.quickChoseTime = val;
-    });
     this.pickeddeng = document.getElementById("pickeddeng")
   },
 
   methods: {
-
     setKeydown() {
       document.addEventListener("keydown", this.keyboardEvent);
     },
@@ -200,7 +149,7 @@ export default {
       }
       var pickeddeng = document.getElementById("pickeddeng");
       var finleft = pickeddeng.scrollLeft + e.pageX - 40;
-      // console.log(finleft)
+  
       if(finleft>(parseFloat(this.imgWidth)-40) || finleft < -40){
         this.stop();
         this.$message.error("Exceed Limitation")
@@ -220,127 +169,6 @@ export default {
     blueBgUp(){
       this.blueBgFlag = false;
     },
-    handleNodeClick(data) {
-      this.$store.commit("setparentId", data.id);
-      this.$store.commit("setfileFirstDir", data.firstDir);
-      this.$store.commit("setfileFL", data.fileFL);
-      // console.log(this.$store.state.curVideo)
-    },
-    // pk
-    faPKMove($event) {
-      if (!this.downFlag) {
-        return;
-      }
-      var pickeddeng = document.getElementById("pickeddeng");
-      var currentBox = this.cutCoverList[this.index];
-      var curWidth = parseFloat(currentBox.width);
-      var curLeft = parseFloat(currentBox.left);
-      var finleft = pickeddeng.scrollLeft + $event.pageX - 30;
-      if(this.turnFlag == "left"){
-        var finright = curLeft + curWidth;
-        var finwidth = finright - finleft;
-        currentBox.width = finwidth + "px";
-        currentBox.left = finleft + "px";
-
-        currentBox.startTime = this.getStartEndTime(
-          parseFloat(currentBox.left)
-        );
-        currentBox.timeLong = this.getTimeBesides(
-          currentBox.startTime,
-          currentBox.endTime
-        );
-        this.topMoveBox.style.left = finleft - 40 + "px";
-        this.timeCurrentLeft = this.setDetailTime(
-          parseFloat(
-            Math.floor(
-              (this.number / 100) * (this.topMoveBox.offsetLeft + 40) * 100
-            ) / 100
-          ).toFixed(2)
-        );
-        this.Event.$emit("currentTime", this.timeCurrentLeft);
-
-      }
-      else if (this.turnFlag == "center") {
-        // 设置左侧位置
-
-        currentBox.left = finleft - 30 + "px";
-        currentBox.startTime = this.getStartEndTime(
-          parseFloat(currentBox.left)
-        );
-        currentBox.endTime = this.getStartEndTime(
-          parseFloat(currentBox.left) + parseFloat(currentBox.width)
-        );
-        currentBox.timeLong = this.getTimeBesides(
-          currentBox.startTime,
-          currentBox.endTime
-        );
-
-        this.topMoveBox.style.left = finleft - 70 + "px";
-        this.timeCurrentLeft = this.setDetailTime(
-          parseFloat(
-            Math.floor(
-              (this.number / 100) * (this.topMoveBox.offsetLeft + 40) * 100
-            ) / 100
-          ).toFixed(2)
-        );
-        this.Event.$emit("currentTime", this.timeCurrentLeft);
-      } else if (this.turnFlag == "right") {
-        // 设置宽度
-        var finwidth = finleft - curLeft + 30;
-        // console.log(finwidth);
-        currentBox.width = finwidth + "px";
-        currentBox.endTime = this.getStartEndTime(
-          parseFloat(currentBox.left) + parseFloat(currentBox.width)
-        );
-        currentBox.timeLong = this.getTimeBesides(
-          currentBox.startTime,
-          currentBox.endTime
-        );
-        this.topMoveBox.style.left =
-          finwidth - 40 + parseFloat(currentBox.left) + "px";
-        this.timeCurrentLeft = this.setDetailTime(
-          parseFloat(
-            Math.floor(
-              (this.number / 100) * (this.topMoveBox.offsetLeft + 40) * 100
-            ) / 100
-          ).toFixed(2)
-        );
-        this.Event.$emit("currentTime", this.timeCurrentLeft);
-      }
-    },
-
-    faPKup() {
-      this.downFlag = false;
-    },
-
-    pkLdown(index, $event) {
-      this.index = index;
-      this.turnFlag = "left";
-      this.downFlag = true;
-      this.stop();
-    },
-
-    pkCdown(index, $event) {
-      this.index = index;
-      this.turnFlag = "center";
-      this.downFlag = true;
-      this.stop();
-    },
-
-    pkRdown(index, $event) {
-      this.index = index;
-      this.turnFlag = "right";
-      this.downFlag = true;
-      this.stop()
-    },
-
-    pkLup() {
-      this.downFlag = false;
-    },
-
-    pkRup() {
-      this.downFlag = false;
-    },
 
     // pk
     handleScroll() {
@@ -358,6 +186,7 @@ export default {
     
     // Play
     play() {
+      //default--> "run"
       if (this.currentRunMsg == "clickIn") {
         this.running();
         return;
@@ -383,12 +212,10 @@ export default {
         return;
       }
       const timeMove = document.getElementsByClassName("blueBg")[0];
-      // var target = this.target;
       timeMove.style.left = this.target + "px";
 
       this.timeId = setInterval(() => {
         this.moveLeft = window.getComputedStyle(timeMove).left;
-        // console.log(this.moveLeft);
         this.timeMoveNumber = parseInt(parseInt(this.moveLeft)/1600)
         if (parseFloat(this.moveLeft) / 1400 > this.countNumber) {
           this.countNumber = parseInt(parseFloat(this.moveLeft) / 1400) + 1;
@@ -416,7 +243,6 @@ export default {
     stop() {
       this.Event.$emit("paly", false); //暂停视频
       this.bofangFlag = true;
-      // this.zanting();
       const timeMove = document.getElementsByClassName("blueBg")[0];
       this.moveLeft = window.getComputedStyle(timeMove).left;
       timeMove.style.left = this.moveLeft;
@@ -472,61 +298,6 @@ export default {
       this.timeCurrentLeft = this.getStartEndTime(fininal + 40);
       this.Event.$emit("currentTime", this.timeCurrentLeft);
     },
-    
-    // 改变覆盖盒子大小
-    changeCoverSize(index) {},
-    // 打入计时器
-    clickIninterval() {
-    //   if (!this.mainFlag) {
-    //     this.$message.error("您还没有选择视频~");
-    //     return;
-    //   }
-      if (this.currentRunMsg == "run") {
-        clearInterval(this.timeId);
-      }
-      this.currentRunMsg = "clickIn";
-      const timeMove = document.getElementsByClassName("blueBg")[0];
-      var target = this.target;
-      this.clickIn = setInterval(() => {
-        // console.log("clickIn");
-        this.moveLeft = window.getComputedStyle(timeMove).left;
-
-        this.timeMoveNumber = parseInt(parseInt(this.moveLeft)/1600)//赋值让底部滚动
-        if (parseFloat(this.moveLeft) / 1400 > this.countNumber) {
-          this.countNumber = parseInt(parseFloat(this.moveLeft) / 1400) + 1;
-        }
-        // console.log(this.moveLeft, this.imgWidth);
-        if (parseFloat(this.moveLeft) + 40 >= parseFloat(this.imgWidth)) {
-          clearInterval(this.clickIn);
-          this.timeMove();
-          this.clickmsg = "START";
-          timeMove.style.left = this.moveLeft;
-          timeMove.style.transition = "none";
-          this.stop();
-        }
-        if (this.cutCoverList.length > 0) {
-          var current = this.cutCoverList[this.cutCoverList.length - 1];
-          var coverBoxWidth =
-            parseFloat(this.moveLeft) - parseFloat(this.clickCurrentLeft + 40);
-
-          current.width = coverBoxWidth + "px";
-          current.timeLong = this.getStartEndTime(coverBoxWidth);
-        }
-
-        this.timeCurrentLeft = this.setDetailTime(
-          parseFloat(
-            Math.floor((this.number / 100) * (timeMove.offsetLeft + 40) * 100) /
-              100
-          ).toFixed(2)
-        );
-      }, 10);
-      var pxecachS = this.number / 100; // 对应的每px所需要的秒
-      // console.log(parseInt(target), parseInt(this.moveLeft), pxecachS);
-      var timeCount = (parseInt(target) - parseInt(this.moveLeft)) * pxecachS;
-      // console.log(timeCount);
-      timeMove.style.left = target + "px";
-      timeMove.style.transition = `all ${timeCount}s linear`;
-    },
 
     //改变刻度
     stepChange() {
@@ -555,17 +326,6 @@ export default {
           break;
         default:
           break;
-      }
-      // 修改拆条宽度
-      for (var i = 0; i < this.cutCoverList.length; i++) {
-        this.cutCoverList[i].left =
-          parseFloat(
-            (number * parseFloat(this.cutCoverList[i].left)) / this.number
-          ) + "px";
-        this.cutCoverList[i].width =
-          parseFloat(
-            (number * parseFloat(this.cutCoverList[i].width)) / this.number
-          ) + "px";
       }
       var moveBox = document.getElementById("blueBg");
       var moveBoxLeft = document.getElementById("blueBg").style.left
@@ -640,16 +400,6 @@ export default {
       this.canvas.addEventListener("mouseout", function(e) {
         that.config.mousedown = false;
       });
-      // 鼠标移动时 改变位置
-      // this.canvas.addEventListener("mousemove", function(e) {
-      //   // 如果鼠标左键被按下 可以拖动
-      //   if (that.config.mousedown) {
-      //     that.config.x += e.offsetX - that.config.start[0];
-      //     console.log(e.offsetY);
-      //     that.config.start = [e.offsetX, e.offsetY];
-      //     that.drawCan(that.cxt, that.config, that.number);
-      //   }
-      // });
     },
 
     drawCan(cxt, config, number) {
@@ -823,49 +573,6 @@ export default {
         });
       }
     },
-    // 点击控制线控件
-    onControl(index) {
-      switch (index) {
-        case 1: //START
-        //   if (!this.mainFlag) {
-        //     this.$message.error("您还没有选择视频~");
-        //     return;
-        //   }
-          this.timeMove();
-          this.clickmsg = this.clickmsg == "START" ? "END" : "START";
-          break;
-        case 3: //快速选段
-          const moveLeft = document.getElementById("blueBg");
-          this.moveLeft = window.getComputedStyle(moveLeft).left;
-          console.log(this.moveLeft);
-          var width = (this.quickChoseTime / this.number) * 100 + "px";
-          this.$set(this.cutCoverList, this.cutCoverList.length, {
-            clickFlag: true,
-            text: "Section" + parseInt(parseInt(this.cutCoverList.length) + 1),
-            left: parseFloat(this.moveLeft) + 40 + "px",
-            width: width,
-            startTime: this.getStartEndTime(parseFloat(this.moveLeft) + 40),
-            endTime: this.getStartEndTime(
-              parseFloat(this.moveLeft) + 40 + parseFloat(width)
-            ),
-            timeLong: this.getStartEndTime(parseFloat(width))
-          });
-          moveLeft.style.left =
-            parseFloat(this.moveLeft) + parseFloat(width) + "px";
-          // 设置当前时间
-          this.timeCurrentLeft = this.setDetailTime(
-            parseFloat(
-              Math.floor(
-                (this.number / 100) * (moveLeft.offsetLeft + 40) * 100
-              ) / 100
-            ).toFixed(2)
-          );
-          break;
-        case 4: //自动选段
-          this.dialogVisibleAuto = true;
-          break;
-      }
-    },
 
     getStartEndTime(leftPX) {
       return this.setDetailTime(
@@ -873,55 +580,6 @@ export default {
           Math.floor((this.number / 100) * leftPX * 100) / 100
         ).toFixed(2)
       );
-    },
-
-    entureChaitiao() {
-      var curVideo = this.$store.state.curVideo;
-      // console.log(this.$store.state.curVideo);
-      var optionTimes = [];
-
-        for (var i = 0; i < this.cutCoverList.length; i++) {
-          var Lstart = this.cutCoverList[i].startTime.split(".")[0];
-          var Rstart = String(
-            (parseInt(this.cutCoverList[i].startTime.split(".")[1]) / 100) *
-              1000
-          );
-          var timeLone = null;
-          var Lend = null;
-          var Rend = null;
-          if (this.cutCoverList[i].timeLong.length > 8) {
-            Lend = this.cutCoverList[i].timeLong.split(".")[0];
-            Rend = String(
-              (parseInt(this.cutCoverList[i].timeLong.split(".")[1]) / 100) *
-                1000
-            );
-            timeLone = Lend + "." + Rend;
-          } else {
-            Rend = this.cutCoverList[i].timeLong;
-            timeLone = Rend;
-          }
-
-          optionTimes.push({
-            fileName: this.cutCoverList[i].text,
-            startTime: Lstart + "." + Rstart,
-            endTime: timeLone
-          });
-        }
-      // }
-      // var curVideo = this.$store.state.curVideo;
-      var data = {
-        id: curVideo.id,
-        fileMD5: curVideo.fileId,
-        optionTimes: optionTimes, //起止时间
-        optionType: this.numberFlag, //00拆分  01合并,
-        fileFirstDir: curVideo.fileFirstDir,
-        fileFL: curVideo.fileFL,
-        parentId: curVideo.parentId,
-        isSrcVideo: false,
-        fileName: "Section1"
-      };
-      console.log(data);
-      // return
     },
 
     serveSubmit(number) {
@@ -948,95 +606,6 @@ export default {
           });
         });
     },
-
-    // 获取时间间隔
-    getTimeBesides(str1, str2) {
-      var time1 = str1.split(".")[0].split(":");
-      var time2 = str2.split(".")[0].split(":");
-      var hour1 = parseInt(time1[0]) * 3600;
-      var min1 = parseInt(time1[1]) * 60;
-      var second1 = parseInt(time1[2]);
-
-      var hour2 = parseInt(time2[0]) * 3600;
-      var min2 = parseInt(time2[1]) * 60;
-      var second2 = parseInt(time2[2]);
-
-      var timeall1 = hour1 + min1 + second1;
-      var timeall2 = hour2 + min2 + second2;
-
-      var between = timeall2 - timeall1;
-      var lessHour =
-        parseInt(between / 3600) >= 10
-          ? parseInt(between / 3600)
-          : "0" + parseInt(between / 3600);
-      var lessMin =
-        parseInt((between % 3600) / 60) >= 10
-          ? parseInt((between % 3600) / 60)
-          : "0" + parseInt((between % 3600) / 60);
-      var lessSecond =
-        parseInt(between % 60) >= 10
-          ? parseInt(between % 60)
-          : "0" + parseInt(between % 60);
-          // console.log(str1)
-          // console.log(str2)
-      var msStart =  parseInt(str1.split(".")[1]);
-      var msEnd =  parseInt(str2.split( ".")[1]);
-      // console.log(msStart,msEnd)
-
-      var ms = msEnd-msStart;
-      if(msStart > msEnd){
-        if(parseInt(lessSecond)<10){
-          lessSecond = "0"+String(parseInt(lessSecond)-1)
-        }else{
-          lessSecond = String(parseInt(lessSecond)-1)
-        }
-      }
-      if(ms<0){
-        ms = ms+100
-      }
-      if(ms<10){
-        ms = "0" + ms
-      }
-      return `${lessHour}:${lessMin}:${lessSecond}.${ms}`;
-    },
-
-    // 回到起点
-    backTostart() {
-      this.stop();
-      this.Event.$emit("currentTime", this.timeCurrentLeft);
-      const timeMove = document.getElementById("blueBg");
-      const scrollpd = document.getElementById("pickeddeng");
-      scrollpd.scrollLeft = 0;
-      timeMove.style.left = "-40px";
-      timeMove.style.transition = "none";
-      this.timeCurrentLeft = this.setDetailTime(
-        parseFloat(
-          Math.floor((this.number / 100) * (timeMove.offsetLeft + 40) * 100) /
-            100
-        ).toFixed(2)
-      );
-    },
-
-    //回到尾部
-    backToend() {
-      this.stop();
-      this.Event.$emit("currentTime", this.timeCurrentLeft);
-      const timeMove = document.getElementById("blueBg");
-      const scrollpd = document.getElementById("pickeddeng");
-      if (parseInt(this.imgWidth) > 1400) {
-        scrollpd.scrollLeft = parseInt(this.imgWidth) - 1400;
-      } else {
-        scrollpd.scrollLeft = 0;
-      }
-      timeMove.style.left = parseFloat(this.imgWidth) - 40 + "px";
-      timeMove.style.transition = "none";
-      this.timeCurrentLeft = this.setDetailTime(
-        parseFloat(
-          Math.floor((this.number / 100) * (timeMove.offsetLeft + 40) * 100) /
-            100
-        ).toFixed(2)
-      );
-    }
   },
 
   beforeDestroy() {
@@ -1072,29 +641,7 @@ export default {
 </script>
 
 <style lang="less">
-.weitiaoL,.weitiaoR{
-    line-height: 0 !important;
-    text-align: center;
-    position: absolute;
-    width: 70px;
-    top: 0px;
-    height: 20px;
-    cursor: pointer;
-    padding: 0;
-    border: 0;
-    z-index: 999;
-    color: #666;
-    >span{
-        margin-left: -13px;
-    }
-  }
-  .weitiaoL{
-    
-    left: 0;
-  }
-  .weitiaoR{
-    right: 0;
-  }
+
 .autuSplice {
   
   .el-dialog {

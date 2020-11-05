@@ -13,7 +13,6 @@
   </div>
 </template>
 
-
 <script>
 import videoView from "../../components/video-cut/VideoView";
 import videoControl from "../../components/video-cut/VideoControl";

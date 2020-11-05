@@ -26,7 +26,8 @@ const messages = {
 }
 const i18n = new VueI18n({
   locale: lang,
-  messages
+  messages,
+  silentTranslationWarn: true
 })
 
 export default i18n
@@ -35,3 +36,4 @@ export default i18n
 // Vue.locale('zh-CN', Object.assign(zhCnLocale, customZhCn))
 // Vue.locale('en-US', Object.assign(zhTwLocale, customZhTw))
 // Vue.locale('zh-TW', Object.assign(enUsLocale, customEnUs))
+
