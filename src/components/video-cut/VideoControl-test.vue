@@ -13,7 +13,6 @@
         <i class="iconfont icon-kuaijin-" @click="nextpage"></i>
       </div>
       <div class="rule">
-        <span class="iconfont icon-qingchu" title="Delete All Sections" @click="clearAllVideo"></span>
         <div class="block">
           <el-slider v-model="value2" :step="20" show-stops @change="stepChange"></el-slider>
         </div>
@@ -181,84 +180,6 @@ export default {
   },
 
   methods: {
-    //微调
-    weitiao(index,flag1,flag2){
-      // flag1 1 为左边微调  2为右边微调
-      // flag2 1 为向左微调  2为向右微调
-      const currentCut = this.cutCoverList[index]
-      // console.log(currentCut);
-      const timeMove = document.getElementById("blueBg");
-      // var movePX = (100 / this.number / 100) * 10;
-      // var currentLeft = parseFloat(window.getComputedStyle(timeMove).left);
-      var movePX = (100 / this.number / 100) * 10; //移动距离
-      if(flag1 === 1){
-        //移动时间轴  更新时间
-        timeMove.style.left = (parseFloat(currentCut.left) - 40) + "px";
-        var fininal = parseFloat(currentCut.left) - 40;
-        this.timeCurrentLeft = this.getStartEndTime(fininal + 40);
-        // this.Event.$emit("currentTime", this.timeCurrentLeft);
-        
-        //调整开始位置
-        if(flag2===1){
-          //开始位置向左调
-          currentCut.left = (parseFloat(currentCut.left) - movePX) + "px";
-          currentCut.width = (parseFloat(currentCut.width) + movePX) +"px";
-          //修改拆条时长
-          currentCut.startTime = this.getStartEndTime(
-          parseFloat(currentCut.left)
-          );
-          currentCut.timeLong = this.getTimeBesides(
-            currentCut.startTime,
-            currentCut.endTime
-          );
-          this.prevPage()
-        }else{
-          //开始位置向右调
-          currentCut.left = (parseFloat(currentCut.left) + movePX) + "px";
-          currentCut.width = (parseFloat(currentCut.width) - movePX) +"px";
-          currentCut.startTime = this.getStartEndTime(
-          parseFloat(currentCut.left)
-          );
-          currentCut.timeLong = this.getTimeBesides(
-            currentCut.startTime,
-            currentCut.endTime
-          );
-          this.nextpage()
-        }
-      }else{
-        // console.log(parseFloat(currentCut.left + currentCut.width - 40))
-        // timeMove.style.left = parseFloat(currentCut.left + currentCut.width - 40) + "px";
-        timeMove.style.left = (parseFloat(currentCut.left) + parseFloat(currentCut.width) - 40) + "px";
-        var fininal = (parseFloat(currentCut.left) + parseFloat(currentCut.width) - 40);
-        this.timeCurrentLeft = this.getStartEndTime(fininal + 40);
-        this.Event.$emit("currentTime", this.timeCurrentLeft);
-        //调整结束位置
-        if(flag2===1){
-          //结束位置向左调
-          currentCut.width = (parseFloat(currentCut.width) - movePX) +"px";
-          currentCut.endTime = this.getStartEndTime(
-          parseFloat(currentCut.left) + parseFloat(currentCut.width)
-          );
-          currentCut.timeLong = this.getTimeBesides(
-            currentCut.startTime,
-            currentCut.endTime
-          );
-          this.prevPage()
-        }else{
-          //结束位置向右调
-          currentCut.width = (parseFloat(currentCut.width) + movePX) +"px";
-          currentCut.endTime = this.getStartEndTime(
-          parseFloat(currentCut.left) + parseFloat(currentCut.width)
-          );
-          currentCut.timeLong = this.getTimeBesides(
-            currentCut.startTime,
-            currentCut.endTime
-          );
-          this.nextpage()
-        }
-      }
-      
-    },
 
     setKeydown() {
       document.addEventListener("keydown", this.keyboardEvent);
@@ -434,106 +355,7 @@ export default {
       this.Event.$emit("currentImg", currentTime);
       // console.log($event)
     },
-
-    //Clease all the sections
-    clearAllVideo() {
-      this.$confirm("Delected all sections?", "INFO", {
-        confirmButtonText: "Yes",
-        cancelButtonText: "No",
-        type: "warning"
-      })
-        .then(() => {
-          this.cutCoverList = [];
-          this.$message({
-            type: "success",
-            message: "Deleted!"
-          });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "Cancelled"
-          });
-        });
-    },
     
-    //delete rows in the table
-    deleteRow(index, rows) {
-      rows.splice(index, 1);
-    },
-
-    //add rows in the table
-    addRow(index, rows) {
-      this.$prompt("Set Section Time", "INFO", {
-        confirmButtonText: "Confirm",
-        cancelButtonText: "Cancel",
-        inputPattern: /^[0-9]*$/,
-        inputErrorMessage: "Please Input Numbers"
-      })
-        .then(({ value }) => {
-          rows.splice(index + 1, 0, {
-            timeLong: value + "Sec"
-          });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "Cancel Input"
-          });
-        });
-    },
-
-    // edit section title
-    handleEdit(index, row) {
-      if(this.clickmsg === "END"){
-          this.$message.error("Please set end point and then delete")
-          return;
-      }
-      this.changeText(index);
-    },
-
-    handleDelt(index, row) {
-      this.cutCoverList.splice(index, 1);
-    },
-
-    // play section
-    subSection(value) {
-      if(this.clickmsg === "END"){
-          this.$message.error("Please set end point and then delete")
-          return;
-      }
-      this.subPlayValue = value;
-      this.Event.$emit("subSectionPlay", value);
-      this.topMoveBox.style.left = parseFloat(value.left) - 40 + "px";
-      this.subrunning(parseFloat(value.left) + parseFloat(value.width));
-    },
-
-    //modify section name
-    changeText(index) {
-      this.$prompt("Please input Section Title", "INFO", {
-        confirmButtonText: "Confirm",
-        cancelButtonText: "Cancel"
-      })
-        .then(({ value }) => {
-          this.cutCoverList[index].text = value;
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "Cancel Input"
-          });
-        });
-    },
-
-    // 删除单个覆盖盒子
-    // clearCoverBox(index) {
-    //   if(this.clickmsg === "END"){
-    //       this.$message.error("Please set end point and then delete")
-    //       return;
-    //   }
-    //   this.cutCoverList.splice(index, 1);
-    // },
-
     // Play
     play() {
       if (this.currentRunMsg == "clickIn") {
@@ -548,11 +370,6 @@ export default {
     },
 
     running() {
-      // clearInterval(this.clickIn);
-      // if (!this.mainFlag) {
-      //   this.$message.error("No video selected~");
-      //   return;
-      // }
       this.bofangFlag = false;
       this.Event.$emit("paly", true); //播放视频
       if (this.currentRunMsg == "clickIn") {
@@ -582,11 +399,6 @@ export default {
           this.stop();
           timeMove.style.transition = "none";
         }
-        // if (parseInt(this.moveLeft) >= this.target) {
-        //   // this.scrollInterval();
-        //   // this.target+=1400;
-        //   // this.scrollFlag = true;
-        // }
         this.timeCurrentLeft = this.setDetailTime(
           parseFloat(
             Math.floor((this.number / 100) * (timeMove.offsetLeft + 40) * 100) /
@@ -595,49 +407,8 @@ export default {
         );
       }, 20);
       var pxecachS = this.number / 100; // 对应的每px所需要的秒
-      // console.log(parseInt(target), parseInt(this.moveLeft), pxecachS);
       var timeCount =
         (parseInt(this.target) - parseInt(this.moveLeft)) * pxecachS;
-      // console.log(timeCount);
-      timeMove.style.transition = `all ${timeCount}s linear`;
-    },
-
-    subrunning(target) {
-      this.stop();
-      this.currentRunMsg = "subrunning";
-      this.bofangFlag = false;
-      const timeMove = document.getElementsByClassName("blueBg")[0];
-      timeMove.style.left = target + "px";
-      this.Event.$emit("paly", true); //播放视频
-      this.subTimeId = setInterval(() => {
-        console.log("subrunning");
-        this.moveLeft = window.getComputedStyle(timeMove).left;
-        this.timeMoveNumber = parseInt(parseInt(this.moveLeft)/1600)
-        if (parseFloat(this.moveLeft) / 1400 > this.countNumber) {
-          this.countNumber = parseInt(parseFloat(this.moveLeft) / 1400) + 1;
-        }
-        if (parseFloat(this.moveLeft) + 40 > target) {
-          clearInterval(this.subTimeId);
-          timeMove.style.left = this.moveLeft;
-          this.stop();
-          timeMove.style.transition = "none";
-          clearInterval(this.subTimeId);
-          this.currentRunMsg = "run";
-        }
-        if (parseInt(this.moveLeft) >= target) {
-          // this.resetTarget();
-        }
-        this.timeCurrentLeft = this.setDetailTime(
-          parseFloat(
-            Math.floor((this.number / 100) * (timeMove.offsetLeft + 40) * 100) /
-              100
-          ).toFixed(2)
-        );
-      }, 20);
-      var pxecachS = this.number / 100; // 对应的每px所需要的秒
-      // console.log(parseInt(target), parseInt(this.moveLeft), pxecachS);
-      var timeCount = (parseInt(target) - parseInt(this.moveLeft)) * pxecachS;
-      // console.log(timeCount);
       timeMove.style.transition = `all ${timeCount}s linear`;
     },
 

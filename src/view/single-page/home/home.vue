@@ -9,14 +9,15 @@
       </i-col>
     </Row>
     <Row :gutter="20" style="margin-top: 10px;">
-        <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
-        <Card shadow>
-          <chart-bar style="height: 300px;" :value="barData" text="Classification Distribution"/>
-        </Card>
-      </i-col>
       <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
         <Card shadow>
-          <chart-pie style="height: 300px;" :value="pieData" text="Lean Classification"></chart-pie>
+          <chart-bar style="height: 300px;" :value="barData" text="Image Annotation Amount"/>
+        </Card>
+      </i-col>
+      <button @click="handle">button</button>
+      <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
+        <Card shadow>
+          <chart-pie style="height: 300px;" :value="pieData" text="Saved Video Analysis"></chart-pie>
         </Card>
       </i-col>
     </Row>
@@ -29,6 +30,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import InforCard from '_c/info-card'
 import CountTo from '_c/count-to'
 import { ChartPie, ChartBar } from '_c/charts'
@@ -51,26 +53,58 @@ export default {
         { title: 'Videos', icon: 'md-share', count: 57, color: '#ed3f14' },
       ],
       pieData: [
-        { value: 335, name: 'VA' },
-        { value: 310, name: 'NVA' },
-        { value: 234, name: 'RNVA' }
+        { value: 335, name: 'Motion1' },
+        { value: 310, name: 'Motion2' },
+        { value: 234, name: 'Motion3' },
+        { value: 135, name: 'Motion4' },
+        { value: 1548, name: 'Motion5' }
       ],
       barData: {
-        'Unit Pick-Up/Transfer': 1170,
-        'Operation': 7280,
-        'Material Setup/Handling': 0,
-        'Fixture Setup/Handling': 1080,
-        'Inspection': 470,
-        'Tool Setup/Handling': 0,
-        'Operation Trash': 0,
-        'Scanning': 0,
-        'Cleaning': 0
-      }
+        Mon: 1325,
+        Tue: 3425,
+        Wed: 2621,
+        Thu: 1240,
+        Fri: 2443,
+        Sat: 122,
+        Sun: 134
+      },
+      form: {
+        userName: '',
+        password: ''
+      },
     }
   },
+
+  methods:{
+    // handle() {
+    //   console.log('haha');
+    //   this.barData.Mon = 3000;
+    // }
+  },
+
   mounted () {
-    //
-  }
+    const sendPostRequest = async () => {
+      this.form.userName = "test1"
+      this.form.password = "test1"
+      console.log("test11111")
+      try {
+          const resp = await axios.post('http://localhost:3000/fetchData', this.form)
+          console.log("previous", this.barData.Mon)
+          console.log(JSON.stringify(resp.data));
+          this.barData.Mon = resp.data.user.is_admin
+          console.log("after", this.barData.Mon)
+      } catch (err) {
+          console.error(err);
+      }
+    };
+   sendPostRequest();
+   console.log('haha')
+  },
+
+  created () {
+
+  },
+
 }
 </script>
 

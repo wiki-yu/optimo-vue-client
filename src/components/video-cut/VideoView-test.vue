@@ -28,7 +28,7 @@
         <!-- <Button type="primary" @click="onUploadFile" class="upload-button" :disabled="!this.file">Send  file</Button> -->
       </Row>
     </Card>
-    <Card title="Video">
+    <Card title="Video" style="margin-top: 10px;" v-if="showVideo">
       <div>
         <!-- <video width="1280" height="auto" src="../../assets/videoCut/demo.mp4" id="myVideo"></video> -->
         <!-- <video id="video" width="320" height="240"></video> -->
@@ -49,6 +49,7 @@ export default {
   name: 'upload-excel',
   data () {
     return {
+      showVideo: false,
       uploadLoading: false,
       progressPercent: 0,
       showProgress: false,
@@ -56,7 +57,7 @@ export default {
       file: null,
       playerOptions: {
         autoplay: false,
-        controls: true,
+        controls: false,
         fluid: true,
         sources: [{
           type: 'video/mp4',
@@ -98,7 +99,7 @@ export default {
         // Ready to play the video after uploading
         const source = URL.createObjectURL(this.file)
         this.playerOptions.sources[0].src = source
-        console.log("test!!!!!!!!!!!!!!!1111111111")
+        this.showVideo = true
       } else {
         this.$Notice.warning({
           title: 'Incorrect file type!',
@@ -122,6 +123,14 @@ export default {
         })
       this.$Message.info('File has been uploaded!')
     },
+
+    formData(time){
+      var h = time.split(":")[0];
+      var m = time.split(":")[1];
+      var s = time.split(":")[2];
+      var ms = time.split(".")[1];
+      return parseInt(h) * 3600 + parseInt(m) * 60 + parseInt(s) + "." + ms;
+    }
 
   },
   
@@ -147,13 +156,15 @@ export default {
     });
     //设置当前时间
     this.Event.$on("currentTime", time => {
-      var x = document.getElementById("myVideo");
-      x.currentTime = String(this.formData(time))
+      // console.log("test111111",time)
+      const currentTime = this.player.currentTime()
+      this.player.currentTime(String(this.formData(time)))
+      this.player.pause()
     });
   },
   mounted () {
 
-  }
+  },
 
 }
 </script>

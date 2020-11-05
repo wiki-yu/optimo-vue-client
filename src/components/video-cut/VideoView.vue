@@ -1,13 +1,71 @@
 <template>
-  <div class="playVideo">
-    <!-- <p>{{this.$store.state.curVideo.fileUrl}}</p> -->
-    <!-- <img src="../../assets/videoCut/quickKey.jpg" alt  class="quickey"/> -->
-    <video src="../../assets/videoCut/demo.mp4" id="myVideo"></video>
+  <div>
+    <Card title="Upload Data">
+      <Row>
+        <Upload type="drag" action="" :before-upload="handleBeforeUpload" accept="">
+            <div style="padding: 20px 0">
+                <Icon type="ios-cloud-upload" size="52" style="color: #3399ff" :loading="uploadLoading" @click="handleUploadFile"></Icon>
+                <p>Click or drag videos here to upload</p>
+            </div>
+        </Upload>
+      </Row>
+      <Row>
+        <div class="ivu-upload-list-file" v-if="file !== null">
+          <Icon type="md-barcode"></Icon>
+            {{ file.name }}
+          <Icon v-show="showRemoveFile" type="ios-close" class="ivu-upload-list-remove" @click.native="handleRemove()"></Icon>
+        </div>
+      </Row>
+      <Row>
+        <transition name="fade">
+          <Progress v-if="showProgress" :percent="progressPercent" :stroke-width="2">
+            <div v-if="progressPercent == 100">
+              <Icon type="ios-checkmark-circle"></Icon>
+              <span>OK</span>
+            </div>
+          </Progress>
+        </transition>
+        <!-- <Button type="primary" @click="onUploadFile" class="upload-button" :disabled="!this.file">Send  file</Button> -->
+      </Row>
+    </Card>
+    <Card title="Video" style="margin-top: 10px;">
+      <div>
+        <div class="playVideo">
+          <video src="../../assets/videoCut/demo.mp4" id="myVideo"></video>
+        </div>
+      </div>
+    </Card>
+
   </div>
 </template>
 
 <script>
+import excel from '@/libs/excel'
+import axios from 'axios'
+import 'video.js/dist/video-js.css'
+import { videoPlayer } from 'vue-video-player'
 export default {
+  name: 'upload-excel',
+  data () {
+    return {
+      showVideo: false,
+      uploadLoading: false,
+      progressPercent: 0,
+      showProgress: false,
+      showRemoveFile: false,
+      file: null,
+      playerOptions: {
+        autoplay: false,
+        controls: false,
+        fluid: true,
+        sources: [{
+          type: 'video/mp4',
+          src: '',
+        }],
+      }
+    }
+  },
+
   created() {
     this.$nextTick(() => {
       var vedio = document.getElementById("myVideo");
