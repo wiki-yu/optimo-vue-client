@@ -139,15 +139,26 @@ export default {
 
       blueBgFlag:false,
       timeMoveNumber:0,// 控制滚动数字
-
-      flag: false,
-      x: 0,
-      y: 0,
-      x_leftUpper: 0,
-      y_leftUpper: 0,
-      x_lowerRight: 0,
-      y_lowerRight: 0,
-    
+      
+      //TEST
+      isClicked: false,
+      boundingBoxes: [],
+      bounds: {
+        'row': 0,
+        'activity': '',
+        'cycle': '',
+        'bounds': '',
+        'start': '',
+        'end': '',
+        'x1': 0,
+        'y1': 0,
+        'x2': 0,
+        'y2': 0
+      },
+      canvasMouseDown: false,
+      currentX: 0,
+      currentY: 0,
+      index: 0
     }
   },
 
@@ -297,7 +308,45 @@ export default {
     //draw the video on the canvas
     drawCanvas: function (v, c) {
       c.drawImage(v, 0, 0, videoWidth, videoHeight);
-      console.log("test@@@@@@@@", this.x, this.y)
+      if (this.canvasMouseDown) {
+        c.beginPath();
+        c.lineWidth = "4";
+        c.strokeStyle = "red";
+        c.rect(parseFloat(this.bounds['x1']),
+               parseFloat(this.bounds['y1']),
+               parseFloat(this.bounds['x2']),
+               parseFloat(this.bounds['y2']));
+        c.stroke();
+      }
+      if (this.boundingBoxes.length > 0) {
+        var currentTime = this.$refs.myVideo.currentTime;
+        var duration = this.$refs.myVideo.duration;
+        console.log("Test@@@@@@ vidoe duration", duration)
+        for (var i = 0; i < this.boundingBoxes.length; i++) {
+            i = parseInt(i);
+            var endTime = this.boundingBoxes[i].end;
+            if (endTime == '') {
+              endTime = duration;
+            }
+            if (Number(this.boundingBoxes[i].start) <= Number(currentTime) &&
+                Number(endTime) > Number(currentTime)) {
+                  var canvasBounds = parseFloat(this.$refs.myCanvas.getBoundingClientRect());
+                  var bwidth = parseFloat(this.boundingBoxes[i].x2-this.boundingBoxes[i].x1);
+                  var bheight = parseFloat(this.boundingBoxes[i].y2-this.boundingBoxes[i].y1);
+                  var scaleX = parseFloat(c.width / bwidth),
+                      scaleY = parseFloat(c.height / bheight);
+
+                  c.beginPath();
+                  c.lineWidth = "4";
+                  c.strokeStyle = "red";
+                  c.rect(parseFloat(this.boundingBoxes[i].x1),
+                         parseFloat(this.boundingBoxes[i].y1),
+                         parseFloat(this.boundingBoxes[i].x2),
+                         parseFloat(this.boundingBoxes[i].y2));
+                  c.stroke();
+                }
+          }
+        }
       setTimeout(this.drawCanvas, 30, v, c);
     },
 
@@ -402,54 +451,70 @@ export default {
     
     //canvas mouse movement 
     canvasHover: function (e) {
-      // this.drawRect(e)
+      this.evaluateBounds(e);
     },
 
     canvasDown: function (e) {
-      console.log('mouse down')
-      this.flag = true
-      this.x = e.offsetX // the X coordinate when mouse down
-      this.y = e.offsetY // the Y coordinate when mouse down
+      this.canvasMouseDown = true;
+      this.evaluateBounds(e);
+      this.bounds['x1'] = this.currentX;
+      this.bounds['y1'] = this.currentY;
+      this.evaluateBounds(e);
+      this.updateBounds();
     },
 
     canvasUp: async function (e) {
-      console.log('mouse up')
-      this.flag = false
+      this.canvasMouseDown = false;
+      this.bounds['x2'] = (this.currentX - this.bounds['x1']).toFixed(4);
+      this.bounds['y2'] = (this.currentY - this.bounds['y1']).toFixed(4);
+      this.bounds['x1'] = this.bounds['x1'].toFixed(4);
+      this.bounds['y1'] = this.bounds['y1'].toFixed(4);
+
+      var time = this.$refs.myVideo.currentTime;
+
+      // time = this.roundToNearest(time, this.currentSPF).toFixed(4);
+      time = this.roundToNearest(time, 1/30).toFixed(4);
+      this.bounds['start'] = time
+
+      var nrows = table.rows.length;
+      this.bounds['row'] = nrows
+
+      this.boundingBoxes.push(Object.assign({}, this.bounds));
     },
 
+    evaluateBounds: function (e) {
+      if (this.canvasMouseDown) {
+        var pos = this.getMousePosition(e);
+        this.currentX = pos.x;
+        this.currentY = pos.y;
+        //setTimeout(this.updateBounds,50,e);
+      }
+    },
+
+    updateBounds: function () {
+      this.bounds['x2'] = this.currentX - this.bounds['x1'];
+      this.bounds['y2'] = this.currentY - this.bounds['y1'];
+      if (this.canvasMouseDown) {
+        setTimeout(this.updateBounds, 10)
+      }
+    },
+
+    roundToNearest: function (value, interval) {
+      return Math.round(value/interval) * interval;
+    },
+
+    getMousePosition: function (e) {
+      var canvasBounds = this.$refs.myVanvas.getBoundingClientRect();
+      var rect = canvas.getBoundingClientRect(), // abs. size of element
+      scaleX = canvas.width / rect.width,    // relationship bitmap vs. element for X
+      scaleY = canvas.height / rect.height;  // relationship bitmap vs. element for Y
+
+      return {
+        x: (e.clientX - rect.left) * scaleX,   // scale mouse coordinates after they have
+        y: (e.clientY - rect.top) * scaleY     // been adjusted to be relative to element
+      }
+    },
     
-    // drawRect (e) {
-    //   if (this.flag) {
-    //     console.log('Drawing!!')
-    //     const canvas = this.$refs.myCanvas
-    //     var video = document.getElementById('myVideo');
-    //     const source = URL.createObjectURL(this.file)
-    //     video.src = source
-    //     var ctx = canvas.getContext('2d')
-    //     let x = this.x
-    //     let y = this.y
-    //     ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-    //     let w = video.videoWidth
-    //     let h = video.videoHeight
-    //     canvas.width = w
-    //     canvas.height = h
-    //     ctx.drawImage(video, 0, 0, w, h)
-
-    //     ctx.beginPath()
-    //     ctx.strokeStyle = '#00ff00' // set up the rectangle line color
-    //     ctx.lineWidth = 1 // set up the rectangle line width
-
-    //     ctx.strokeRect(x, y, e.offsetX - x, e.offsetY - y)
-    //     this.x_leftUpper = x
-    //     this.y_leftUpper = y
-    //     this.x_lowerRight = e.offsetX - x
-    //     this.y_lowerRight = e.offsetY - y
-  
-    //   }
-    // },
-
-
     // play the video on the canvas
     play () {
       this.bofangFlag = false;
