@@ -4,7 +4,7 @@
       <!-- <a href="www.google.com">Google</a> -->
       <!-- <img style="width: 100%; height: auto;" :src="jupyterNotebook" key="max-logo" /> -->
     <iframe src="http://localhost:8888/tree"  width="100%" 
-    height="650" frameborder="0" style="position:relative;" >
+    height="1000" frameborder="0" style="position:relative;" >
   </iframe>
   </div>
 </template>

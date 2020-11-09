@@ -164,7 +164,7 @@ export default {
           console.log(res)
           console.log("[END]Receiving completed!!!!!")
           this.registerOn = false
-          return alert("Registered")
+          return this.$Message.info('Registered Now!')
           // this.handleSubmit1()
         })
         .catch(err => {

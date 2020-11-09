@@ -139,15 +139,26 @@ export default {
 
       blueBgFlag:false,
       timeMoveNumber:0,// 控制滚动数字
-
-      flag: false,
-      x: 0,
-      y: 0,
-      x_leftUpper: 0,
-      y_leftUpper: 0,
-      x_lowerRight: 0,
-      y_lowerRight: 0,
-    
+      
+      //TEST
+      isClicked: false,
+      boundingBoxes: [],
+      bounds: {
+        'row': 0,
+        'activity': '',
+        'cycle': '',
+        'bounds': '',
+        'start': '',
+        'end': '',
+        'x1': 0,
+        'y1': 0,
+        'x2': 0,
+        'y2': 0
+      },
+      canvasMouseDown: false,
+      currentX: 0,
+      currentY: 0,
+      index: 0
     }
   },
 
@@ -269,27 +280,22 @@ export default {
           cxt.lineTo(x + i * w, y - h * 2);
         }
         if (i % 10 == 0 && this.number == 30) {
-          // 区间为 30 s
           offset = 20;
           cxt.fillText(this.setTime(i * 3), x + i * w - offset, y - h * 2.5);
           cxt.lineTo(x + i * w, y - h * 2);
         }
         if (i % 10 == 0 && this.number == 120) {
-          // 区间为 120 s
           offset = 20;
           cxt.fillText(this.setTime(i * 12), x + i * w - offset, y - h * 2.5);
           cxt.lineTo(x + i * w, y - h * 2);
         }
         if (i % 10 == 0 && this.number == 600) {
-          // 区间为 600 s
           offset = 20;
           cxt.fillText(this.setTime(i * 60), x + i * w - offset, y - h * 2.5);
           cxt.lineTo(x + i * w, y - h * 2);
         } else {
-          // 满5刻度时的刻度线略长于1刻度的
           cxt.lineTo(x + i * w, y - (i % 5 === 0 ? 1.5 : 1) * h);
         }
-        // 画出路径
         cxt.stroke();
       }
     },
@@ -297,7 +303,17 @@ export default {
     //draw the video on the canvas
     drawCanvas: function (v, c) {
       c.drawImage(v, 0, 0, videoWidth, videoHeight);
-      console.log("test@@@@@@@@", this.x, this.y)
+      if (1) {
+        c.beginPath();
+        c.lineWidth = "4";
+        c.strokeStyle = "red";
+        console.log("QQQQQQQQQQQQQQQQQ", this.bounds)
+        c.rect(parseFloat(this.bounds['x1']),
+               parseFloat(this.bounds['y1']),
+               parseFloat(this.bounds['x2']),
+               parseFloat(this.bounds['y2']));
+        c.stroke();
+      }
       setTimeout(this.drawCanvas, 30, v, c);
     },
 
@@ -402,54 +418,70 @@ export default {
     
     //canvas mouse movement 
     canvasHover: function (e) {
-      // this.drawRect(e)
+      this.evaluateBounds(e);
     },
 
     canvasDown: function (e) {
-      console.log('mouse down')
-      this.flag = true
-      this.x = e.offsetX // the X coordinate when mouse down
-      this.y = e.offsetY // the Y coordinate when mouse down
+      this.canvasMouseDown = true;
+      this.evaluateBounds(e);
+      this.bounds['x1'] = this.currentX;
+      this.bounds['y1'] = this.currentY;
+      this.evaluateBounds(e);
+      this.updateBounds();
     },
 
     canvasUp: async function (e) {
-      console.log('mouse up')
-      this.flag = false
+      this.canvasMouseDown = false;
+      this.bounds['x2'] = (this.currentX - this.bounds['x1']).toFixed(4);
+      this.bounds['y2'] = (this.currentY - this.bounds['y1']).toFixed(4);
+      this.bounds['x1'] = this.bounds['x1'].toFixed(4);
+      this.bounds['y1'] = this.bounds['y1'].toFixed(4);
+
+      var time = this.$refs.myVideo.currentTime;
+
+      // time = this.roundToNearest(time, this.currentSPF).toFixed(4);
+      time = this.roundToNearest(time, 1/30).toFixed(4);
+      this.bounds['start'] = time
+
+      var nrows = table.rows.length;
+      this.bounds['row'] = nrows
+
+      this.boundingBoxes.push(Object.assign({}, this.bounds));
     },
 
+    evaluateBounds: function (e) {
+      if (this.canvasMouseDown) {
+        var pos = this.getMousePosition(e);
+        this.currentX = pos.x;
+        this.currentY = pos.y;
+        //setTimeout(this.updateBounds,50,e);
+      }
+    },
+
+    updateBounds: function () {
+      this.bounds['x2'] = this.currentX - this.bounds['x1'];
+      this.bounds['y2'] = this.currentY - this.bounds['y1'];
+      if (this.canvasMouseDown) {
+        setTimeout(this.updateBounds, 10)
+      }
+    },
+
+    roundToNearest: function (value, interval) {
+      return Math.round(value/interval) * interval;
+    },
+
+    getMousePosition: function (e) {
+      var canvasBounds = this.$refs.myCanvas.getBoundingClientRect();
+      var rect = myCanvas.getBoundingClientRect(), // abs. size of element
+      scaleX = myCanvas.width / rect.width,    // relationship bitmap vs. element for X
+      scaleY = myCanvas.height / rect.height;  // relationship bitmap vs. element for Y
+
+      return {
+        x: (e.clientX - rect.left) * scaleX,   // scale mouse coordinates after they have
+        y: (e.clientY - rect.top) * scaleY     // been adjusted to be relative to element
+      }
+    },
     
-    // drawRect (e) {
-    //   if (this.flag) {
-    //     console.log('Drawing!!')
-    //     const canvas = this.$refs.myCanvas
-    //     var video = document.getElementById('myVideo');
-    //     const source = URL.createObjectURL(this.file)
-    //     video.src = source
-    //     var ctx = canvas.getContext('2d')
-    //     let x = this.x
-    //     let y = this.y
-    //     ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-    //     let w = video.videoWidth
-    //     let h = video.videoHeight
-    //     canvas.width = w
-    //     canvas.height = h
-    //     ctx.drawImage(video, 0, 0, w, h)
-
-    //     ctx.beginPath()
-    //     ctx.strokeStyle = '#00ff00' // set up the rectangle line color
-    //     ctx.lineWidth = 1 // set up the rectangle line width
-
-    //     ctx.strokeRect(x, y, e.offsetX - x, e.offsetY - y)
-    //     this.x_leftUpper = x
-    //     this.y_leftUpper = y
-    //     this.x_lowerRight = e.offsetX - x
-    //     this.y_lowerRight = e.offsetY - y
-  
-    //   }
-    // },
-
-
     // play the video on the canvas
     play () {
       this.bofangFlag = false;
