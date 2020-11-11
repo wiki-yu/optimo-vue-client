@@ -51,6 +51,26 @@ export default [
     ]
   },
   {
+    path: '/ai_builder',
+    name: 'ai_builder',
+    meta: {
+      hideInBread: true
+    },
+    component: Main,
+    children: [
+      {
+        path: 'ai_builder_page',
+        name: 'ai_builder_page',
+        meta: {
+          icon: 'ios-paper',
+          title: 'FlowChart'
+        },
+        component: () => import('@/view/ai-builder/ai-builder.vue')
+      }
+    ]
+  },
+  
+  {
     path: '/stream',
     name: 'stream',
     meta: {
@@ -62,31 +82,10 @@ export default [
         path: 'stream_page',
         name: 'stream_page',
         meta: {
-          icon: 'ios-camera',
+          icon: 'logo-youtube',
           title: 'Monitor'
         },
         component: () => import('@/view/stream/stream.vue')
-      }
-    ]
-  },
-
-  {
-    path: '/studies',
-    name: 'studies',
-    meta: {
-      hideInBread: true
-    },
-    component: Main,
-    children: [
-      {
-        path: 'studies_page',
-        name: 'studies_page',
-        meta: {
-          icon: 'ios-navigate',
-          title: 'Annotate',
-          beforeCloseName: 'before_close_normal'
-        },
-        component: () => import('@/view/studies/studies.vue')
       }
     ]
   },
@@ -123,6 +122,67 @@ export default [
   },
 
   {
+    path: '/studies',
+    name: 'studies_page',
+    meta: {
+      icon: 'md-stats',
+      title: 'Studies',
+      hideInBread: true
+    },
+    component: Main,
+    children: [
+      {
+        path: 'temporal_anno_page',
+        name: 'temporal_anno_page',
+        meta: {
+          icon: 'md-pie',
+          title: 'Classification'
+        },
+        component: () => import('@/view/studies/temporal.vue')
+      },
+      {
+        path: 'frame_anno_page',
+        name: 'frame_anno_page',
+        meta: {
+          icon: 'ios-photos',
+          title: 'Detection'
+        },
+        component: () => import('@/view/studies/frame.vue')
+      }
+    ]
+  },
+
+  {
+    path: '/ai_functions',
+    name: 'ai_functions_page',
+    meta: {
+      icon: 'ios-map',
+      title: 'Studies',
+      hideInBread: true
+    },
+    component: Main,
+    children: [
+      {
+        path: 'classification_page',
+        name: 'classification_page',
+        meta: {
+          icon: 'ios-albums',
+          title: 'Classification'
+        },
+        component: () => import('@/view/ai-functions/image-classification.vue')
+      },
+      {
+        path: 'detection_page',
+        name: 'detection_page',
+        meta: {
+          icon: 'md-qr-scanner',
+          title: 'Detection'
+        },
+        component: () => import('@/view/ai-functions/object-detection.vue')
+      }
+    ]
+  },
+  {
     path: '/train',
     name: 'train',
     component: Main,
@@ -141,7 +201,6 @@ export default [
       }
     ]
   },
-
   {
     path: '/data',
     name: 'data',
@@ -173,113 +232,34 @@ export default [
   },
 
   {
-    path: '/image_classification',
-    name: '/image_classification',
+    path: '/backup',
+    name: 'backup',
     meta: {
-      hideInBread: true
+      icon: 'ios-apps',
+      title: '数据上传'
     },
     component: Main,
     children: [
       {
-        path: 'image_classification_page',
-        name: 'image_classification_page',
+        path: 'backup1_page',
+        name: 'backup1_page',
         meta: {
-          icon: 'ios-albums',
-          title: '图像分类'
+          icon: 'md-clipboard',
+          title: 'Backup page1'
         },
-        component: () => import('@/view/image-classification/image-classification.vue')
-      }
-    ]
-  },
-  {
-    path: '/object-detection',
-    name: 'object-detection',
-    meta: {
-      hideInBread: true
-    },
-    component: Main,
-    children: [
+        component: () => import('@/view/backup/backup1.vue')
+      },
       {
-        path: 'object_detection_page',
-        name: 'object_detection_page',
+        path: 'backup2_page',
+        name: 'backup2_page',
         meta: {
-          icon: 'ios-compass',
-          title: 'detection'
+          icon: 'md-clipboard',
+          title: 'Backup page2'
         },
-        component: () => import('@/view/object-detection/object-detection.vue')
+        component: () => import('@/view/backup/backup2.vue')
       }
     ]
   },
-
-  {
-  path: '/analysis',
-  name: 'analysis',
-  meta: {
-    hideInBread: true,
-  },
-  component: Main,
-  children: [
-    {
-      path: 'analysis_page',
-      name: 'analysis_page',
-      meta: {
-        icon: 'logo-buffer',
-        title: 'analysis'
-      },
-      component: () => import('@/view/analysis/analysis.vue')
-    }
-  ]
-},
-
-{
-  path: '/test',
-  name: 'test',
-  meta: {
-    hideInBread: true
-  },
-  component: Main,
-  children: [
-    {
-      path: 'test_page',
-      name: 'test_page',
-      meta: {
-        icon: 'ios-camera',
-        title: 'Test'
-      },
-      component: () => import('@/view/test/test.vue')
-    }
-  ]
-},
-
-{
-  path: '/backup',
-  name: 'backup',
-  meta: {
-    icon: 'ios-apps',
-    title: '数据上传'
-  },
-  component: Main,
-  children: [
-    {
-      path: 'backup1_page',
-      name: 'backup1_page',
-      meta: {
-        icon: 'md-clipboard',
-        title: 'Backup page1'
-      },
-      component: () => import('@/view/backup/backup1.vue')
-    },
-    {
-      path: 'backup2_page',
-      name: 'backup2_page',
-      meta: {
-        icon: 'md-clipboard',
-        title: 'Backup page2'
-      },
-      component: () => import('@/view/backup/backup2.vue')
-    }
-  ]
-},
 
   {
     path: '/argu',
