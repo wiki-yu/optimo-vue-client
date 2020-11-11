@@ -95,58 +95,56 @@ export default {
       file: null,
       turnFlag: "",
       index: null,
-      dialogVisible: false, //弹框显示隐藏
+      dialogVisible: false, 
   
-      topMoveBox: null, //移动的蓝色时间盒子 ???
-      number: 5, //刻度对应秒数
-      maxTimeLong: 360000, //除以10 即为刻度尺 个 刻度
+      topMoveBox: null, 
+      number: 5, 
+      maxTimeLong: 360000, 
       videoLongTime: "00:00:00",
-      value2: 80, //选择刻度尺刻度大小
+      value2: 80, 
       canvas: null,
       canvasWidth: 60000,
       cxt: null,
-      clickmsg: "Point", //打入打出 START ???
+      clickmsg: "Point", 
       config: {},
-      timeCurrentLeft: "00:00:00:00", //当前距离左侧时间
-      clickCurrentTime: null, //点击距离
+      timeCurrentLeft: "00:00:00:00", 
+      clickCurrentTime: null, 
 
-      timeId: null, //计算定时器
-      clickIn: null, //打入定时器
-      scrollId: null, //滚动定时器
-      subTimeId: null, //分段播放移动计时器
+      timeId: null, 
+      clickIn: null, 
+      scrollId: null, 
+      subTimeId: null, 
 
-      subPlayValue: null, //分段播放数据
-      moveLeft: -40, //移动中bgleft坐标
-      cutCoverList: [], //裁剪列表
-      makeSignList: [], //标记列表
+      subPlayValue: null, 
+      moveLeft: -40, 
+      cutCoverList: [], 
+      makeSignList: [], 
       coverBoxWidth: "0px",
-      clickCurrentLeft: null, //点击打入时，距离左侧位置
+      clickCurrentLeft: null, 
       videoLong: 600,
-      imgWidth: "0px", //图片的宽度
+      imgWidth: "0px", 
       pickeddeng: null,
-      bofangFlag: true, //播放flag
-      signFlag: false, //标记flag
-      scrollFlag: false, //滚动标识
-      target: 1400, //目标位置
-      // 盒子拖拽部分
-      downFlag: false, //按下的标志
+      bofangFlag: true, 
+      signFlag: false, 
+      scrollFlag: false, 
+      target: 1400, 
+  
+      downFlag: false, 
       offsetStart: null,
       offsetEnd: null,
       currentRunMsg: "run",
-      signIndex: null, //当前点击标记的index
+      signIndex: null,
       signLeft: "0px",
       signText: "Mark1",
 
       blueBgFlag:false,
-      timeMoveNumber:0,// 控制滚动数字
+      timeMoveNumber:0,
       
       //TEST
       isClicked: false,
       boundingBoxes: [],
       bounds: {
         'row': 0,
-        'activity': '',
-        'cycle': '',
         'bounds': '',
         'start': '',
         'end': '',
@@ -191,7 +189,6 @@ export default {
   },
 
   mounted () {
-    // 获取时间
     var canvas = document.getElementById("canvas");
     this.canvas = canvas;
     var cxt = canvas.getContext("2d");
@@ -250,32 +247,28 @@ export default {
       var w = config.w || 5;
       var h = config.h || 10;
       var offset = 3; // 上面数字的偏移量
-      cxt.clearRect(0, 0, config.width, config.height); // 画之前清空画布
+      cxt.clearRect(0, 0, config.width, config.height);
   
       cxt.strokeStyle = "#fff";
       cxt.lineWidth = 1;
       cxt.font = 12;
 
       for (var i = 0; i <= size; i++) {
-        cxt.beginPath(); // 开始一条路径
-        cxt.moveTo(x + i * w, y); // 移动到指定位置
-        // 满10刻度时刻度线长一些 并且在上方表明刻度
-        // 区间为 1 s
+        cxt.beginPath(); 
+        cxt.moveTo(x + i * w, y); 
+    
         if (i % 10 == 0 && this.number == 1) {
           offset = 20; 
           cxt.fillText(this.setTime(i / 10), x + i * w - offset, y - h * 2.5);
           cxt.lineTo(x + i * w, y - h * 2);
         }
-       // 区间为 5 s
         if (i % 10 == 0 && this.number == 5) {
           offset = 20;
           cxt.fillText(this.setTime(i / 2), x + i * w - offset, y - h * 2.5);
           cxt.lineTo(x + i * w, y - h * 2);
         }
-        // 区间为 10 s
         if (i % 10 == 0 && this.number == 10) {
           offset = 20;
-          // 按照第一个参数递增
           cxt.fillText(this.setTime(i), x + i * w - offset, y - h * 2.5);
           cxt.lineTo(x + i * w, y - h * 2);
         }
@@ -307,7 +300,6 @@ export default {
         c.beginPath();
         c.lineWidth = "4";
         c.strokeStyle = "red";
-        console.log("QQQQQQQQQQQQQQQQQ", this.bounds)
         c.rect(parseFloat(this.bounds['x1']),
                parseFloat(this.bounds['y1']),
                parseFloat(this.bounds['x2']),
@@ -325,7 +317,6 @@ export default {
         videoHeight = parseFloat(video.videoHeight);
         canvas.width = Math.floor(videoWidth);
         canvas.height = Math.floor(videoHeight);
-        // isLoaded = true;
       }
       video.onloadedmetadata = function() {
         setWidthHeight();
@@ -472,13 +463,12 @@ export default {
 
     getMousePosition: function (e) {
       var canvasBounds = this.$refs.myCanvas.getBoundingClientRect();
-      var rect = myCanvas.getBoundingClientRect(), // abs. size of element
-      scaleX = myCanvas.width / rect.width,    // relationship bitmap vs. element for X
-      scaleY = myCanvas.height / rect.height;  // relationship bitmap vs. element for Y
-
+      var rect = myCanvas.getBoundingClientRect(), 
+      scaleX = myCanvas.width / rect.width,    
+      scaleY = myCanvas.height / rect.height;  
       return {
-        x: (e.clientX - rect.left) * scaleX,   // scale mouse coordinates after they have
-        y: (e.clientY - rect.top) * scaleY     // been adjusted to be relative to element
+        x: (e.clientX - rect.left) * scaleX,   
+        y: (e.clientY - rect.top) * scaleY    
       }
     },
     
@@ -488,7 +478,7 @@ export default {
       var vedio = document.getElementById("myVideo");
       var canvas = document.getElementById('myCanvas');
       var ctx = canvas.getContext('2d');
-      vedio.play(); //播放 
+      vedio.play(); 
 
       const timeMove = document.getElementsByClassName("blueBg")[0];
       timeMove.style.left = this.target + "px";
@@ -520,7 +510,7 @@ export default {
 
     //pause
     stop() {
-      // this.Event.$emit("paly", false); //暂停视频
+      // this.Event.$emit("paly", false); 
       var vedio = document.getElementById("myVideo");
       vedio.pause(); //pause
       this.bofangFlag = true;
@@ -554,7 +544,7 @@ export default {
       var fininal = currentLeft - movePX;
       timeMove.style.left = fininal + "px";
       this.timeCurrentLeft = this.getStartEndTime(fininal + 40);
-      this.Event.$emit("currentTime", this.timeCurrentLeft); //触发上一帧下一帧
+      this.Event.$emit("currentTime", this.timeCurrentLeft); 
     },
 
     // next frame
@@ -580,7 +570,7 @@ export default {
       this.Event.$emit("currentTime", this.timeCurrentLeft);
     },
 
-    // 获取总秒树
+    // Get total secs
     getCountS(time) {
       var hour = time.split(":")[0];
       var min = time.split(":")[1];
@@ -596,15 +586,10 @@ export default {
       var minuteTime = 0; // mins
       var hourTime = 0; // hours
       if (secondTime > 60) {
-        //如果秒数大于60，将秒数转换成整数获取分钟，除以60取整数，得到整数分钟
         minuteTime = parseInt(secondTime / 60);
-        //获取秒数，秒数取佘，得到整数秒数
         secondTime = parseInt(secondTime % 60);
-        //如果分钟大于60，将分钟转换成小时
         if (minuteTime > 60) {
-          //获取小时，获取分钟除以60，得到整数小时
           hourTime = parseInt(minuteTime / 60);
-          //获取小时后取佘的分，获取分钟除以60取佘的分
           minuteTime = parseInt(minuteTime % 60);
         }
       }
@@ -625,19 +610,14 @@ export default {
       if (String(detail).length == 1) {
         detail = String(detail + "0");
       }
-      var secondTime = parseInt(time); // 秒
-      var minuteTime = 0; // 分
-      var hourTime = 0; // 小时
+      var secondTime = parseInt(time);
+      var minuteTime = 0; 
+      var hourTime = 0; 
       if (secondTime >= 60) {
-        //如果秒数大于60，将秒数转换成整数获取分钟，除以60取整数，得到整数分钟
         minuteTime = parseInt(secondTime / 60);
-        //获取秒数，秒数取佘，得到整数秒数
         secondTime = parseInt(secondTime % 60);
-        //如果分钟大于60，将分钟转换成小时
         if (minuteTime >= 60) {
-          //获取小时，获取分钟除以60，得到整数小时
           hourTime = parseInt(minuteTime / 60);
-          //获取小时后取佘的分，获取分钟除以60取佘的分
           minuteTime = parseInt(minuteTime % 60);
         }
       }
@@ -650,7 +630,6 @@ export default {
     timeMove() {
       const timeMove = document.getElementsByClassName("blueBg")[0];
       if (this.clickmsg == "END") {
-        // 添加结束时间
         var currentBox = this.cutCoverList[this.cutCoverList.length - 1];
         var start = this.getCountS(currentBox.startTime);
         var end = this.getCountS(
@@ -678,8 +657,6 @@ export default {
         // return;
         var target = this.target;
         this.clickCurrentLeft = window.getComputedStyle(timeMove).left;
-        // console.log(this.clickCurrentLeft)
-        // 添加覆盖盒子
         this.$set(this.cutCoverList, this.cutCoverList.length, {
           clickFlag: true,
           text: "Section" + parseInt(parseInt(this.cutCoverList.length) + 1),
