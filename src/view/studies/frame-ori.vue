@@ -51,6 +51,11 @@
           <i class="icon-bofang1 iconfont" @click="stop" v-else></i>
           <i class="iconfont icon-kuaijin-" @click="nextpage"></i>
         </div>
+        <div class="rule">
+          <div class="block">
+            <!-- <el-slider v-model="value2" :step="20" show-stops @change="stepChange"></el-slider> -->
+          </div>
+        </div>
       </div>
       <!-- Bottom level: display -->
       <div class="controlLine">
@@ -64,41 +69,6 @@
               <span class="turnDowm"></span>
             </div>
           </div>
-            <table class="table table-striped" id="table" ref="table">
-              <thead class="thead-dark">
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Object </th>
-                  <th scope="col">Bounds </th>
-                  <th scope="col">Start </th>
-                  <th scope="col">End </th>
-                  <th scope="col"> </th>
-                </tr>
-              </thead>
-              <tbody id=table-body v-for="boundingBox in boundingBoxes" :key="boundingBox.row" :row="boundingBox.row">
-                <tr ref="row-key" class="row-unsaved">
-                  <th scope='row'>{{ boundingBox.row }}</th>
-                  <td ref="activity-key">
-                    <input ref="text-input-key" class="activity" type="text" :value="`Object ${boundingBox.row}`">
-                  </td>
-                  <td class="bounds">
-                    ({{ boundingBox.x1 }},{{ boundingBox.y1 }}),
-                    ({{ parseFloat(boundingBox.x2)+parseFloat(boundingBox.x1) }},{{ parseFloat(boundingBox.y2)+parseFloat(boundingBox.y1) }})
-                  </td>
-                  <td ref="starttime-key">{{ boundingBox.start }}</td>
-                  <td ref="endtime-key">{{ boundingBox.end }}</td>
-                  <td ref="button-key">
-                    <button class="btn btn-dark btn-sm" @click="updateButton(`${boundingBox.row}`, $event)">
-                      Save
-                    </button>
-                    <br><br>
-                    <button class="btn btn-dark btn-sm" @click="deleteButton(`${boundingBox.row}`, $event)">
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
         </div>
       </div>
     </footer>
@@ -117,11 +87,13 @@ export default {
   name: 'upload-excel',
   data () {
     return {
+      showVideo: false,
       uploadLoading: false,
       progressPercent: 0,
       showProgress: false,
       showRemoveFile: false,
       file: null,
+      turnFlag: "",
       index: null,
       dialogVisible: false, 
   
@@ -129,12 +101,14 @@ export default {
       number: 5, 
       maxTimeLong: 360000, 
       videoLongTime: "00:00:00",
+      value2: 80, 
       canvas: null,
       canvasWidth: 60000,
       cxt: null,
       clickmsg: "Point", 
       config: {},
       timeCurrentLeft: "00:00:00:00", 
+      clickCurrentTime: null, 
 
       timeId: null, 
       clickIn: null, 
@@ -154,8 +128,14 @@ export default {
       signFlag: false, 
       scrollFlag: false, 
       target: 1400, 
-
+  
+      downFlag: false, 
+      offsetStart: null,
+      offsetEnd: null,
       currentRunMsg: "run",
+      signIndex: null,
+      signLeft: "0px",
+      signText: "Mark1",
 
       blueBgFlag:false,
       timeMoveNumber:0,
@@ -183,17 +163,15 @@ export default {
   created() {
     this.Event.$on("allTime", data => {
       this.videoLongTime = this.setTime(data);
-      console.log("original time len:, transfered time len: ", data, this.videoLongTime)
+      console.log("original time len, transfered time len: ", data, this.videoLongTime)
       this.videoLong = data;
 
       this.maxTimeLong = Math.ceil(data) * 100;
       this.imgWidth = (this.videoLong / this.number) * 100 + "px"; //Thumbnail len matches with video length
       this.target = parseFloat(this.imgWidth) - 40;  //parses a string and returns a floating point number.
-      console.log("imgWidth, target: ", this.imgWidth, this.target)
     });
     this.setKeydown()
-    
-    //show the vido time length on canvas
+
     this.$nextTick(() => {
       var vedio = document.getElementById("myVideo");
       var that = this;
@@ -219,7 +197,11 @@ export default {
     var config = {
       height: 200,
       width: this.canvasWidth,
+      // 刻度尺相关
+      // start: "00:00:00",
+      // end: "00:20:10",
       size: 300, // 刻度尺总刻度数
+      // unit:10,
       x: 20, // 刻度尺x坐标位置
       y: 70, // 刻度尺y坐标位置
       w: 10, // 刻度线的间隔
@@ -275,12 +257,36 @@ export default {
         cxt.beginPath(); 
         cxt.moveTo(x + i * w, y); 
     
+        if (i % 10 == 0 && this.number == 1) {
+          offset = 20; 
+          cxt.fillText(this.setTime(i / 10), x + i * w - offset, y - h * 2.5);
+          cxt.lineTo(x + i * w, y - h * 2);
+        }
         if (i % 10 == 0 && this.number == 5) {
           offset = 20;
           cxt.fillText(this.setTime(i / 2), x + i * w - offset, y - h * 2.5);
           cxt.lineTo(x + i * w, y - h * 2);
         }
-        else {
+        if (i % 10 == 0 && this.number == 10) {
+          offset = 20;
+          cxt.fillText(this.setTime(i), x + i * w - offset, y - h * 2.5);
+          cxt.lineTo(x + i * w, y - h * 2);
+        }
+        if (i % 10 == 0 && this.number == 30) {
+          offset = 20;
+          cxt.fillText(this.setTime(i * 3), x + i * w - offset, y - h * 2.5);
+          cxt.lineTo(x + i * w, y - h * 2);
+        }
+        if (i % 10 == 0 && this.number == 120) {
+          offset = 20;
+          cxt.fillText(this.setTime(i * 12), x + i * w - offset, y - h * 2.5);
+          cxt.lineTo(x + i * w, y - h * 2);
+        }
+        if (i % 10 == 0 && this.number == 600) {
+          offset = 20;
+          cxt.fillText(this.setTime(i * 60), x + i * w - offset, y - h * 2.5);
+          cxt.lineTo(x + i * w, y - h * 2);
+        } else {
           cxt.lineTo(x + i * w, y - (i % 5 === 0 ? 1.5 : 1) * h);
         }
         cxt.stroke();
@@ -390,6 +396,9 @@ export default {
       this.blueBgFlag = false;
        console.log("blue dictator mouse up@@@@@@@@@@@@@@@@@@@@")
     },
+
+    // handleScroll() {
+    // },
 
     //set the current time 
     showMoveImg($event) {
@@ -504,11 +513,9 @@ export default {
       // this.Event.$emit("paly", false); 
       var vedio = document.getElementById("myVideo");
       vedio.pause(); //pause
-      this.bofangFlag = true; //play or pause mark
+      this.bofangFlag = true;
       const timeMove = document.getElementsByClassName("blueBg")[0];
       this.moveLeft = window.getComputedStyle(timeMove).left;
-      console.log("timeMove ", timeMove)
-      console.log("this.moveleft: ", this.moveLeft)
       timeMove.style.left = this.moveLeft;
       timeMove.style.transition = `none`;
       clearInterval(this.timeId);

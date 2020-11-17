@@ -14,7 +14,6 @@
           <chart-bar style="height: 300px;" :value="barData" text="Image Annotation Amount"/>
         </Card>
       </i-col>
-      <button @click="handle">button</button>
       <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
         <Card shadow>
           <chart-pie style="height: 300px;" :value="pieData" text="Saved Video Analysis"></chart-pie>
