@@ -25,16 +25,28 @@
       </Form>
     </div> 
     <div v-if="registerOn">
-      <!-- <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80"> -->
+      <!-- <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="100"> -->
       <Form ref="formValidate" :model="formValidate" :label-width="100">
-        <FormItem label="E-mail:" prop="email">
-            <Input v-model="formValidate.email" placeholder="Enter your e-mail"></Input>
+        <FormItem label="E-mail:" prop="regEmail">
+            <Input v-model="formValidate.regEmail" placeholder="Enter your e-mail">
+              <span slot="prepend">
+                <Icon :size="15" type="ios-mail"></Icon>
+              </span>
+            </Input>
         </FormItem>
-        <FormItem label="Password:" prop="password">
-            <Input v-model="formValidate.password" placeholder="Enter your password"></Input>
+        <FormItem label="Password:" prop="regPassword">
+            <Input v-model="formValidate.regPassword" placeholder="Enter your password">
+              <span slot="prepend">
+                <Icon :size="14" type="md-lock"></Icon>
+              </span>
+            </Input>
         </FormItem>
-        <FormItem label="User Name:" prop="name">
-            <Input v-model="formValidate.name" placeholder="Enter your name"></Input>
+        <FormItem label="User Name:" prop="regName">
+            <Input v-model="formValidate.regName" placeholder="Enter your name">
+              <span slot="prepend">
+                <Icon :size="16" type="ios-person"></Icon>
+              </span>
+            </Input>
         </FormItem>
         <FormItem>
           <Button @click="registerInfoSubmit" type="primary" long>Register</Button>
@@ -50,6 +62,7 @@
 <script>
 import axios from 'axios'
 import { mapActions } from 'vuex'
+
 export default {
   name: 'LoginForm',
   props: {
@@ -72,28 +85,25 @@ export default {
   },
   data () {
     return {
-      userNamePass: '',
-      passwordPass: '',
       registerOn: false, //xuyong
       form: {
         userName: '',
         password: ''
       },
-      //add by xuyong
       formValidate: {
-        name: '',
-        email: '',
-        password: '',
+        regEmail: '',
+        regPassword: '',
+        regName: '',
       },
       ruleValidate: {
-          email: [
+          regEmail: [
               { required: true, message: 'Mailbox cannot be empty', trigger: 'blur' },
               { type: 'email', message: 'Incorrect email format', trigger: 'blur' }
           ],
-          password: [
+          regPassword: [
               { required: true, message: 'The pwd cannot be empty', trigger: 'blur' }
           ],
-          name: [
+          regName: [
               { required: true, message: 'The name cannot be empty', trigger: 'blur' }
           ],
       }
@@ -129,12 +139,12 @@ export default {
             })
           }
           else {
-            alert("User name or password incorrect!")
+            this.$message.error("User name or password incorrect!")
           }
         })
         .catch(err => {
           console.log(err)
-          alert("User name or password incorrect!")
+          this.$message.error("User name or password incorrect!")
         })
         }
       })
@@ -154,9 +164,9 @@ export default {
       this.registerOn = false
     },
     registerInfoSubmit () {
-       console.log(this.formValidate.name)
-       console.log(this.formValidate.email)
-       console.log(this.formValidate.password)
+       console.log(this.formValidate.regName)
+       console.log(this.formValidate.regEmail)
+       console.log(this.formValidate.regPassword)
        axios
         .post('http://localhost:3000/register', this.formValidate)
         .then(res => {
