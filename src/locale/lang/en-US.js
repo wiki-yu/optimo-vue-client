@@ -21,6 +21,7 @@ export default {
   ai_functions_page: 'AI Functions', 
   classification_page: 'Image Classification', 
   detection_page: 'Object Detection', 
+  motionDetection_page: 'Motion Detection',
   train_page: 'Training',
   data: 'Data Management',
   upload_data_page: 'Upload Data',

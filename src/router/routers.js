@@ -163,15 +163,6 @@ export default [
     component: Main,
     children: [
       {
-        path: 'classification_page',
-        name: 'classification_page',
-        meta: {
-          icon: 'ios-albums',
-          title: 'Classification'
-        },
-        component: () => import('@/view/ai-functions/image-classification.vue')
-      },
-      {
         path: 'detection_page',
         name: 'detection_page',
         meta: {
@@ -179,7 +170,16 @@ export default [
           title: 'Detection'
         },
         component: () => import('@/view/ai-functions/object-detection.vue')
-      }
+      },
+      {
+        path: 'motionDetection_page',
+        name: 'motionDetection_page',
+        meta: {
+          icon: 'ios-albums',
+          title: 'motionDetection'
+        },
+        component: () => import('@/view/ai-functions/motion-detection.vue')
+      },
     ]
   },
   {
