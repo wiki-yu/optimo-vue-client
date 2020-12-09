@@ -167,7 +167,7 @@ export default {
        console.log(this.formValidate.email)
        console.log(this.formValidate.password)
        axios
-        .post('http://ip_addr:3000/register', this.formValidate)
+        .post('http://localhost:3000/register', this.formValidate)
         .then(res => {
           console.log("[START]Receiving data from backend!!!!!")
           console.log(res)

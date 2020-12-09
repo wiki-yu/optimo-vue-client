@@ -1,11 +1,12 @@
 .DS_Store
 *.mp4
+/src/assets/videoCut/demo.mp4
 node_modules
 /dist
 package-lock.json
 /tests/e2e/videos/
 /tests/e2e/screenshots/
-
+/src/assets/videoCut/
 
 # local env files
 .env.local
