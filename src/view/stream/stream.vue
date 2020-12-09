@@ -5,7 +5,6 @@
         <Card shadow>
         <div class="add-cam" v-if="!pressAddCamBtn">
           <Button type="info" shape="circle" icon="ios-add-circle-outline" @click="getCamInput"></Button>
-          <!-- <Button type="primary" icon="md-arrow-back" @click="previous_fast"></Button> -->
           <p class="item">Add an IP Camera</p>
         </div>
         <div class="cam-form" v-if="pressAddCamBtn">
@@ -44,17 +43,15 @@
             </Card>
         </i-col>
         <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
-          <!-- <div v-if="addCanvas"> -->
             <Card shadow>
               <p slot="title" class="card-title" >
                 <Icon type="md-desktop" size:="20"/>
-                Frame Display
+                Frame Canvas
               </p>
               <div>
-                <canvas id="myCanvas" ref="myCanvas" style="width: 100%" @mousedown="mousedown" @mouseup="mouseup" @mousemove="mousemove"> </canvas>
+                <canvas id="myCanvas" ref="myCanvas" style="width: 100%" @mousedown="mousedown" @mouseup="mouseup" @mousemove="mousemove"></canvas>
               </div>
             </Card>
-          <!-- </div> -->
         </i-col>
       </Row>
 
@@ -62,13 +59,13 @@
         <Row :gutter="20" style="margin-top: 10px;" type="flex">
           <i-col :md="24" :lg="24" style="margin-bottom: 20px; display: inline-block;">
             <div class="btnGrp" style="margin-top: 20px;">
-              <Button type="primary" size="large" icon="ios-power" @click="startStudy"></Button>
+              <Button type="primary" size="large" icon="ios-power" @click="startStudy">Start</Button>
               <ButtonGroup size="large" style="margin-left: 8px">
-                  <Button type="primary" icon="md-arrow-back" @click="previous_fast"></Button>
-                  <Button type="primary" icon="ios-skip-backward" @click="previous"></Button>
-                  <Button type="primary" icon="md-arrow-dropright-circle" @click="getVideoPic"></Button>
-                  <Button type="primary" icon="ios-skip-forward" @click="next"></Button>
-                  <Button type="primary" icon="md-arrow-forward" @click="next_fast"></Button>
+                  <Button type="primary" icon="md-arrow-back" @click="previousSec">-1s</Button>
+                  <Button type="primary" icon="ios-skip-backward" @click="previousFrame">last frame</Button>
+                  <!-- <Button type="primary" icon="md-arrow-dropright-circle" @click="getVideoPic"></Button> -->
+                  <Button type="primary" icon="ios-skip-forward" @click="nextFrame">next frame</Button>
+                  <Button type="primary" icon="md-arrow-forward" @click="nextSec">+1s</Button>
               </ButtonGroup>
               <ButtonGroup size="large" style="margin-left: 8px">
                   <Button icon="ios-color-wand-outline"></Button>
@@ -79,22 +76,24 @@
             </div>
           </i-col>
         </Row>
-        <Row :gutter="20" style="margin-top: 10px;" type="flex">
-          <i-col :md="4" :lg="2" style="margin-bottom: 20px; display: inline-block;">
-            <el-button round>Start Time</el-button>
-          </i-col>
-          <i-col :md="20" :lg="22" style="margin-bottom: 20px; display: inline-block;">
-            <el-slider v-model="sliderVal" @input="on_input" show-input :max="sliderMax" :step="sliderStep"></el-slider > 
-          </i-col>
-        </Row>
-        <Row :gutter="20" style="margin-top: 10px;" type="flex">
-          <i-col :md="4" :lg="2" style="margin-bottom: 20px; display: inline-block;">
-              <el-button round>End Time</el-button>
-          </i-col>
-          <i-col :md="20" :lg="22" style="margin-bottom: 20px; display: inline-block;">
-            <el-slider  v-model="sliderValEnd" @input="on_input_end" show-input :max="sliderMax" :step="sliderStep"></el-slider > 
-          </i-col>
-        </Row>
+        <div>
+          <Row :gutter="20" style="margin-top: 10px;" type="flex">
+            <i-col :md="4" :lg="2" style="margin-bottom: 20px; display: inline-block;">
+              <el-button round>Start Time</el-button>
+            </i-col>
+            <i-col :md="20" :lg="22" style="margin-bottom: 20px; display: inline-block;">
+              <el-slider v-model="sliderValStart" @input="SliderInput1" show-input :max="sliderMax" :step="sliderStep"></el-slider > 
+            </i-col>
+          </Row>
+          <Row :gutter="20" style="margin-top: 10px;" type="flex">
+            <i-col :md="4" :lg="2" style="margin-bottom: 20px; display: inline-block;">
+                <el-button round>End Time</el-button>
+            </i-col>
+            <i-col :md="20" :lg="22" style="margin-bottom: 20px; display: inline-block;">
+              <el-slider  v-model="sliderValEnd" @input="SliderInput2" show-input :max="sliderMax" :step="sliderStep"></el-slider > 
+            </i-col>
+          </Row>
+        </div>
       </Card>
     
       <Row :gutter="20" style="margin-top: 10px;" type="flex">
@@ -155,9 +154,10 @@
               ANNOTATION TABLE
             </p>
             <div>
-              <b-table v-if="showTable" striped hover :items="items" sticky-header="100%"></b-table>
+              <!-- <b-table v-if="showTable" striped hover :items="items" sticky-header="100%"></b-table> -->
+              <Table v-if="showTable" :columns="Tablecolumns" :data="tableData" :loading="tableLoading"></Table>
             </div>
-            <Button icon="md-download" :loading="exportLoading" @click="exportExcel">Export File</Button>
+            <Button icon="md-download" :loading="exportLoading" @click="exportExcel" style="margin-top: 10px;">Export File</Button>
           </Card>
         </i-col>
       </Row>
@@ -168,6 +168,7 @@
 <script>
 import 'video.js/dist/video-js.css'
 import { videoPlayer } from 'vue-video-player'
+import excel from '@/libs/excel'
 
 export default {
   components: {
@@ -176,8 +177,8 @@ export default {
   data () {
     return {
       pressAddCamBtn: false,
-      addCanvas: false,
       camAdded: false,
+      tableLoading: false, 
 
       formInline: {
         user: '',
@@ -193,9 +194,63 @@ export default {
           ]
       },
 
+      Tablecolumns: [
+        {
+          title: 'Start Time',
+          key: 'Start',
+        },
+        {
+          title: 'End Time',
+          key: 'End'
+        },
+        {
+          title: 'Coordinates',
+          key: 'Coord'
+        },
+        {
+          title: 'Label',
+          key: 'Label'
+        },
+        {
+          title: 'Action',
+          key: 'action',
+          width: 150,
+          align: 'center',
+          render: (h, params) => {
+              return h('div', [
+                  h('Button', {
+                      props: {
+                          type: 'primary',
+                          size: 'small'
+                      },
+                      style: {
+                          marginRight: '5px'
+                      },
+                      on: {
+                          click: () => {
+                              this.viewItem(params.index)
+                          }
+                      }
+                  }, 'View'),
+                  h('Button', {
+                      props: {
+                          type: 'error',
+                          size: 'small'
+                      },
+                      on: {
+                          click: () => {
+                              this.remove(params.index)
+                          }
+                      }
+                  }, 'Delete')
+              ]);
+          }
+        }
+      ],
+
       playerOptions: {
       autoplay: false,
-      controls: false,
+      controls: true,
       fluid: true,
       sources: [{
         type: 'video/mp4',
@@ -209,6 +264,7 @@ export default {
       dataurl: '',
       exportLoading: false,
       items: [],
+      tableData: [],
       col1: [],
       col2: [],
       col3: [],
@@ -220,7 +276,7 @@ export default {
         coord: '',
         label: ''
       },
-      sliderVal: 0, // the slider
+      sliderValStart: 0, // the slider
       sliderValEnd: 0,
       show: true,
       flag: false,
@@ -233,6 +289,11 @@ export default {
     }
   },
 
+  created: function () {
+    console.log("stream page created &&&&&&&&&&&&")
+    this.setSliderStep((1 / 30).toFixed(2))
+  },
+
   computed: {
     player () {
       return this.$refs.videoPlayer.player
@@ -243,19 +304,19 @@ export default {
     getCamInput () {
       this.pressAddCamBtn = true
     },
+
     goBackAddIp () {
       this.pressAddCamBtn = false
       this.camAdded = false
-      this.addCanvas = false
     },
+
     startStudy () {
       console.log("&&&&&&&&&&&&")
-      this.addCanvas = true
-      this.setSliderStep((1 / 30).toFixed(2))
+      this.player.currentTime(this.sliderValStart)
+      this.getVideoPic() 
     },
+
     handleSubmit(name) {
-      console.log("********************")
-      console.log(this.camAdded)
       this.camAdded = true;
       this.$refs[name].validate((valid) => {
         if (valid) {
@@ -267,26 +328,19 @@ export default {
     },
 
     getVideoPic () {
-      this.addCanvas = true
       let video = document.getElementsByClassName('vjs-tech')[0]
-      // let video = document.querySelector('video'); // an alternative to replace the code above
-      // let canvas = document.createElement('canvas') //when use img element
       var canvas = document.getElementById('myCanvas')
+  
       let w = video.videoWidth
       let h = video.videoHeight
-      // let w = window.innerWidth
-      // let h = window.innerHeight
       canvas.width = w
       canvas.height = h
-      console.log(canvas)
+
       const ctx = canvas.getContext('2d')
       ctx.drawImage(video, 0, 0, w, h)
-      // this.previewImg = canvas.toDataURL('image/png')
-      // var dataUrl = canvas.toDataURL("image/png");
-      // document.createElement('img').src=dataUrl;
-      // console.log(this.previewImg)
+  
       ctx.strokeStyle = '#00ff00'
-      ctx.lineWidth = 1
+      ctx.lineWidth = 8
       ctx.strokeRect(this.x_leftUpper, this.y_leftUpper, this.x_lowerRight, this.y_lowerRight)
     },
 
@@ -296,29 +350,36 @@ export default {
         const canvas = this.$refs.myCanvas
         let video = document.getElementsByClassName('vjs-tech')[0]
         var ctx = canvas.getContext('2d')
+
         let x = this.x
         let y = this.y
         ctx.clearRect(0, 0, canvas.width, canvas.height)
-        console.log("canvas w, h: ", canvas.width, canvas.height)
-        // let w = video.videoWidth
-        // let h = video.videoHeight
-        let w = canvas.width
-        let h = canvas.height
-        
-        canvas.width = w
-        canvas.height = h
-        ctx.drawImage(video, 0, 0, w, h)
+        console.log("canvas width, height: ", canvas.width, canvas.height)
+        console.log("client width, height: ", canvas.clientWidth, canvas.clientHeight)
+
+        let widthRatio = canvas.width / canvas.clientWidth
+        let heightRatio = canvas.height / canvas.clientHeight
+        console.log("widhtRatio, heightRatio: ", widthRatio, heightRatio)
+
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
 
         ctx.beginPath()
         ctx.strokeStyle = '#00ff00' // set up the rectangle line color
         ctx.lineWidth = 8 // set up the rectangle line width
+        
+        let x1 = x * widthRatio
+        let y1 = y * heightRatio
+        let x2 = e.offsetX * widthRatio
+        let y2 = e.offsetY * heightRatio
+        // ctx.strokeRect(x, y, e.offsetX - x, e.offsetY - y)
+        ctx.strokeRect(x1, y1, x2 - x1, y2 - y1)
 
-        ctx.strokeRect(x, y, e.offsetX - x, e.offsetY - y)
-        this.x_leftUpper = x
-        this.y_leftUpper = y
-        this.x_lowerRight = e.offsetX - x
-        this.y_lowerRight = e.offsetY - y
-        var coordinates = x.toString() + ' ' + y.toString() + ' ; ' + this.x_lowerRight.toString() + ' ' + this.y_lowerRight.toString() + ';' 
+        this.x_leftUpper = x1.toFixed()
+        this.y_leftUpper = y1.toFixed()
+        this.x_lowerRight = (x2 - x1).toFixed()
+        this.y_lowerRight = (y2 - y1).toFixed()
+        let coordinates = this.x_leftUpper.toString() + ' ' + this.y_leftUpper.toString() + ' ; ' + this.x_lowerRight.toString() + ' ' + this.y_lowerRight.toString() + ';' 
+        console.log("coordnates!!!!", this.x_leftUpper, this.y_leftUpper, this.x_lowerRight, this.y_lowerRight)
         this.form.coord = coordinates
       }
     },
@@ -328,58 +389,60 @@ export default {
       this.flag = true
       this.x = e.offsetX // the X coordinate when mouse down
       this.y = e.offsetY // the Y coordinate when mouse down
-      console.log("mouse down x, y: ", this.x, this.y)
+      // console.log("canvas width, height <<<<<<<<: ", canvas.width, canvas.height)
+      // console.log("Client width height ", canvas.clientWidth, canvas.clientHeight)
+      // console.log("mouse position <<<<<<<< x, y: ", this.x, this.y)
     },
 
     mouseup (e) {
-      console.log('mouse up')
+      // console.log('mouse up')
       this.flag = false
-      console.log("mouse up x, y: ", this.x, this.y)
+      // console.log("mouse up x, y: ", this.x, this.y)
     },
 
     mousemove (e) {
       this.drawRect(e)
     },
 
-    previous () {
+    previousFrame () {
       const currentTime = this.player.currentTime()
       this.player.currentTime(currentTime - 1 / 30)
       this.player.pause()
       this.getVideoPic()
     },
 
-    next () {
+    nextFrame () {
       const currentTime = this.player.currentTime()
       this.player.currentTime(currentTime + 1 / 30)
       this.player.pause()
       this.getVideoPic()
     },
 
-    previous_fast () {
+    previousSec () {
       const currentTime = this.player.currentTime()
       this.player.currentTime(currentTime - 1)
       this.player.pause()
       this.getVideoPic()
     },
 
-    next_fast () {
+    nextSec () {
       const currentTime = this.player.currentTime()
       this.player.currentTime(currentTime + 1)
       this.player.pause()
       this.getVideoPic()
     },
 
-    on_input () {
-      console.log(this.sliderVal)
-      this.player.currentTime(this.sliderVal)
-      this.getVideoPic () 
-      this.form.start = this.sliderVal
+    SliderInput1 () {
+      console.log(this.sliderValStart)
+      this.player.currentTime(this.sliderValStart)
+      this.getVideoPic() 
+      this.form.start = this.sliderValStart
     },
 
-    on_input_end () {
-      console.log(this.sliderVal)
+    SliderInput2 () {
+      console.log(this.sliderValEnd)
       this.player.currentTime(this.sliderValEnd)
-      this.getVideoPic () 
+      this.getVideoPic() 
       this.form.end = this.sliderValEnd
     },
 
@@ -391,7 +454,6 @@ export default {
       this.col2 = this.form.end
       this.col3 = this.form.coord
       this.col4 = this.form.label
-      console.log(this.col1)
       this.fillTable()
     },
 
@@ -400,18 +462,13 @@ export default {
       // Reset our form values
       this.form.start = ''
       this.form.end = ''
+      this.form.coord = ''
       this.form.label = ''
       // Trick to reset/clear native browser form validation state
       this.show = false
       this.$nextTick(() => {
         this.show = true
       })
-    },
-
-    fillTable: function () {
-      // this.items = [];
-      this.items.push({ Start: this.col1, End: this.col2, Coord: this.col3, Lable: this.col4 })
-      console.log(this.items)
     },
 
     onPlayerLoadeddata (e) {
@@ -429,8 +486,38 @@ export default {
       this.sliderStep = Number(step)
     },
 
+    fillTable: function () {
+      // this.items = [];
+      // this.items.push({ Start: this.col1, End: this.col2, Coord: this.col3, Lable: this.col4 })
+      this.tableData.push({Start: this.col1, End: this.col2, Coord: this.col3, Label: this.col4})
+    },
+
+    viewItem (index) {
+      this.$Modal.info({
+          title: 'Annotation Info',
+          content: `Start: ${this.tableData[index].Start}<br>End：${this.tableData[index].End}<br>Coord：${this.tableData[index].Coord}`
+      })
+    },
+    remove (index) {
+      this.tableData.splice(index, 1);
+    },
+
+
     exportExcel () {
-      console.log("test")
+      if (this.tableData.length) {
+        this.exportLoading = true
+        const params = {
+          title: ['Start Time', 'End Time', 'Coordinates', 'Label'],
+          key: ['Start', 'End', 'Coord', 'Label'],
+          data: this.tableData,
+          autoWidth: true,
+          filename: 'Annotation Table'
+        }
+        excel.export_array_to_excel(params)
+        this.exportLoading = false
+      } else {
+        this.$Message.info('Excel table cannot be empty!')
+      }
     }
 
   },
