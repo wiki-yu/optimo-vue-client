@@ -57,32 +57,45 @@
           <!-- </div> -->
         </i-col>
       </Row>
-      <Row :gutter="20" style="margin-top: 10px;" type="flex">
-        <i-col :md="24" :lg="24" style="margin-bottom: 20px; display: inline-block;">
-          <div class="btnGrp" style="margin-top: 20px;">
-            <Button type="primary" size="large" icon="ios-power" @click="startStudy"></Button>
-            <ButtonGroup size="large" style="margin-left: 8px">
-                <Button type="primary" icon="md-arrow-back" @click="previous_fast"></Button>
-                <Button type="primary" icon="ios-skip-backward" @click="previous"></Button>
-                <Button type="primary" icon="md-arrow-dropright-circle" @click="getVideoPic"></Button>
-                <Button type="primary" icon="ios-skip-forward" @click="next"></Button>
-                <Button type="primary" icon="md-arrow-forward" @click="next_fast"></Button>
-            </ButtonGroup>
-            <ButtonGroup size="large" style="margin-left: 8px">
-                <Button icon="ios-color-wand-outline"></Button>
-                <Button icon="ios-sunny-outline"></Button>
-                <Button icon="ios-crop"></Button>
-                <Button icon="ios-color-filter-outline"></Button>
-            </ButtonGroup>
-          </div>
-          <div style="width: 80% display: inline-block;">
-            <label>Start Time: </label>
-            <Slider v-model="sliderVal" @on-input="on_input" show-input :max="sliderMax" :step="sliderStep"></Slider> 
-            <label>End Time: </label>
-            <Slider v-model="sliderValEnd" @on-input="on_input_end" show-input :max="sliderMax" :step="sliderStep"></Slider> 
-          </div>
-        </i-col>
-      </Row>
+
+      <Card shadow>
+        <Row :gutter="20" style="margin-top: 10px;" type="flex">
+          <i-col :md="24" :lg="24" style="margin-bottom: 20px; display: inline-block;">
+            <div class="btnGrp" style="margin-top: 20px;">
+              <Button type="primary" size="large" icon="ios-power" @click="startStudy"></Button>
+              <ButtonGroup size="large" style="margin-left: 8px">
+                  <Button type="primary" icon="md-arrow-back" @click="previous_fast"></Button>
+                  <Button type="primary" icon="ios-skip-backward" @click="previous"></Button>
+                  <Button type="primary" icon="md-arrow-dropright-circle" @click="getVideoPic"></Button>
+                  <Button type="primary" icon="ios-skip-forward" @click="next"></Button>
+                  <Button type="primary" icon="md-arrow-forward" @click="next_fast"></Button>
+              </ButtonGroup>
+              <ButtonGroup size="large" style="margin-left: 8px">
+                  <Button icon="ios-color-wand-outline"></Button>
+                  <Button icon="ios-sunny-outline"></Button>
+                  <Button icon="ios-crop"></Button>
+                  <Button icon="ios-color-filter-outline"></Button>
+              </ButtonGroup>
+            </div>
+          </i-col>
+        </Row>
+        <Row :gutter="20" style="margin-top: 10px;" type="flex">
+          <i-col :md="4" :lg="2" style="margin-bottom: 20px; display: inline-block;">
+            <el-button round>Start Time</el-button>
+          </i-col>
+          <i-col :md="20" :lg="22" style="margin-bottom: 20px; display: inline-block;">
+            <el-slider v-model="sliderVal" @input="on_input" show-input :max="sliderMax" :step="sliderStep"></el-slider > 
+          </i-col>
+        </Row>
+        <Row :gutter="20" style="margin-top: 10px;" type="flex">
+          <i-col :md="4" :lg="2" style="margin-bottom: 20px; display: inline-block;">
+              <el-button round>End Time</el-button>
+          </i-col>
+          <i-col :md="20" :lg="22" style="margin-bottom: 20px; display: inline-block;">
+            <el-slider  v-model="sliderValEnd" @input="on_input_end" show-input :max="sliderMax" :step="sliderStep"></el-slider > 
+          </i-col>
+        </Row>
+      </Card>
     
       <Row :gutter="20" style="margin-top: 10px;" type="flex">
         <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
@@ -160,65 +173,65 @@ export default {
   components: {
     videoPlayer,
   },
-    data () {
-      return {
-        pressAddCamBtn: false,
-        addCanvas: false,
-        camAdded: false,
+  data () {
+    return {
+      pressAddCamBtn: false,
+      addCanvas: false,
+      camAdded: false,
 
-        formInline: {
-          user: '',
-          password: ''
-        },
+      formInline: {
+        user: '',
+        password: ''
+      },
 
-        ruleInline: {
-            user: [
-                { required: true, message: 'Please fill in the Camera IP', trigger: 'blur' }
-            ],
-            password: [
-                { required: true, message: 'Please fill in the Port Number.', trigger: 'blur' },
-            ]
-        },
+      ruleInline: {
+          user: [
+              { required: true, message: 'Please fill in the Camera IP', trigger: 'blur' }
+          ],
+          password: [
+              { required: true, message: 'Please fill in the Port Number.', trigger: 'blur' },
+          ]
+      },
 
-        playerOptions: {
-        autoplay: false,
-        controls: true,
-        fluid: true,
-        sources: [{
-          type: 'video/mp4',
-          src: require('../../assets/videoCut/demo.mp4')
-          }],
-        },
-        sliderMax: 100,
-        sliderStep: 1,
-        url: '',
-        previewImg: '',
-        dataurl: '',
-        exportLoading: false,
-        items: [],
-        col1: [],
-        col2: [],
-        col3: [],
-        col4: [],
-        showTable: true,
-        form: {
-          start: '',
-          end: '',
-          coord: '',
-          label: ''
-        },
-        sliderVal: 0, // the slider
-        sliderValEnd: 0,
-        show: true,
-        flag: false,
-        x: 0,
-        y: 0,
-        x_leftUpper: 0,
-        y_leftUpper: 0,
-        x_lowerRight: 0,
-        y_lowerRight: 0,
-      }
-    },
+      playerOptions: {
+      autoplay: false,
+      controls: false,
+      fluid: true,
+      sources: [{
+        type: 'video/mp4',
+        src: require('../../assets/videoCut/demo.mp4')
+        }],
+      },
+      sliderMax: 100,
+      sliderStep: 1,
+      url: '',
+      previewImg: '',
+      dataurl: '',
+      exportLoading: false,
+      items: [],
+      col1: [],
+      col2: [],
+      col3: [],
+      col4: [],
+      showTable: true,
+      form: {
+        start: '',
+        end: '',
+        coord: '',
+        label: ''
+      },
+      sliderVal: 0, // the slider
+      sliderValEnd: 0,
+      show: true,
+      flag: false,
+      x: 0,
+      y: 0,
+      x_leftUpper: 0,
+      y_leftUpper: 0,
+      x_lowerRight: 0,
+      y_lowerRight: 0,
+    }
+  },
 
   computed: {
     player () {
@@ -239,7 +252,6 @@ export default {
       console.log("&&&&&&&&&&&&")
       this.addCanvas = true
       this.setSliderStep((1 / 30).toFixed(2))
-      console.log(addCanvas)
     },
     handleSubmit(name) {
       console.log("********************")

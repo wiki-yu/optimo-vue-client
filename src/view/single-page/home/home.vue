@@ -172,7 +172,7 @@ export default {
   },
   mounted () {
     const getClassificationData = async () => {
-      const baseURI = 'http://10.20.216.161:3500/classification-count?userid=3'
+      const baseURI = 'http://localhost:3000/classification-count?userid=3'
       try {
         const response = await axios.get(baseURI)
         var rows = response['data']['response']
@@ -241,7 +241,7 @@ export default {
     }
 
     const getLeanClassificationData = async () => {
-      const baseURI = 'http://10.20.216.161:3500/lean-classification-count?userid=3'
+      const baseURI = 'http://localhost:3000/lean-classification-count?userid=3'
       try {
         const response = await axios.get(baseURI)
         var rows = response['data']['response']
