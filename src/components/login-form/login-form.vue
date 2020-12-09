@@ -25,24 +25,24 @@
       </Form>
     </div> 
     <div v-if="registerOn">
-      <!-- <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="100"> -->
+      <!-- <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80"> -->
       <Form ref="formValidate" :model="formValidate" :label-width="100">
-        <FormItem label="E-mail:" prop="regEmail">
-            <Input v-model="formValidate.regEmail" placeholder="Enter your e-mail">
+        <FormItem label="E-mail:" prop="email">
+            <Input v-model="formValidate.email" placeholder="Enter your e-mail">
               <span slot="prepend">
                 <Icon :size="15" type="ios-mail"></Icon>
               </span>
             </Input>
         </FormItem>
-        <FormItem label="Password:" prop="regPassword">
-            <Input v-model="formValidate.regPassword" placeholder="Enter your password">
+        <FormItem label="Password:" prop="password">
+            <Input v-model="formValidate.password" placeholder="Enter your password">
               <span slot="prepend">
                 <Icon :size="14" type="md-lock"></Icon>
               </span>
             </Input>
         </FormItem>
-        <FormItem label="User Name:" prop="regName">
-            <Input v-model="formValidate.regName" placeholder="Enter your name">
+        <FormItem label="User Name:" prop="name">
+            <Input v-model="formValidate.name" placeholder="Enter your name">
               <span slot="prepend">
                 <Icon :size="16" type="ios-person"></Icon>
               </span>
@@ -62,7 +62,6 @@
 <script>
 import axios from 'axios'
 import { mapActions } from 'vuex'
-
 export default {
   name: 'LoginForm',
   props: {
@@ -91,19 +90,19 @@ export default {
         password: ''
       },
       formValidate: {
-        regEmail: '',
-        regPassword: '',
-        regName: '',
+        name: '',
+        email: '',
+        password: '',
       },
       ruleValidate: {
-          regEmail: [
+          email: [
               { required: true, message: 'Mailbox cannot be empty', trigger: 'blur' },
               { type: 'email', message: 'Incorrect email format', trigger: 'blur' }
           ],
-          regPassword: [
+          password: [
               { required: true, message: 'The pwd cannot be empty', trigger: 'blur' }
           ],
-          regName: [
+          name: [
               { required: true, message: 'The name cannot be empty', trigger: 'blur' }
           ],
       }
@@ -126,7 +125,7 @@ export default {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
         axios
-        .post('http://localhost:3000/test1', this.form)
+        .post('http://10.20.216.161:3500/test1', this.form)
         .then(res => {
           console.log("[START]Login: Receiving data from backend!!!!!")
           console.log(res.data)
@@ -164,11 +163,11 @@ export default {
       this.registerOn = false
     },
     registerInfoSubmit () {
-       console.log(this.formValidate.regName)
-       console.log(this.formValidate.regEmail)
-       console.log(this.formValidate.regPassword)
+       console.log(this.formValidate.name)
+       console.log(this.formValidate.email)
+       console.log(this.formValidate.password)
        axios
-        .post('http://localhost:3000/register', this.formValidate)
+        .post('http://10.20.216.161:3500/register', this.formValidate)
         .then(res => {
           console.log("[START]Receiving data from backend!!!!!")
           console.log(res)

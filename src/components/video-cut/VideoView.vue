@@ -9,6 +9,7 @@
             </div>
         </Upload>
       </Row>
+
       <Row>
         <div class="ivu-upload-list-file" v-if="file !== null">
           <Icon type="md-barcode"></Icon>
@@ -25,7 +26,7 @@
             </div>
           </Progress>
         </transition>
-        <!-- <Button type="primary" @click="onUploadFile" class="upload-button" :disabled="!this.file">Send  file</Button> -->
+        <Button type="primary" @click="onUploadFile" class="upload-button" :disabled="!this.file">Send  file</Button>
       </Row>
     </Card>
     <Card title="Video" style="margin-top: 10px;">  
@@ -82,13 +83,6 @@ export default {
         this.uploadLoading = false
         this.showRemoveFile = true
         this.file = file
-        // Ready to play the video after uploading
-        var video = document.getElementById('myVideo');
-        const source = URL.createObjectURL(this.file)
-        video.src = source
-        console.log(video.src)
-        // this.$refs.video.src = source
-        // console.log(source)
       } else {
         this.$Notice.warning({
           title: 'Incorrect file type!',
@@ -101,16 +95,27 @@ export default {
     onUploadFile () {
       const formData = new FormData()
       formData.append('file', this.file) // appending file
+      // Ready to play the video after uploading
+      var video = document.getElementById('myVideo');
+      const source = URL.createObjectURL(this.file)
+      video.src = source
+      console.log("video.src: ", video.src)
+      // this.$refs.video.src = source
       // sending file to backend
       axios
-        .post('http://localhost:4000/uploadVideo', formData)
+        .post('http://10.20.216.161:4000/uploadVideo', formData)
         .then(res => {
-          console.log(res)
+          console.log("res.status:..........", res.status)
+          if (res.status === 200){
+            this.$Message.info('File has been uploaded!')
+          } else {
+              this.$Message.info('File failed to upload!')
+          }
         })
         .catch(err => {
           console.log(err)
         })
-      this.$Message.info('File has been uploaded!')
+      
     },
 
     formData(time){
@@ -131,16 +136,14 @@ export default {
         console.log(vedio.duration);
       };
     });
-    // 开始和暂停播放视频
     this.Event.$on("paly", data => {
       var vedio = document.getElementById("myVideo");
       if (data) {
-        vedio.play(); //播放
+        vedio.play(); 
       } else {
-        vedio.pause(); //暂停
+        vedio.pause(); 
       }
     });
-    //设置当前时间
     this.Event.$on("currentTime", time => {
       var x = document.getElementById("myVideo");
       x.currentTime = String(this.formData(time))
@@ -152,7 +155,6 @@ export default {
     });
   },
   mounted(){
-    // this.$store.dispatch('changeVideo',d);
   },
 };
 </script>

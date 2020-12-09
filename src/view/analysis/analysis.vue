@@ -14,8 +14,8 @@
 </template>
 
 <script>
-import videoView from "../../components/video-cut/VideoView-test";
-import videoControl from "../../components/video-cut/VideoControl-test";
+import videoView from "../../components/video-cut/VideoView";
+import videoControl from "../../components/video-cut/VideoControl";
 export default {
   components:{
     videoView,

@@ -9,14 +9,18 @@
       </i-col>
     </Row>
     <Row :gutter="20" style="margin-top: 10px;">
-      <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
+        <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
         <Card shadow>
-          <chart-bar style="height: 300px;" :value="barData" text="Image Annotation Amount"/>
+          <h3>Classification</h3>
+          <reactive-bar-chart :chartData="barData" :options="barOptions"></reactive-bar-chart>
+          <!--chart-bar style="height: 300px;" :value="barData" text="Classification Distribution"/-->
         </Card>
       </i-col>
       <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
         <Card shadow>
-          <chart-pie style="height: 300px;" :value="pieData" text="Saved Video Analysis"></chart-pie>
+          <h3>Lean Classification</h3>
+          <!--chart-pie style="height: 300px;" :value="pieData" text="Lean Classification"></chart-pie-->
+          <reactive-pie-chart :chartData="pieData" :options="pieOptions"></reactive-pie-chart>
         </Card>
       </i-col>
     </Row>
@@ -29,81 +33,278 @@
 </template>
 
 <script>
-import axios from 'axios'
 import InforCard from '_c/info-card'
 import CountTo from '_c/count-to'
-import { ChartPie, ChartBar } from '_c/charts'
+import reactivePieChart from '../../../components/charts/reactivePieChart'
+import reactiveBarChart from '../../../components/charts/reactiveBarChart'
 import Example from './example.vue'
+import axios from 'axios'
 export default {
   name: 'home',
   components: {
     InforCard,
     CountTo,
-    ChartPie,
-    ChartBar,
-    Example
+    Example,
+    reactiveBarChart,
+    reactivePieChart
   },
   data () {
     return {
-      inforCardData: [
-        { title: 'User Number', icon: 'md-person-add', count: 21, color: '#2d8cf0' },
-        { title: 'Annotations', icon: 'md-locate', count: 232, color: '#19be6b' },
-        { title: 'Revenue', icon: 'md-help-circle', count: 14200, color: '#ff9900' },
-        { title: 'Videos', icon: 'md-share', count: 57, color: '#ed3f14' },
+      inforCardData: [{
+        title: 'Workers',
+        icon: 'md-person-add',
+        count: 21,
+        color: '#2d8cf0'
+      },
+      {
+        title: 'Annotations',
+        icon: 'md-locate',
+        count: 232,
+        color: '#19be6b'
+      },
+      {
+        title: 'Total Time',
+        icon: 'md-help-circle',
+        count: 122,
+        color: '#ff9900'
+      },
+      {
+        title: 'Seconds per Task',
+        icon: 'md-share',
+        count: 7,
+        color: '#ed3f14'
+      }
       ],
-      pieData: [
-        { value: 335, name: 'Motion1' },
-        { value: 310, name: 'Motion2' },
-        { value: 234, name: 'Motion3' },
-        { value: 135, name: 'Motion4' },
-        { value: 1548, name: 'Motion5' }
-      ],
+      pieData: {
+        labels: ['VA', 'NVA', 'RNVA'],
+        datasets: [
+          // {
+          //   label: 'All Workers',
+          //   backgroundColor: ['#a3c7c9', '#889d9e', '#647678'],
+          //   data: [4, 5, 6]
+          // },
+          // {
+          //   label: 'Worker 1',
+          //   backgroundColor: ['#a3c7c9', '#889d9e', '#647678'],
+          //   data: [5, 8, 9]
+          // },
+          // {
+          //   label: 'Worker 2',
+          //   backgroundColor: ['#a3c7c9', '#889d9e', '#647678'],
+          //   data: [6, 9, 4]
+          // }
+        ]
+      },
+      barDatasets: [],
+      pieDatasets: [],
       barData: {
-        Mon: 1325,
-        Tue: 3425,
-        Wed: 2621,
-        Thu: 1240,
-        Fri: 2443,
-        Sat: 122,
-        Sun: 134
+        labels: [
+          'Unit Pick-Up/Transfer',
+          'Operation',
+          'Material Setup/Handling',
+          'Fixture Setup/Handling',
+          'Inspection',
+          'Tool Setup/Handling',
+          'Operation Trash',
+          'Scanning',
+          'Cleaning'
+        ],
+        datasets: [
+          // {
+          //   label: 'All Workers',
+          //   backgroundColor: '#a3c7c9',
+          //   data: [3,6,4,5,6,2,6,7,4]
+          // },
+          // {
+          //   label: 'Worker 1',
+          //   backgroundColor: '#889d9e',
+          //   data: [3.4,7,3,5.5,7,4,6,3,2]
+          // },
+          // {
+          //   label: 'Worker 2',
+          //   backgroundColor: '#647678',
+          //   data: [3,2,5,6,4,5,3,5,2]
+          // },
+        ]
       },
-      form: {
-        userName: '',
-        password: ''
+      barLabels: [
+        'Unit Pick-Up/Transfer',
+        'Operation',
+        'Material Setup/Handling',
+        'Fixture Setup/Handling',
+        'Inspection',
+        'Tool Setup/Handling',
+        'Operation Trash',
+        'Scanning',
+        'Cleaning'
+      ],
+      barOptions: {
+        options: {
+          scales: {
+            yAxes: [{
+              display: true,
+              ticks: {
+                suggestedMin: 0 // minimum will be 0, unless there is a lower value.
+              }
+            }]
+          }
+        }
       },
+      pieOptions: {
+        responsive: true,
+        legend: {
+          position: 'top'
+        },
+        animation: {
+          animateScale: true,
+          animateRotate: true
+        },
+        tooltips: {
+          callbacks: {
+            label: function (item, data) {
+              console.log(data.labels, item)
+              return data.datasets[item.datasetIndex].label + ': ' + data.labels[item.index] + ': ' + data.datasets[item.datasetIndex].data[item.index]
+            }
+          }
+        }
+      }
     }
   },
-
-  methods:{
-    // handle() {
-    //   console.log('haha');
-    //   this.barData.Mon = 3000;
-    // }
-  },
-
   mounted () {
-    const sendPostRequest = async () => {
-      this.form.userName = "test1"
-      this.form.password = "test1"
-      console.log("test11111")
+    const getClassificationData = async () => {
+      const baseURI = 'http://10.20.216.161:3500/classification-count?userid=3'
       try {
-          const resp = await axios.post('http://localhost:3000/fetchData', this.form)
-          console.log("previous", this.barData.Mon)
-          console.log(JSON.stringify(resp.data));
-          this.barData.Mon = resp.data.user.is_admin
-          console.log("after", this.barData.Mon)
+        const response = await axios.get(baseURI)
+        var rows = response['data']['response']
+        var dataset = []
+        var workers = []
+        var labels = this.barData.labels
+        console.log(labels)
+        console.log(rows)
+        for (var i = 0; i < rows.length; i++) {
+          var row = rows[i]
+
+          console.log(row['worker'])
+          if (dataset.length <= 0) {
+            dataset.push({
+              label: 'All Workers',
+              backgroundColor: '#647678',
+              data: [0, 0, 0, 0, 0, 0, 0, 0, 0]
+            })
+            dataset.push({
+              label: row['worker'],
+              backgroundColor: '#647678',
+              data: [0, 0, 0, 0, 0, 0, 0, 0, 0]
+            })
+            workers.push('All Workers')
+            workers.push(row['worker'])
+          } else if (!workers.includes(row['worker'])) {
+            dataset.push({
+              label: row['worker'],
+              backgroundColor: '#647678',
+              data: [0, 0, 0, 0, 0, 0, 0, 0, 0]
+            })
+            workers.push(row['worker'])
+          }
+
+          var index = workers.indexOf(row['worker'])
+          var group = String(row['classification'])
+          console.log(group)
+          console.log(labels)
+          for (var j = 0; j < labels.length; j++) {
+            if (group === String(labels[j])) {
+              dataset[index].data[j] = row['time']
+              dataset[0].data[j] += row['time']
+            }
+          }
+        }
+
+        var sumCount = 0
+        var sum = 0
+        for (var k = 0; k < labels.length; k++) {
+          dataset[0].data[k] = dataset[0].data[k] / (workers.length - 1)
+          sum += dataset[0].data[k]
+          if (dataset[0].data[k] > 0) {
+            sumCount += 1
+          }
+        }
+
+        this.inforCardData[0].count = workers.length
+        this.inforCardData[1].count = workers.length
+        this.inforCardData[2].count = sum
+        this.inforCardData[3].count = sum / sumCount
+        this.barData.datasets = dataset
+        console.log(this.barData)
       } catch (err) {
-          console.error(err);
+        console.error(err)
       }
-    };
-   sendPostRequest();
-   console.log('haha')
+    }
+
+    const getLeanClassificationData = async () => {
+      const baseURI = 'http://10.20.216.161:3500/lean-classification-count?userid=3'
+      try {
+        const response = await axios.get(baseURI)
+        var rows = response['data']['response']
+        var dataset = []
+        var workers = []
+        var labels = this.pieData.labels
+        for (var i = 0; i < rows.length; i++) {
+          var row = rows[i]
+
+          if (dataset.length <= 0) {
+            dataset.push({
+              label: 'All Workers',
+              backgroundColor: ['#a3c7c9', '#889d9e', '#647678'],
+              data: [0, 0, 0]
+            })
+            dataset.push({
+              label: row['worker'],
+              backgroundColor: ['#a3c7c9', '#889d9e', '#647678'],
+              data: [0, 0, 0]
+            })
+            workers.push('All Workers')
+            workers.push(row['worker'])
+          } else if (!workers.includes(row['worker'])) {
+            dataset.push({
+              label: row['worker'],
+              backgroundColor: ['#a3c7c9', '#889d9e', '#647678'],
+              data: [0, 0, 0]
+            })
+            workers.push(row['worker'])
+          }
+
+          var index = workers.indexOf(row['worker'])
+          var group = String(row['leanClassification'])
+          console.log(group)
+          for (var j = 0; j < labels.length; j++) {
+            if (group === String(labels[j])) {
+              console.log(labels[j])
+              dataset[index].data[j] = row['time']
+              dataset[0].data[j] += row['time']
+            }
+          }
+
+          for (var k = 0; k < labels.length; k++) {
+            dataset[0].data[k] = dataset[0].data[k] / (workers.length - 1)
+          }
+        }
+
+        this.pieData.datasets = dataset
+        console.log(this.pieData)
+      } catch (err) {
+        console.error(err)
+      }
+    }
+
+    console.log(this.barData)
+    console.log(this.pieData)
+
+    getClassificationData()
+    getLeanClassificationData()
   },
+  methods: {
 
-  created () {
-
-  },
-
+  }
 }
 </script>
 
