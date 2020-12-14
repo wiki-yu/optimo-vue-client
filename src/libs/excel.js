@@ -108,7 +108,7 @@ export const export_array_to_excel = ({key, data, title, filename, autoWidth}) =
     formData.append('file', myFile) // appending file
 
     axios
-    .post('http://localhost:4000/uploadVideo', formData)
+    .post('http://10.20.216.161:4000/uploadVideo', formData)
     .then(res => {
       console.log("res.status:..........", res.status)
       if (res.status === 200){

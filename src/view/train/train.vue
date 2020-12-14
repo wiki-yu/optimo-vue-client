@@ -62,7 +62,7 @@ export default {
       else {
         this.selectHaihub = true
         this.selectJupter= false
-        window.open("https://www.google.com", "_blank"); 
+        window.open("10.20.192.68:30000", "_blank"); 
       }
     },
     pickupTab (val) {

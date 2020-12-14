@@ -2,18 +2,27 @@
   <div>
     <Card title="Insturction">
       <el-steps :active="1">
-        <el-step title="Step 1" icon="el-icon-upload"></el-step>
-        <el-step title="Step 2" icon="el-icon-edit"></el-step>
-        <el-step title="Step 3" icon="el-icon-picture"></el-step>
+        <el-step title="Step1" icon="el-icon-upload" description="Upload Video"></el-step>
+        <el-step title="Step2" icon="el-icon-edit" description="Send Video"></el-step>
+        <el-step title="Step3" icon="el-icon-picture" description="Detect Video"></el-step>
       </el-steps>
     </Card>
 
     <Card title="Upload Video" style="margin-top: 10px;">
       <Row>
-        <Upload action="" :before-upload="handleBeforeUpload" accept=".avi, .mp4">
-          <Button icon="ios-cloud-upload-outline" :loading="uploadLoading" @click="handleUploadFile">Upload Files</Button>
-        </Upload>
-         <Button type="primary" @click="onUploadFile" class="upload-button" :disabled="!this.file">Send file</Button>
+      <div class="btnWrap">
+          <div>
+            <Upload action="" :before-upload="handleBeforeUpload" accept=".avi, .mp4">
+              <Button icon="ios-cloud-upload-outline" type="info" :loading="uploadLoading" @click="handleUploadFile">Upload File</Button>
+            </Upload>
+          </div>
+          <div style="margin-left: 5px">
+            <Button icon="ios-cloud-upload-outline" type="primary" @click="onUploadFile" class="upload-button" :disabled="!this.file">Send file</Button>
+          </div>
+          <div style="margin-left: 5px">
+            <Button icon="ios-cloud-upload-outline" type="warning" @click="detectFile" class="upload-button" :disabled="!this.videoUploaded">Detect file</Button>
+          </div>
+      </div>
       </Row>
       <Row>
         <div class="ivu-upload-list-file" v-if="file !== null">
@@ -86,7 +95,6 @@ export default {
       tableTitle: [],
       tableLoading: false,
 
-      // imgUploaded: true,
       previewImg1: '',
       previewImg2: '',
       url: '',
@@ -139,9 +147,8 @@ export default {
     },
     handleRemove () {
       this.initUpload()
-      this.$refs.videoPlayer1.src = '',
-      this.$refs.videoPlayer2.src = '',
-      // imgUploaded = false
+      this.playerOptions1.sources[0].src = '',
+      this.playerOptions2.sources[0].src = '',
       this.$Message.info('Uploaded file has been deleted!')
     },
 
@@ -176,12 +183,12 @@ export default {
       var video = document.getElementById('myVideo1');
       const source = URL.createObjectURL(this.file)
       this.playerOptions1.sources[0].src = source
-      this.videoUploaded = true
       axios
-        .post('http://localhost:4000/uploadVideo', formData)
+        .post('http://10.20.216.161:4000/uploadVideo', formData)
         .then(res => {
           console.log("res.status:..........", res.status)
           if (res.status === 200){
+            this.videoUploaded = true
             this.$Message.info('File has been uploaded!')
           } else {
             this.$Message.info('File failed to upload!')
@@ -190,6 +197,13 @@ export default {
         .catch(err => {
           console.log(err)
         })
+    },
+
+    async showServerVideo (info) {
+      console.log("The return Base64 video url from the server: ", info)
+      if (info) {
+        this.playerOptions2.sources[0].src = info
+      }
     },
 
   },
@@ -201,3 +215,11 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.btnWrap {
+  /* display: inline-block; */
+  display: flex;
+  justify-content: flex-start;
+}
+</style>
