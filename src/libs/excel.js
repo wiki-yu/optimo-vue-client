@@ -1,5 +1,6 @@
 /* eslint-disable */
 import XLSX from 'xlsx';
+import axios from 'axios'
 
 function auto_width(ws, data){
     /*set worksheet max width per col*/
@@ -81,6 +82,13 @@ export const export_json_to_excel = ({data, key, title, filename, autoWidth}) =>
     XLSX.writeFile(wb, filename + '.xlsx');
 }
 
+// Blob 转 File
+const blobToFile = (blob, fileName) => {
+    const file = new File([blob], fileName, {type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+    return file;
+}
+
+
 export const export_array_to_excel = ({key, data, title, filename, autoWidth}) => {
     const wb = XLSX.utils.book_new();
     const arr = json_to_array(key, data);
@@ -90,7 +98,28 @@ export const export_array_to_excel = ({key, data, title, filename, autoWidth}) =
         auto_width(ws, arr);
     }
     XLSX.utils.book_append_sheet(wb, ws, filename);
-    XLSX.writeFile(wb, filename + '.xlsx');
+    const buffer = XLSX.writeFile(wb, filename + '.xlsx');
+    console.log("export excel test!!!!!!", buffer)
+
+    const formData = new FormData()
+    var myFile = blobToFile(buffer, filename + '.xlsx');
+    
+    console.log("ready to send !!!!!!")
+    formData.append('file', myFile) // appending file
+
+    axios
+    .post('http://localhost:4000/uploadVideo', formData)
+    .then(res => {
+      console.log("res.status:..........", res.status)
+      if (res.status === 200){
+        this.$Message.info('File has been uploaded!')
+      } else {
+          this.$Message.info('File failed to upload!')
+      }
+    })
+    .catch(err => {
+      console.log(err)
+    })
 }
 
 export const read = (data, type) => {

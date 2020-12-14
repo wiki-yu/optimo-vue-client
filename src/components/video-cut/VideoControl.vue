@@ -1147,10 +1147,11 @@ export default {
     },
 
     entureChaitiao() {
+      console.log("conform 111111")
       var curVideo = this.$store.state.curVideo;
       // console.log(this.$store.state.curVideo);
       var optionTimes = [];
-
+      console.log("conform 22222222")
         for (var i = 0; i < this.cutCoverList.length; i++) {
           var Lstart = this.cutCoverList[i].startTime.split(".")[0];
           var Rstart = String(
@@ -1178,6 +1179,7 @@ export default {
             endTime: timeLone
           });
         }
+      console.log("conform 333333333333")
       // }
       // var curVideo = this.$store.state.curVideo;
       var data = {

@@ -31,9 +31,9 @@
       <div v-if="selectJupter">
         <iframe src="http://192.168.100.10:8888/tree"  width="100%" height="1000" frameborder="0" style="position:relative;" ></iframe>
       </div>
-      <div v-if="selectHaihub">
-        <iframe src="https://10.20.216.166:30000"  width="100%" height="1000" frameborder="0" style="position:relative;" ></iframe>
-      </div>
+      <!-- <div v-if="selectHaihub"> -->
+        <!-- <iframe src="https://10.20.216.166:30000"  width="100%" height="1000" frameborder="0" style="position:relative;" ></iframe> -->
+      <!-- </div> -->
     </div>
   </div>
 </template>
@@ -62,6 +62,7 @@ export default {
       else {
         this.selectHaihub = true
         this.selectJupter= false
+        window.open("https://www.google.com", "_blank"); 
       }
     },
     pickupTab (val) {
@@ -130,8 +131,8 @@ export default {
   border-radius: 0rem;
   border-style:dashed;
   border-width:1px;
-  border-color: #808080;
-  padding: 2rem;
+  border-color: #dbd9d9;
+  padding: 1.6rem;
   display: flex;
   justify-content: center;
   font-size: 1rem;
