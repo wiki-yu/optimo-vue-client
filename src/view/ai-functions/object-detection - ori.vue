@@ -179,7 +179,7 @@ export default {
       formData.append("file", this.selectedImage); // appending file
       this.detectImgLoading = true;
       axios
-        .post("http://localhost:5500/imgDetect", formData,)
+        .post("http://10.20.216.161:5500/imgDetect", formData,)
         .then(res => {
           console.log("Receiving data from server after uploading IMAGE! ");
           console.log(res)
@@ -212,7 +212,7 @@ export default {
       formData.append('file', this.selectedVideo) // appending file
       this.detectVideoLoading = true, 
       axios
-        .post('http://localhost:5500/videoDetect', formData)
+        .post('http://10.20.216.161:5500/videoDetect', formData)
         .then(res => {
           console.log("Receiving data from server after uploading VIDEO! ");
           console.log(res.data)

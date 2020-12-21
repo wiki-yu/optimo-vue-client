@@ -204,7 +204,7 @@ export default {
       this.videoProcessing = true
       console.log("start to send through axios!!!!!!!")
       axios
-        .post('http://localhost:5000/motionDetection', formData)
+        .post('http://10.20.216.161:5000/motionDetection', formData)
         .then(res => {
           console.log("Receiving data from server after uploading VIDEO! ");
           console.log(res.data)
