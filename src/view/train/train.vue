@@ -111,7 +111,7 @@ export default {
       formData.append('file', this.file) // appending file
       // sending file to backend
       axios
-        .post('http://10.20.216.161:4000/uploadVideo', formData)
+        .post('http://localhost:4000/uploadVideo', formData)
         .then(res => {
           console.log(res)
         })

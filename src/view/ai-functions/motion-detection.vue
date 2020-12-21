@@ -1,29 +1,38 @@
 <template>
   <div>
-    <Card title="Insturction">
-      <el-steps :active="1">
+    <!-- <Card title="Insturction"> -->
+    <Card shadow style="margin-top: 10px;">
+      <p slot="title" class="card-title" >
+        <Icon type="ios-cloud-upload-outline" :size="20" />
+        Upload Video
+      </p>
+      <el-steps :active="active">
         <el-step title="Step1" icon="el-icon-upload" description="Upload Video"></el-step>
-        <el-step title="Step2" icon="el-icon-edit" description="Send Video"></el-step>
-        <el-step title="Step3" icon="el-icon-picture" description="Detect Video"></el-step>
+        <el-step title="Step2" icon="el-icon-s-promotion" description="Send Video"></el-step>
+        <el-step title="Step3" icon="el-icon-success" description="Detect Video"></el-step>
       </el-steps>
     </Card>
 
-    <Card title="Upload Video" style="margin-top: 10px;">
+    <Card shadow style="margin-top: 10px;">
+      <p slot="title" class="card-title" >
+        <Icon type="ios-cloud-upload-outline" :size="20" />
+        Upload Video
+      </p>
+
       <Row>
-      <div class="btnWrap">
-          <div>
-            <Upload action="" :before-upload="handleBeforeUpload" accept=".avi, .mp4">
-              <Button icon="ios-cloud-upload-outline" type="info" :loading="uploadLoading" @click="handleUploadFile">Upload File</Button>
-            </Upload>
-          </div>
-          <div style="margin-left: 5px">
-            <Button icon="ios-cloud-upload-outline" type="primary" @click="onUploadFile" class="upload-button" :disabled="!this.file">Send file</Button>
-          </div>
-          <div style="margin-left: 5px">
-            <Button icon="ios-cloud-upload-outline" type="warning" @click="detectFile" class="upload-button" :disabled="!this.videoUploaded">Detect file</Button>
-          </div>
-      </div>
+        <div class="btnWrap">
+            <div>
+              <Upload action="" :before-upload="handleBeforeUpload" accept=".avi, .mp4">
+                <Button icon="ios-cloud-upload-outline" type="info" :loading="uploadLoading" @click="handleUploadFile">Upload File</Button>
+              </Upload>
+            </div>
+            <div style="margin-left: 5px">
+              <Button v-if="!videoProcessing" icon="ios-cloud-upload-outline" type="primary" @click="sendFile" :disabled="!this.file">Send file</Button>
+              <Button v-else loading shape="circle" type="error" style="margin-left: 5px">Video Processing...</Button>
+            </div>
+        </div>
       </Row>
+
       <Row>
         <div class="ivu-upload-list-file" v-if="file !== null">
           <Icon type="ios-stats"></Icon>
@@ -43,8 +52,6 @@
       </Row>
     </Card>
 
-      <!-- <button v-if="!detectVideoLoading" @click="onUploadVideo" class="upload-button" :disabled="!this.selectedVideo">DETECT</button> -->
-      <!-- <Button v-else type="primary" loading>Video Processing...</Button> -->
     <div v-if="videoUploaded">
       <Row :gutter="20" style="margin-top: 10px;" type="flex">
         <i-col :md="24" :lg="12" style="margin-bottom: 20px;">
@@ -71,6 +78,9 @@
         </i-col>
       </Row>
     </div>
+    <Row style="margin-top: 10px;">
+      <Table :columns="tableTitle" :data="tableData" :loading="tableLoading"></Table>
+    </Row>
   </div>
 </template>
 
@@ -79,6 +89,7 @@ import excel from '@/libs/excel'
 import axios from 'axios'
 import 'video.js/dist/video-js.css'
 import { videoPlayer } from 'vue-video-player'
+import videoPoster from '@/assets/images/loading.gif'
 export default {
    components: {
     videoPlayer,
@@ -95,6 +106,9 @@ export default {
       tableTitle: [],
       tableLoading: false,
 
+      active: 0,
+      videoProcessing: false,
+
       previewImg1: '',
       previewImg2: '',
       url: '',
@@ -105,9 +119,8 @@ export default {
   
       detectVideoLoading: false,
 
-
       playerOptions1: {
-        autoplay: false,
+        autoplay: true,
         controls: true,
         fluid: true,
         sources: [{
@@ -116,9 +129,10 @@ export default {
         }],
       },
       playerOptions2: {
-        autoplay: false,
+        autoplay: true,
         controls: true,
         fluid: true,
+        poster: videoPoster,
         sources: [{
           type: 'video/mp4',
           src: '',
@@ -127,9 +141,9 @@ export default {
     };
   },
   computed: {
-    // player () {
-    //   return this.$refs.videoPlayer.player
-    // },
+    player () {
+      return this.$refs.videoPlayer.player
+    },
     hasVideo() {
       return !!this.playerOptions1.sources[0].src;
     }
@@ -165,6 +179,7 @@ export default {
           // this.previewImg1 = this.url;
           // document.getElementById("myVideo2").src='';
           this.$Message.info('Read Video successfully!')
+          this.active = 1
         }
      
       } else {
@@ -176,23 +191,28 @@ export default {
       return false
     },
 
-    onUploadFile () {
+    sendFile () {
+      console.log("start to send file!!!!!!!")
       const formData = new FormData()
       formData.append('file', this.file) // appending file
       // Ready to play the video after uploading
+      this.videoUploaded = true
       var video = document.getElementById('myVideo1');
       const source = URL.createObjectURL(this.file)
       this.playerOptions1.sources[0].src = source
+      this.active = 2
+      this.videoProcessing = true
+      console.log("start to send through axios!!!!!!!")
       axios
-        .post('http://10.20.216.161:4000/uploadVideo', formData)
+        .post('http://localhost:5000/motionDetection', formData)
         .then(res => {
-          console.log("res.status:..........", res.status)
-          if (res.status === 200){
-            this.videoUploaded = true
-            this.$Message.info('File has been uploaded!')
-          } else {
-            this.$Message.info('File failed to upload!')
-          }
+          console.log("Receiving data from server after uploading VIDEO! ");
+          console.log(res.data)
+          this.playerOptions2.poster = '',
+          this.showServerVideo(res.data)
+          this.detectVideoLoading = false
+          this.active = 3
+          this.videoProcessing = false
         })
         .catch(err => {
           console.log(err)
