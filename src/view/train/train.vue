@@ -29,7 +29,7 @@
     </div>
     <div style="padding-top: 15px">
       <div v-if="selectJupter">
-        <iframe src="http://10.20.216.161:8888/tree"  width="100%" height="1000" frameborder="0" style="position:relative;" ></iframe>
+        <iframe src="http://localhost:8888/tree"  width="100%" height="1000" frameborder="0" style="position:relative;" ></iframe>
       </div>
       <!-- <div v-if="selectHaihub"> -->
         <!-- <iframe src="https://10.20.216.166:30000"  width="100%" height="1000" frameborder="0" style="position:relative;" ></iframe> -->
@@ -111,7 +111,7 @@ export default {
       formData.append('file', this.file) // appending file
       // sending file to backend
       axios
-        .post('http://10.20.216.161:4000/uploadVideo', formData)
+        .post('http://localhost:4000/uploadVideo', formData)
         .then(res => {
           console.log(res)
         })

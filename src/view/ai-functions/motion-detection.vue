@@ -81,6 +81,7 @@
     <Row style="margin-top: 10px;">
       <Table :columns="tableTitle" :data="tableData" :loading="tableLoading"></Table>
     </Row>
+    <img src="http://localhost:5000/motionDetection"/>
   </div>
 </template>
 
@@ -120,7 +121,7 @@ export default {
       detectVideoLoading: false,
 
       playerOptions1: {
-        autoplay: true,
+        autoplay: false,
         controls: true,
         fluid: true,
         sources: [{
@@ -129,7 +130,7 @@ export default {
         }],
       },
       playerOptions2: {
-        autoplay: true,
+        autoplay: false,
         controls: true,
         fluid: true,
         poster: videoPoster,
@@ -204,23 +205,22 @@ export default {
       this.videoProcessing = true
       console.log("start to send through axios!!!!!!!")
       axios
-        .post('http://localhost:5000/motionDetection', formData)
+        .get('http://localhost:5000/motionDetection')
         .then(res => {
           console.log("Receiving data from server after uploading VIDEO! ");
           console.log(res.data)
-          this.playerOptions2.poster = '',
-          this.showServerVideo(res.data)
-          this.detectVideoLoading = false
-          this.active = 3
-          this.videoProcessing = false
+          // this.playerOptions2.poster = '',
+          // this.showServerVideo(res.data)
+          // this.detectVideoLoading = false
+          // this.active = 3
+          // this.videoProcessing = false
         })
         .catch(err => {
-          console.log(err)
+          console.log('error', err)
         })
     },
 
     async showServerVideo (info) {
-      console.log("The return Base64 video url from the server: ", info)
       if (info) {
         this.playerOptions2.sources[0].src = info
       }

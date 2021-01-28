@@ -283,7 +283,7 @@ export default {
       console.log("start to send through axios!!!!!!!")
       this.videoProcessing = true
       axios
-        .post('http://10.20.216.161:5500/videoDetect', formData)
+        .post('http://localhost:5000/videoDetect', formData)
         .then(res => {
           console.log("Receiving data from server after uploading VIDEO! ");
           console.log(res.data)
@@ -307,7 +307,7 @@ export default {
 
       console.log("start to send through axios!!!!!!!")
       axios
-        .post('http://10.20.216.161:5500/imgDetect', formData)
+        .post('http://localhost:5000/imgDetect', formData)
         .then(res => {
           console.log("Receiving data from server after uploading VIDEO! ");
           console.log(res.data)

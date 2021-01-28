@@ -125,7 +125,7 @@ export default {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
         axios
-        .post('http://10.20.216.161:3000/test1', this.form)
+        .post('http://localhost:3000/test1', this.form)
         .then(res => {
           console.log("[START]Login: Receiving data from backend!!!!!")
           console.log(res.data)
@@ -167,7 +167,7 @@ export default {
        console.log(this.formValidate.email)
        console.log(this.formValidate.password)
        axios
-        .post('http://10.20.216.161:3000/register', this.formValidate)
+        .post('http://localhost:3000/register', this.formValidate)
         .then(res => {
           console.log("[START]Receiving data from backend!!!!!")
           console.log(res)
