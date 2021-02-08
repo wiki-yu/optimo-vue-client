@@ -23,7 +23,7 @@ export default {
       langList: {
         'zh-CN': '语言',
         'zh-TW': '語言',
-        'en-US': 'Lang'
+        'en-US': 'English'
       },
       localList: {
         'zh-CN': 'Simplified Chinese',

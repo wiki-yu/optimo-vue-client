@@ -81,7 +81,7 @@
     <Row style="margin-top: 10px;">
       <Table :columns="tableTitle" :data="tableData" :loading="tableLoading"></Table>
     </Row>
-    <img src="http://localhost:5000/motionDetection"/>
+    <!-- <img src="http://localhost:5000/motionDetection"/> -->
   </div>
 </template>
 

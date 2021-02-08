@@ -1,10 +1,7 @@
 <template>
     <div>
-        <Tabs type="card" value="name1" @on-click="pickupTab">
-            <TabPane label="Train" icon="ios-list-box" name="original"></TabPane>
-            <TabPane label="Code" icon="md-cloud-upload" name="processed"></TabPane>
-        </Tabs>
-        <div v-if="oriDropdown">
+      <Row :gutter="20" style="margin-top: 10px;" type="flex">
+        <i-col :md="24" :lg="12" style="margin-bottom: 20px;" type="flex">
           <Card shadow>
             <p slot="title" class="card-title" >
               <Icon type="md-desktop" size:="20"/>
@@ -42,18 +39,21 @@
                     <button type="button" class="btn btn-success" @click="onStart">Start Camera</button>
                 </div>
           </Card>
-        </div>
-        <div v-if="proDropdown">
-            <Card shadow>
-                <p slot="title" class="card-title" >
-                <Icon type="md-desktop" size:="20"/>
-                Output Video
-                </p>
-                <div>
-                    <img v-if="proDropdown" src="http://localhost:5000/motionDetection1"/>
-                </div>
-            </Card>
-        </div>
+        </i-col>
+        <i-col :md="24" :lg="12" style="margin-bottom: 20px;" type="flex">
+          <Card shadow>
+            <p slot="title" class="card-title" >
+              <Icon type="md-desktop" size:="20"/>
+              Output Video
+            </p>
+            <div>
+                <img src="http://localhost:5000/motionDetection"/>
+            </div>
+    
+          </Card>
+        </i-col>
+      </Row>
+
     </div>
 
 
@@ -71,9 +71,7 @@ export default {
             img: null,
             camera: null,
             deviceId: null,
-            devices: [],
-            oriDropdown: true,
-            proDropdown: false, 
+            devices: []
         };
     },
     computed: {
@@ -95,18 +93,6 @@ export default {
         }
     },
     methods: {
-        pickupTab (val) {
-        if (val == "original"){
-            console.log("pick up original tab")
-            this.oriDropdown = true
-            this.proDropdown = false
-        }
-        else {
-            console.log("pick up processed tab")
-            this.proDropdown = true
-            this.oriDropdown = false
-        }
-        },
         onCapture() {
             this.img = this.$refs.webcam.capture();
         },
