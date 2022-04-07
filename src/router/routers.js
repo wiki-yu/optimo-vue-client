@@ -51,26 +51,6 @@ export default [
     ]
   },
   {
-    path: '/ai_builder',
-    name: 'ai_builder',
-    meta: {
-      hideInBread: true
-    },
-    component: Main,
-    children: [
-      {
-        path: 'ai_builder_page',
-        name: 'ai_builder_page',
-        meta: {
-          icon: 'ios-paper',
-          title: 'FlowChart'
-        },
-        component: () => import('@/view/ai-builder/ai-builder.vue')
-      }
-    ]
-  },
-  
-  {
     path: '/stream',
     name: 'stream',
     meta: {
@@ -89,38 +69,6 @@ export default [
       }
     ]
   },
-
-  {
-    path: '/annotation',
-    name: 'annotation_page',
-    meta: {
-      icon: 'ios-navigate',
-      title: 'Annotation',
-      hideInBread: true
-    },
-    component: Main,
-    children: [
-      {
-        path: 'object_annotation_page',
-        name: 'object_annotation_page',
-        meta: {
-          icon: 'ios-navigate',
-          title: 'Object Detection Annotation'
-        },
-        component: () => import('@/view/annotation/objectAnnotation.vue')
-      },
-      {
-        path: 'motion_study_page',
-        name: 'motion_study_page',
-        meta: {
-          icon: 'ios-navigate',
-          title: 'Motion Study'
-        },
-        component: () => import('@/view/annotation/motionStudy.vue')
-      }
-    ]
-  },
-
   {
     path: '/studies',
     name: 'studies_page',
@@ -227,68 +175,6 @@ export default [
           title: '导出数据'
         },
         component: () => import('@/view/data/export-data.vue')
-      }
-    ]
-  },
-
-  {
-    path: '/backup',
-    name: 'backup',
-    meta: {
-      icon: 'ios-apps',
-      title: '数据上传'
-    },
-    component: Main,
-    children: [
-      {
-        path: 'backup1_page',
-        name: 'backup1_page',
-        meta: {
-          icon: 'md-clipboard',
-          title: 'Backup page1'
-        },
-        component: () => import('@/view/backup/backup1.vue')
-      },
-      {
-        path: 'backup2_page',
-        name: 'backup2_page',
-        meta: {
-          icon: 'md-clipboard',
-          title: 'Backup page2'
-        },
-        component: () => import('@/view/backup/backup2.vue')
-      }
-    ]
-  },
-
-  {
-    path: '/argu',
-    name: 'argu',
-    meta: {
-      hideInMenu: true
-    },
-    component: Main,
-    children: [
-      {
-        path: 'params/:id',
-        name: 'params',
-        meta: {
-          icon: 'md-flower',
-          title: route => `{{ params }}-${route.params.id}`,
-          notCache: true,
-          beforeCloseName: 'before_close_normal'
-        },
-        component: () => import('@/view/argu-page/params.vue')
-      },
-      {
-        path: 'query',
-        name: 'query',
-        meta: {
-          icon: 'md-flower',
-          title: route => `{{ query }}-${route.query.id}`,
-          notCache: true
-        },
-        component: () => import('@/view/argu-page/query.vue')
       }
     ]
   },
